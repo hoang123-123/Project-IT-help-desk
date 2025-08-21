@@ -254,9 +254,6 @@
                         <button id="userMenuBtn" class="flex items-center space-x-2 p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                             <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
                                 <span class="text-white text-sm font-medium">AD</span>
-                                <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
-                                    <i class="fas fa-bars"></i> dev
-                                </button>
                             </div>
                             <span class="hidden md:block text-sm font-medium">Admin User</span>
                             <i class="fas fa-chevron-down text-xs"></i>
@@ -483,7 +480,7 @@
                                     <button type="button" id="cancelTicket" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                                         Hủy
                                     </button>
-                                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <button type="submit" id="createTicketBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                                         Tạo Ticket
                                     </button>
                                 </div>
@@ -873,16 +870,80 @@
         function initializeFormHandlers() {
             const newTicketForm = document.getElementById('newTicketForm');
             const cancelTicket = document.getElementById('cancelTicket');
+            const createTicketBtn = document.getElementById('createTicketBtn');
             
             newTicketForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                createNewTicket();
+                // Optionally fetch from Dataverse before creating
+                fetchDataverseData()
+                    .catch(() => {})
+                    .finally(() => {
+                        createNewTicket();
+                    });
             });
             
             cancelTicket.addEventListener('click', function() {
                 newTicketForm.reset();
                 document.querySelector('a[href="#tickets"]').click();
             });
+        }
+
+        // Fetch data from Microsoft Dataverse (placeholder; requires valid URL and token)
+        async function fetchDataverseData() {
+            const dataverseUrl = window.DATAVERSE_API_URL || 'https://YOUR-ORG.api.crm.dynamics.com/api/data/v9.2/';
+            const tableName = window.DATAVERSE_TABLE || 'tickets';
+            const bearerToken = window.DATAVERSE_TOKEN; // Inject at runtime for security
+
+            if (!bearerToken) {
+                console.warn('Dataverse token is not set. Skipping fetch.');
+                return null;
+            }
+
+            const url = `${dataverseUrl}${tableName}`;
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${bearerToken}`,
+                        'Accept': 'application/json',
+                        'OData-MaxVersion': '4.0',
+                        'OData-Version': '4.0'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Dataverse request failed: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data && Array.isArray(data.value)) {
+                    // Map Dataverse entities to local ticket schema if needed
+                    // This is a basic example; adjust field names to match your Dataverse table
+                    const importedTickets = data.value.map((row, index) => ({
+                        id: row.id || `DV-${String(index + 1).padStart(3, '0')}`,
+                        title: row.title || row.subject || 'Không tiêu đề',
+                        description: row.description || '',
+                        category: row.category || 'other',
+                        priority: row.priority || 'medium',
+                        status: row.status || 'pending',
+                        createdBy: row.createdbyname || 'Dataverse',
+                        createdAt: row.createdon || new Date().toISOString()
+                    }));
+
+                    // Merge or replace: here we prepend imported items
+                    tickets = [...importedTickets, ...tickets];
+                    loadTickets();
+                    loadApprovals();
+                    loadDashboard();
+                    showNotification(`Đã load ${importedTickets.length} bản ghi từ Dataverse`, 'success');
+                    return importedTickets;
+                }
+                return [];
+            } catch (error) {
+                console.error(error);
+                showNotification('Không thể lấy dữ liệu từ Dataverse', 'error');
+                return null;
+            }
         }
 
         function createNewTicket() {
