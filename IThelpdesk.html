@@ -423,63 +423,73 @@
                         </div>
                         <div class="p-6">
                             <form id="newTicketForm" class="space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Phòng ban *</label>
-            <select id="ticketDepartment" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">Chọn phòng ban</option>
-                <option value="it">IT</option>
-                <option value="hr">Nhân sự</option>
-                <option value="finance">Tài chính</option>
-                <option value="marketing">Marketing</option>
-                <option value="sales">Kinh doanh</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Loại yêu cầu *</label>
-            <select id="ticketCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">Chọn loại yêu cầu</option>
-                <option value="adjust-price">Điều chỉnh giá đơn hàng chi tiết</option>
-                <option value="other">Khác</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Người duyệt *</label>
-            <input type="text" id="ticketApprover" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nhập tên hoặc chọn người duyệt">
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin điều chỉnh *</label>
-            <input type="text" id="ticketAdjustmentInfo" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ví dụ: điều chỉnh giá từ 1.000.000 → 950.000">
-        </div>
-    </div>
-
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết *</label>
-        <textarea id="ticketDescription" rows="6" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Mô tả chi tiết vấn đề hoặc yêu cầu của bạn..."></textarea>
-    </div>
-
-    <!-- Trường đặc biệt: hiện ra nếu có chiết khấu -->
-    <div id="discountOptionContainer" class="hidden">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Chiết khấu</label>
-        <select id="discountOption" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-            <option value="">Chọn hành động</option>
-            <option value="cancel">Hủy chiết khấu</option>
-            <option value="keep">Giữ nguyên chiết khấu</option>
-        </select>
-    </div>
-
-    <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-        <button type="button" id="cancelTicket" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-            Hủy
-        </button>
-        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            Tạo Ticket
-        </button>
-    </div>
-</form>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phòng ban *</label>
+                                        <select id="ticketDepartment" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Chọn phòng ban</option>
+                                            <option value="it">IT</option>
+                                            <option value="hr">Nhân sự</option>
+                                            <option value="finance">Tài chính</option>
+                                            <option value="marketing">Marketing</option>
+                                            <option value="sales">Kinh doanh</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Loại yêu cầu *</label>
+                                        <select id="ticketCategory" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Chọn loại yêu cầu</option>
+                                            <option value="adjust-price">Điều chỉnh giá đơn hàng chi tiết</option>
+                                            <option value="other">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Người duyệt *</label>
+                                        <input type="text" id="ticketApprover" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            placeholder="Nhập tên hoặc chọn người duyệt">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin điều chỉnh *</label>
+                                        <input type="text" id="ticketAdjustmentInfo" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            placeholder="Ví dụ: điều chỉnh giá từ 1.000.000 → 950.000">
+                                    </div>
+                                </div>
+                            
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết *</label>
+                                    <textarea id="ticketDescription" rows="6" required
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        placeholder="Mô tả chi tiết vấn đề hoặc yêu cầu của bạn..."></textarea>
+                                </div>
+                            
+                                <!-- Trường đặc biệt: hiện ra nếu có chiết khấu -->
+                                <div id="discountOptionContainer" class="hidden">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Chiết khấu</label>
+                                    <select id="discountOption"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="">Chọn hành động</option>
+                                        <option value="cancel">Hủy chiết khấu</option>
+                                        <option value="keep">Giữ nguyên chiết khấu</option>
+                                    </select>
+                                </div>
+                            
+                                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                                    <button type="button" id="cancelTicket"
+                                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                        Hủy
+                                    </button>
+                                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        Tạo Ticket
+                                    </button>
+                                </div>
+                                </form>
 
                         </div>
                     </div>
@@ -566,6 +576,7 @@
             </div>
         </div>
     </div>
+    
 
     <script>
         // Global variables
@@ -1127,6 +1138,54 @@
                 });
             }
         }
+
+        document.getElementById("ticketCategory").addEventListener("change", function() {
+    const discountContainer = document.getElementById("discountOptionContainer");
+    
+    if (this.value === "adjust-price") {
+                // 👉 ở đây bạn có thể check thêm điều kiện "đơn hàng có chiết khấu"
+                // ví dụ: let hasDiscount = true;
+                let hasDiscount = true;
+
+                if (hasDiscount) {
+                    discountContainer.classList.remove("hidden");
+                } else {
+                    discountContainer.classList.add("hidden");
+                }
+            } else {
+                discountContainer.classList.add("hidden");
+            }
+        });
+
+        async function getTokenFromFlow() {
+            const flowUrl = "https://prod-51.southeastasia.logic.azure.com:443/workflows/1db8c4d15497441287f7c888e8888ed4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8smnu3fDoDarEJ1vXEJV5YTDTjhQMKNHrM_AGw3uqXs";
+
+            try {
+                const response = await fetch(flowUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    // nếu Flow yêu cầu input thì thêm vào body
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    throw new Error("HTTP error! status: " + response.status);
+                }
+
+                const data = await response.json();
+                console.log("Token:", data.token);
+                // hoặc in ra UI
+                document.body.insertAdjacentHTML("beforeend", `<p>Token: ${data.token}</p>`);
+
+            } catch (err) {
+                console.error("Error calling Flow:", err);
+            }
+        }
+
+        // Gọi thử khi load trang
+        getTokenFromFlow();
 
        
     </script>
