@@ -1157,35 +1157,31 @@
             }
         });
 
-        async function getTokenFromFlow() {
-            const flowUrl = "https://prod-51.southeastasia.logic.azure.com:443/workflows/1db8c4d15497441287f7c888e8888ed4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8smnu3fDoDarEJ1vXEJV5YTDTjhQMKNHrM_AGw3uqXs";
+         async function getToken() {
+      const url = "https://prod-51.southeastasia.logic.azure.com:443/workflows/1db8c4d15497441287f7c888e8888ed4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8smnu3fDoDarEJ1vXEJV5YTDTjhQMKNHrM_AGw3uqXs";
 
-            try {
-                const response = await fetch(flowUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    // nếu Flow yêu cầu input thì thêm vào body
-                    body: JSON.stringify({})
-                });
+      try {
+        const response = await fetch(url, {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            action: "get_token" // nếu flow bạn cần input thì truyền vào
+          })
+        });
 
-                if (!response.ok) {
-                    throw new Error("HTTP error! status: " + response.status);
-                }
+        if (!response.ok) throw new Error("HTTP error " + response.status);
 
-                const data = await response.json();
-                console.log("Token:", data.token);
-                // hoặc in ra UI
-                document.body.insertAdjacentHTML("beforeend", `<p>Token: ${data.token}</p>`);
-
-            } catch (err) {
-                console.error("Error calling Flow:", err);
-            }
-        }
+        const data = await response.json();
+        document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("result").textContent = "Error: " + err.message;
+      }
+    }
 
         // Gọi thử khi load trang
-        getTokenFromFlow();
+        getToken();
 
        
     </script>
