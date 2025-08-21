@@ -1,934 +1,1136 @@
-<nav class="mt-6 px-4">
-    <div class="space-y-2">
-        <a href="#tickets" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors active">
-            <i class="fas fa-ticket-alt w-5 h-5 mr-3"></i>
-            <span>Quản lý Ticket</span>
-        </a>
-        <a href="#new-ticket" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
-            <i class="fas fa-plus-circle w-5 h-5 mr-3"></i>
-            <span>Tạo Ticket</span>
-        </a>
-        <a href="#approvals" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
-            <i class="fas fa-check-circle w-5 h-5 mr-3"></i>
-            <span>Phê duyệt</span>
-        </a>
-        <a href="#dashboard" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
-            <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
-            <span>Dashboard</span>
-        </a>
-    </div>
-</nav>
-</div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Help Desk - Hệ thống hỗ trợ CNTT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!-- Main Content -->
-<div class="lg:ml-64 min-h-screen">
-<!-- Top Navigation -->
-<header class="bg-white shadow-sm border-b border-gray-200">
-    <div class="flex items-center justify-between h-16 px-6">
-        <div class="flex items-center space-x-4">
-            <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
-                <i class="fas fa-bars"></i>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        /* Sidebar transitions */
+        .sidebar-transition {
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Card hover effects */
+        .card-hover {
+            transition: all 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Status badges with gradients */
+        .status-pending { 
+            background: linear-gradient(135deg, #fbbf24, #f59e0b); 
+        }
+        .status-approved { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+        }
+        .status-rejected { 
+            background: linear-gradient(135deg, #ef4444, #dc2626); 
+        }
+        .status-in-progress { 
+            background: linear-gradient(135deg, #3b82f6, #2563eb); 
+        }
+        .status-completed { 
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed); 
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Table styles */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+        }
+
+        /* Button styles */
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Input styles */
+        input, select, textarea {
+            font-family: inherit;
+            transition: all 0.2s ease-in-out;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Modal backdrop */
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+
+        /* Loading animation */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 768px) {
+            .mobile-hidden {
+                display: none;
+            }
+            
+            .mobile-full {
+                width: 100% !important;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition transform -translate-x-full lg:translate-x-0">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-headset text-white text-sm"></i>
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">IT Help Desk</h1>
+            </div>
+            <button id="closeSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
             </button>
-            <h2 id="pageTitle" class="text-xl font-semibold text-gray-800">Dashboard</h2>
         </div>
         
-        <div class="flex items-center space-x-4">
-            <!-- Notifications -->
-            <div class="relative">
-                <button id="notificationsBtn" class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                    <i class="fas fa-bell"></i>
-                    <span id="notificationBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">3</span>
-                </button>
-                <div id="notificationsDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
-                    <div class="p-4 border-b border-gray-200">
-                        <h3 class="font-semibold text-gray-800">Thông báo</h3>
-                    </div>
-                    <div id="notificationsList" class="max-h-64 overflow-y-auto">
-                        <!-- Notifications will be populated here -->
-                    </div>
-                </div>
+        <nav class="mt-6 px-4">
+            <div class="space-y-2">
+                <a href="#tickets" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors active">
+                    <i class="fas fa-ticket-alt w-5 h-5 mr-3"></i>
+                    <span>Quản lý Ticket</span>
+                </a>
+                <a href="#new-ticket" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-plus-circle w-5 h-5 mr-3"></i>
+                    <span>Tạo Ticket</span>
+                </a>
+                <a href="#approvals" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-check-circle w-5 h-5 mr-3"></i>
+                    <span>Phê duyệt</span>
+                </a>
+                <a href="#dashboard" class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                    <span>Dashboard</span>
+                </a>
             </div>
-            
-            <!-- User Menu -->
-            <div class="relative">
-                <button id="userMenuBtn" class="flex items-center space-x-2 p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                    <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                        <span class="text-white text-sm font-medium">AD</span>
-                    </div>
-                    <span class="hidden md:block text-sm font-medium">Admin User</span>
-                    <i class="fas fa-chevron-down text-xs"></i>
-                </button>
-                <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
-                    <div class="py-2">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cài đặt</a>
-                        <hr class="my-2">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- Page Content -->
-<main class="p-6">
-    <!-- Dashboard Section -->
-    <div id="dashboard" class="page-content">
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Tổng Tickets</p>
-                        <p class="text-2xl font-bold text-gray-900">1,234</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-ticket-alt text-blue-600"></i>
-                    </div>
-                </div>
-                <div class="mt-4 flex items-center text-sm">
-                    <span class="text-green-600 flex items-center">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        12%
-                    </span>
-                    <span class="text-gray-500 ml-2">so với tháng trước</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Đang chờ</p>
-                        <p class="text-2xl font-bold text-gray-900">45</p>
-                    </div>
-                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-clock text-yellow-600"></i>
-                    </div>
-                </div>
-                <div class="mt-4 flex items-center text-sm">
-                    <span class="text-red-600 flex items-center">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        8%
-                    </span>
-                    <span class="text-gray-500 ml-2">so với tuần trước</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Đang xử lý</p>
-                        <p class="text-2xl font-bold text-gray-900">23</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-cogs text-blue-600"></i>
-                    </div>
-                </div>
-                <div class="mt-4 flex items-center text-sm">
-                    <span class="text-green-600 flex items-center">
-                        <i class="fas fa-arrow-down mr-1"></i>
-                        5%
-                    </span>
-                    <span class="text-gray-500 ml-2">so với tuần trước</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Hoàn thành</p>
-                        <p class="text-2xl font-bold text-gray-900">1,166</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-check-circle text-green-600"></i>
-                    </div>
-                </div>
-                <div class="mt-4 flex items-center text-sm">
-                    <span class="text-green-600 flex items-center">
-                        <i class="fas fa-arrow-up mr-1"></i>
-                        15%
-                    </span>
-                    <span class="text-gray-500 ml-2">so với tháng trước</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activities -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-800">Hoạt động gần đây</h3>
-                    <a href="#tickets" class="text-blue-600 hover:text-blue-700 text-sm font-medium">Xem tất cả</a>
-                </div>
-            </div>
-            <div class="p-6">
-                <div id="recentActivities" class="space-y-4">
-                    <!-- Recent activities will be populated here -->
-                </div>
-            </div>
-        </div>
+        </nav>
     </div>
 
-    <!-- Tickets Section -->
-    <div id="tickets" class="page-content hidden">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-gray-800">Quản lý Tickets</h3>
-                    <div class="flex items-center space-x-4">
-                        <div class="relative">
-                            <input type="text" id="searchTickets" placeholder="Tìm kiếm tickets..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+    <!-- Main Content -->
+    <div class="lg:ml-64 min-h-screen">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="flex items-center justify-between h-16 px-6">
+                <div class="flex items-center space-x-4">
+                    <button id="openSidebar" class="lg:hidden text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="pageTitle" class="text-xl font-semibold text-gray-800">Dashboard</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button id="notificationsBtn" class="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-bell"></i>
+                            <span id="notificationBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">3</span>
+                        </button>
+                        <div id="notificationsDropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                            <div class="p-4 border-b border-gray-200">
+                                <h3 class="font-semibold text-gray-800">Thông báo</h3>
+                            </div>
+                            <div id="notificationsList" class="max-h-64 overflow-y-auto">
+                                <!-- Notifications will be populated here -->
+                            </div>
                         </div>
-                        <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">Tất cả trạng thái</option>
-                            <option value="pending">Chờ phê duyệt</option>
-                            <option value="approved">Đã phê duyệt</option>
-                            <option value="in-progress">Đang xử lý</option>
-                            <option value="completed">Hoàn thành</option>
-                            <option value="rejected">Từ chối</option>
-                        </select>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="relative">
+                        <button id="userMenuBtn" class="flex items-center space-x-2 p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-medium">AD</span>
+                            </div>
+                            <span class="hidden md:block text-sm font-medium">Admin User</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                            <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Hồ sơ</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cài đặt</a>
+                                <hr class="my-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Đăng xuất</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Độ ưu tiên</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ticketsTable" class="bg-white divide-y divide-gray-200">
-                        <!-- Tickets will be populated here -->
-                    </tbody>
-                </table>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-6">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="page-content">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Tổng Tickets</p>
+                                <p class="text-2xl font-bold text-gray-900">1,234</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-ticket-alt text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-green-600 flex items-center">
+                                <i class="fas fa-arrow-up mr-1"></i>
+                                12%
+                            </span>
+                            <span class="text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Đang chờ</p>
+                                <p class="text-2xl font-bold text-gray-900">45</p>
+                            </div>
+                            <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-red-600 flex items-center">
+                                <i class="fas fa-arrow-up mr-1"></i>
+                                8%
+                            </span>
+                            <span class="text-gray-500 ml-2">so với tuần trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Đang xử lý</p>
+                                <p class="text-2xl font-bold text-gray-900">23</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cogs text-blue-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-green-600 flex items-center">
+                                <i class="fas fa-arrow-down mr-1"></i>
+                                5%
+                            </span>
+                            <span class="text-gray-500 ml-2">so với tuần trước</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Hoàn thành</p>
+                                <p class="text-2xl font-bold text-gray-900">1,166</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm">
+                            <span class="text-green-600 flex items-center">
+                                <i class="fas fa-arrow-up mr-1"></i>
+                                15%
+                            </span>
+                            <span class="text-gray-500 ml-2">so với tháng trước</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Hoạt động gần đây</h3>
+                            <a href="#tickets" class="text-blue-600 hover:text-blue-700 text-sm font-medium">Xem tất cả</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div id="recentActivities" class="space-y-4">
+                            <!-- Recent activities will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets Section -->
+            <div id="tickets" class="page-content hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-800">Quản lý Tickets</h3>
+                            <div class="flex items-center space-x-4">
+                                <div class="relative">
+                                    <input type="text" id="searchTickets" placeholder="Tìm kiếm tickets..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                </div>
+                                <select id="statusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Tất cả trạng thái</option>
+                                    <option value="pending">Chờ phê duyệt</option>
+                                    <option value="approved">Đã phê duyệt</option>
+                                    <option value="in-progress">Đang xử lý</option>
+                                    <option value="completed">Hoàn thành</option>
+                                    <option value="rejected">Từ chối</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Độ ưu tiên</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticketsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Tickets will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Ticket Section -->
+            <div id="new-ticket" class="page-content hidden">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Tạo Ticket mới</h3>
+                        </div>
+                        <div class="p-6">
+                            <form id="newTicketForm" class="space-y-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tiêu đề *</label>
+                                        <input type="text" id="ticketTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Loại yêu cầu *</label>
+                                        <select id="ticketCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Chọn loại</option>
+                                            <option value="hardware">Phần cứng</option>
+                                            <option value="software">Phần mềm</option>
+                                            <option value="network">Mạng</option>
+                                            <option value="access">Quyền truy cập</option>
+                                            <option value="other">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Độ ưu tiên *</label>
+                                        <select id="ticketPriority" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Chọn độ ưu tiên</option>
+                                            <option value="low">Thấp</option>
+                                            <option value="medium">Trung bình</option>
+                                            <option value="high">Cao</option>
+                                            <option value="urgent">Khẩn cấp</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phòng ban</label>
+                                        <select id="ticketDepartment" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="">Chọn phòng ban</option>
+                                            <option value="it">IT</option>
+                                            <option value="hr">Nhân sự</option>
+                                            <option value="finance">Tài chính</option>
+                                            <option value="marketing">Marketing</option>
+                                            <option value="sales">Kinh doanh</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết *</label>
+                                    <textarea id="ticketDescription" rows="6" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Mô tả chi tiết vấn đề hoặc yêu cầu của bạn..."></textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tệp đính kèm</label>
+                                    <input type="file" id="ticketAttachments" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <p class="text-sm text-gray-500 mt-1">Có thể đính kèm nhiều tệp (tối đa 10MB mỗi tệp)</p>
+                                </div>
+
+                                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                                    <button type="button" id="cancelTicket" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                        Hủy
+                                    </button>
+                                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        Tạo Ticket
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approvals Section -->
+            <div id="approvals" class="page-content hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">Phê duyệt Tickets</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Độ ưu tiên</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="approvalsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Approval tickets will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+    </div>
+
+    <!-- Modal for Ticket Details -->
+    <div id="ticketModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">Chi tiết Ticket</h3>
+                        <button id="closeTicketModal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="ticketModalContent" class="p-6">
+                    <!-- Ticket details will be populated here -->
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- New Ticket Section -->
-    <div id="new-ticket" class="page-content hidden">
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+    <!-- Modal for Approval -->
+    <div id="approvalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full">
                 <div class="p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-800">Tạo Ticket mới</h3>
+                    <h3 class="text-lg font-semibold text-gray-800">Phê duyệt Ticket</h3>
                 </div>
                 <div class="p-6">
-                    <form id="newTicketForm" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Tiêu đề *</label>
-                                <input type="text" id="ticketTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Loại yêu cầu *</label>
-                                <select id="ticketCategory" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Chọn loại</option>
-                                    <option value="hardware">Phần cứng</option>
-                                    <option value="software">Phần mềm</option>
-                                    <option value="network">Mạng</option>
-                                    <option value="access">Quyền truy cập</option>
-                                    <option value="other">Khác</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Độ ưu tiên *</label>
-                                <select id="ticketPriority" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Chọn độ ưu tiên</option>
-                                    <option value="low">Thấp</option>
-                                    <option value="medium">Trung bình</option>
-                                    <option value="high">Cao</option>
-                                    <option value="urgent">Khẩn cấp</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Phòng ban</label>
-                                <select id="ticketDepartment" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">Chọn phòng ban</option>
-                                    <option value="it">IT</option>
-                                    <option value="hr">Nhân sự</option>
-                                    <option value="finance">Tài chính</option>
-                                    <option value="marketing">Marketing</option>
-                                    <option value="sales">Kinh doanh</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết *</label>
-                            <textarea id="ticketDescription" rows="6" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Mô tả chi tiết vấn đề hoặc yêu cầu của bạn..."></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tệp đính kèm</label>
-                            <input type="file" id="ticketAttachments" multiple class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <p class="text-sm text-gray-500 mt-1">Có thể đính kèm nhiều tệp (tối đa 10MB mỗi tệp)</p>
-                        </div>
-
-                        <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-                            <button type="button" id="cancelTicket" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                                Hủy
-                            </button>
-                            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                Tạo Ticket
-                            </button>
-                        </div>
-                    </form>
+                    <div id="approvalTicketInfo" class="mb-6">
+                        <!-- Ticket info will be populated here -->
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ghi chú (tùy chọn)</label>
+                        <textarea id="approvalNotes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nhập ghi chú nếu cần..."></textarea>
+                    </div>
+                    <div class="flex items-center justify-end space-x-4">
+                        <button id="cancelApproval" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Hủy
+                        </button>
+                        <button id="rejectTicket" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            Từ chối
+                        </button>
+                        <button id="approveTicket" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            Phê duyệt
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Approvals Section -->
-    <div id="approvals" class="page-content hidden">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Phê duyệt Tickets</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tiêu đề</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người tạo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Độ ưu tiên</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="approvalsTable" class="bg-white divide-y divide-gray-200">
-                        <!-- Approval tickets will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    <script>
+        // Global variables
+        let tickets = [];
+        let currentUser = { name: 'Admin User', role: 'admin' };
 
-
-</main>
-</div>
-
-<!-- Modal for Ticket Details -->
-<div id="ticketModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-<div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-800">Chi tiết Ticket</h3>
-                <button id="closeTicketModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-        <div id="ticketModalContent" class="p-6">
-            <!-- Ticket details will be populated here -->
-        </div>
-    </div>
-</div>
-</div>
-
-<!-- Modal for Approval -->
-<div id="approvalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-<div class="flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full">
-        <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-800">Phê duyệt Ticket</h3>
-        </div>
-        <div class="p-6">
-            <div id="approvalTicketInfo" class="mb-6">
-                <!-- Ticket info will be populated here -->
-            </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Ghi chú (tùy chọn)</label>
-                <textarea id="approvalNotes" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nhập ghi chú nếu cần..."></textarea>
-            </div>
-            <div class="flex items-center justify-end space-x-4">
-                <button id="cancelApproval" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                    Hủy
-                </button>
-                <button id="rejectTicket" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                    Từ chối
-                </button>
-                <button id="approveTicket" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    Phê duyệt
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<script>
-// Global variables
-let tickets = [];
-let currentUser = { name: 'Admin User', role: 'admin' };
-
-// Sample data
-const sampleTickets = [
-    {
-        id: 'TKT-001',
-        title: 'Máy tính không khởi động được',
-        description: 'Máy tính của tôi không khởi động được sau khi cập nhật Windows.',
-        category: 'hardware',
-        priority: 'high',
-        status: 'pending',
-        createdBy: 'Nguyễn Văn A',
-        createdAt: '2024-01-15T09:30:00'
-    },
-    {
-        id: 'TKT-002',
-        title: 'Cần cài đặt phần mềm mới',
-        description: 'Tôi cần cài đặt phần mềm Adobe Photoshop cho công việc thiết kế.',
-        category: 'software',
-        priority: 'medium',
-        status: 'approved',
-        createdBy: 'Trần Thị B',
-        createdAt: '2024-01-14T14:20:00'
-    },
-    {
-        id: 'TKT-003',
-        title: 'Vấn đề kết nối mạng',
-        description: 'Không thể kết nối internet từ máy tính của tôi.',
-        category: 'network',
-        priority: 'urgent',
-        status: 'completed',
-        createdBy: 'Lê Văn C',
-        createdAt: '2024-01-13T11:15:00'
-    },
-    {
-        id: 'TKT-004',
-        title: 'Cần quyền truy cập thư mục',
-        description: 'Tôi cần quyền truy cập vào thư mục dự án mới.',
-        category: 'access',
-        priority: 'low',
-        status: 'rejected',
-        createdBy: 'Phạm Thị D',
-        createdAt: '2024-01-12T16:45:00'
-    },
-    {
-        id: 'TKT-005',
-        title: 'Máy in không hoạt động',
-        description: 'Máy in HP không in được, hiển thị lỗi kết nối.',
-        category: 'hardware',
-        priority: 'medium',
-        status: 'in-progress',
-        createdBy: 'Hoàng Văn E',
-        createdAt: '2024-01-11T08:30:00'
-    },
-    {
-        id: 'TKT-006',
-        title: 'Cần cài đặt VPN',
-        description: 'Tôi cần cài đặt VPN để làm việc từ xa.',
-        category: 'software',
-        priority: 'high',
-        status: 'completed',
-        createdBy: 'Nguyễn Thị F',
-        createdAt: '2024-01-10T15:45:00'
-    },
-    {
-        id: 'TKT-007',
-        title: 'Lỗi đăng nhập hệ thống',
-        description: 'Không thể đăng nhập vào hệ thống quản lý.',
-        category: 'access',
-        priority: 'urgent',
-        status: 'approved',
-        createdBy: 'Trần Văn G',
-        createdAt: '2024-01-09T10:20:00'
-    },
-    {
-        id: 'TKT-008',
-        title: 'Màn hình bị mờ',
-        description: 'Màn hình máy tính bị mờ, cần thay thế.',
-        category: 'hardware',
-        priority: 'medium',
-        status: 'pending',
-        createdBy: 'Lê Thị H',
-        createdAt: '2024-01-08T14:15:00'
-    }
-];
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    tickets = [...sampleTickets];
-    initializeNavigation();
-    initializeFormHandlers();
-    initializeModals();
-    loadTickets();
-    loadApprovals();
-    loadDashboard();
-});
-
-// Navigation functions
-function initializeNavigation() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const pageContents = document.querySelectorAll('.page-content');
-    const pageTitle = document.getElementById('pageTitle');
-    
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            navItems.forEach(nav => nav.classList.remove('active', 'bg-blue-50', 'text-blue-600'));
-            this.classList.add('active', 'bg-blue-50', 'text-blue-600');
-            
-            pageContents.forEach(content => content.classList.add('hidden'));
-            
-            const targetId = this.getAttribute('href').substring(1);
-            const targetContent = document.getElementById(targetId);
-            if (targetContent) {
-                targetContent.classList.remove('hidden');
-                const title = this.querySelector('span').textContent;
-                pageTitle.textContent = title;
-                
-                switch(targetId) {
-                    case 'dashboard': loadDashboard(); break;
-                    case 'tickets': loadTickets(); break;
-                    case 'approvals': loadApprovals(); break;
-                }
+        // Sample data
+        const sampleTickets = [
+            {
+                id: 'TKT-001',
+                title: 'Máy tính không khởi động được',
+                description: 'Máy tính của tôi không khởi động được sau khi cập nhật Windows.',
+                category: 'hardware',
+                priority: 'high',
+                status: 'pending',
+                createdBy: 'Nguyễn Văn A',
+                createdAt: '2024-01-15T09:30:00'
+            },
+            {
+                id: 'TKT-002',
+                title: 'Cần cài đặt phần mềm mới',
+                description: 'Tôi cần cài đặt phần mềm Adobe Photoshop cho công việc thiết kế.',
+                category: 'software',
+                priority: 'medium',
+                status: 'approved',
+                createdBy: 'Trần Thị B',
+                createdAt: '2024-01-14T14:20:00'
+            },
+            {
+                id: 'TKT-003',
+                title: 'Vấn đề kết nối mạng',
+                description: 'Không thể kết nối internet từ máy tính của tôi.',
+                category: 'network',
+                priority: 'urgent',
+                status: 'completed',
+                createdBy: 'Lê Văn C',
+                createdAt: '2024-01-13T11:15:00'
+            },
+            {
+                id: 'TKT-004',
+                title: 'Cần quyền truy cập thư mục',
+                description: 'Tôi cần quyền truy cập vào thư mục dự án mới.',
+                category: 'access',
+                priority: 'low',
+                status: 'rejected',
+                createdBy: 'Phạm Thị D',
+                createdAt: '2024-01-12T16:45:00'
+            },
+            {
+                id: 'TKT-005',
+                title: 'Máy in không hoạt động',
+                description: 'Máy in HP không in được, hiển thị lỗi kết nối.',
+                category: 'hardware',
+                priority: 'medium',
+                status: 'in-progress',
+                createdBy: 'Hoàng Văn E',
+                createdAt: '2024-01-11T08:30:00'
+            },
+            {
+                id: 'TKT-006',
+                title: 'Cần cài đặt VPN',
+                description: 'Tôi cần cài đặt VPN để làm việc từ xa.',
+                category: 'software',
+                priority: 'high',
+                status: 'completed',
+                createdBy: 'Nguyễn Thị F',
+                createdAt: '2024-01-10T15:45:00'
+            },
+            {
+                id: 'TKT-007',
+                title: 'Lỗi đăng nhập hệ thống',
+                description: 'Không thể đăng nhập vào hệ thống quản lý.',
+                category: 'access',
+                priority: 'urgent',
+                status: 'approved',
+                createdBy: 'Trần Văn G',
+                createdAt: '2024-01-09T10:20:00'
+            },
+            {
+                id: 'TKT-008',
+                title: 'Màn hình bị mờ',
+                description: 'Màn hình máy tính bị mờ, cần thay thế.',
+                category: 'hardware',
+                priority: 'medium',
+                status: 'pending',
+                createdBy: 'Lê Thị H',
+                createdAt: '2024-01-08T14:15:00'
             }
-        });
-    });
-    
-    // Set default page to tickets
-    const defaultNavItem = document.querySelector('a[href="#tickets"]');
-    if (defaultNavItem) {
-        defaultNavItem.click();
-    }
-    
-    // Mobile sidebar
-    const openSidebar = document.getElementById('openSidebar');
-    const closeSidebar = document.getElementById('closeSidebar');
-    const sidebar = document.getElementById('sidebar');
-    
-    openSidebar.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
-    closeSidebar.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
-}
+        ];
 
-// Dashboard functions
-function loadDashboard() {
-    loadRecentActivities();
-}
-
-function loadRecentActivities() {
-    const recentActivities = document.getElementById('recentActivities');
-    
-    // Tạo danh sách hoạt động từ tickets
-    const activities = [];
-    
-    tickets.forEach(ticket => {
-        // Hoạt động tạo ticket
-        activities.push({
-            type: 'created',
-            ticket: ticket,
-            time: ticket.createdAt,
-            description: `Ticket mới được tạo: ${ticket.title}`
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            tickets = [...sampleTickets];
+            initializeNavigation();
+            initializeFormHandlers();
+            initializeModals();
+            loadTickets();
+            loadApprovals();
+            loadDashboard();
         });
-        
-        // Hoạt động phê duyệt/từ chối
-        if (ticket.status === 'approved') {
-            activities.push({
-                type: 'approved',
-                ticket: ticket,
-                time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
-                description: `Ticket ${ticket.id} đã được phê duyệt`
+
+        // Navigation functions
+        function initializeNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageContents = document.querySelectorAll('.page-content');
+            const pageTitle = document.getElementById('pageTitle');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    navItems.forEach(nav => nav.classList.remove('active', 'bg-blue-50', 'text-blue-600'));
+                    this.classList.add('active', 'bg-blue-50', 'text-blue-600');
+                    
+                    pageContents.forEach(content => content.classList.add('hidden'));
+                    
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetContent = document.getElementById(targetId);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        const title = this.querySelector('span').textContent;
+                        pageTitle.textContent = title;
+                        
+                        switch(targetId) {
+                            case 'dashboard': loadDashboard(); break;
+                            case 'tickets': loadTickets(); break;
+                            case 'approvals': loadApprovals(); break;
+                        }
+                    }
+                });
             });
-        } else if (ticket.status === 'rejected') {
-            activities.push({
-                type: 'rejected',
-                ticket: ticket,
-                time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
-                description: `Ticket ${ticket.id} đã bị từ chối`
+            
+            // Set default page to tickets
+            const defaultNavItem = document.querySelector('a[href="#tickets"]');
+            if (defaultNavItem) {
+                defaultNavItem.click();
+            }
+            
+            // Mobile sidebar
+            const openSidebar = document.getElementById('openSidebar');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebar = document.getElementById('sidebar');
+            
+            openSidebar.addEventListener('click', () => sidebar.classList.remove('-translate-x-full'));
+            closeSidebar.addEventListener('click', () => sidebar.classList.add('-translate-x-full'));
+        }
+
+        // Dashboard functions
+        function loadDashboard() {
+            loadRecentActivities();
+        }
+
+        function loadRecentActivities() {
+            const recentActivities = document.getElementById('recentActivities');
+            
+            // Tạo danh sách hoạt động từ tickets
+            const activities = [];
+            
+            tickets.forEach(ticket => {
+                // Hoạt động tạo ticket
+                activities.push({
+                    type: 'created',
+                    ticket: ticket,
+                    time: ticket.createdAt,
+                    description: `Ticket mới được tạo: ${ticket.title}`
+                });
+                
+                // Hoạt động phê duyệt/từ chối
+                if (ticket.status === 'approved') {
+                    activities.push({
+                        type: 'approved',
+                        ticket: ticket,
+                        time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
+                        description: `Ticket ${ticket.id} đã được phê duyệt`
+                    });
+                } else if (ticket.status === 'rejected') {
+                    activities.push({
+                        type: 'rejected',
+                        ticket: ticket,
+                        time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
+                        description: `Ticket ${ticket.id} đã bị từ chối`
+                    });
+                } else if (ticket.status === 'completed') {
+                    activities.push({
+                        type: 'completed',
+                        ticket: ticket,
+                        time: new Date(ticket.createdAt).getTime() + 7200000, // +2 giờ
+                        description: `Ticket ${ticket.id} đã được đóng`
+                    });
+                }
             });
-        } else if (ticket.status === 'completed') {
-            activities.push({
-                type: 'completed',
-                ticket: ticket,
-                time: new Date(ticket.createdAt).getTime() + 7200000, // +2 giờ
-                description: `Ticket ${ticket.id} đã được đóng`
+            
+            // Sắp xếp theo thời gian (mới nhất trước)
+            activities.sort((a, b) => b.time - a.time);
+            
+            // Lấy 15 hoạt động gần nhất
+            const recentActivitiesList = activities.slice(0, 15);
+            
+            recentActivities.innerHTML = recentActivitiesList.map(activity => `
+                <div class="flex items-center space-x-3 p-1 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div class="flex-shrink-0">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center ${getActivityIconClass(activity.type)}">
+                            <i class="fas ${getActivityIcon(activity.type)} text-white text-xs"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm text-gray-900 truncate">${activity.description}</p>
+                            <span class="text-xs text-gray-500 ml-2">${formatTimeAgo(activity.time)}</span>
+                        </div>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span class="text-xs text-gray-500">${activity.ticket.createdBy}</span>
+                            <span class="text-xs text-gray-400">•</span>
+                            <span class="inline-flex px-1.5 py-0.5 text-xs font-medium rounded ${getPriorityClass(activity.ticket.priority)}">
+                                ${getPriorityText(activity.ticket.priority)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getActivityIcon(type) {
+            switch(type) {
+                case 'created': return 'fa-plus-circle';
+                case 'approved': return 'fa-check-circle';
+                case 'rejected': return 'fa-times-circle';
+                case 'completed': return 'fa-flag-checkered';
+                default: return 'fa-info-circle';
+            }
+        }
+
+        function getActivityIconClass(type) {
+            switch(type) {
+                case 'created': return 'bg-blue-500';
+                case 'approved': return 'bg-green-500';
+                case 'rejected': return 'bg-red-500';
+                case 'completed': return 'bg-purple-500';
+                default: return 'bg-gray-500';
+            }
+        }
+
+        // Tickets management
+        function loadTickets() {
+            const ticketsTable = document.getElementById('ticketsTable');
+            
+            ticketsTable.innerHTML = tickets.map(ticket => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(ticket.status)}">
+                            ${getStatusText(ticket.status)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+                            ${getPriorityText(ticket.priority)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
+                        ${ticket.status === 'pending' ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Approvals management
+        function loadApprovals() {
+            const approvalsTable = document.getElementById('approvalsTable');
+            const pendingTickets = tickets.filter(t => t.status === 'pending');
+            
+            approvalsTable.innerHTML = pendingTickets.map(ticket => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+                            ${getPriorityText(ticket.priority)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
+                        <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900">Xem</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Form handlers
+        function initializeFormHandlers() {
+            const newTicketForm = document.getElementById('newTicketForm');
+            const cancelTicket = document.getElementById('cancelTicket');
+            
+            newTicketForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                createNewTicket();
+            });
+            
+            cancelTicket.addEventListener('click', function() {
+                newTicketForm.reset();
+                document.querySelector('a[href="#tickets"]').click();
             });
         }
-    });
-    
-    // Sắp xếp theo thời gian (mới nhất trước)
-    activities.sort((a, b) => b.time - a.time);
-    
-    // Lấy 15 hoạt động gần nhất
-    const recentActivitiesList = activities.slice(0, 15);
-    
-    recentActivities.innerHTML = recentActivitiesList.map(activity => `
-        <div class="flex items-center space-x-3 p-1 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-            <div class="flex-shrink-0">
-                <div class="w-6 h-6 rounded-full flex items-center justify-center ${getActivityIconClass(activity.type)}">
-                    <i class="fas ${getActivityIcon(activity.type)} text-white text-xs"></i>
-                </div>
-            </div>
-            <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between">
-                    <p class="text-sm text-gray-900 truncate">${activity.description}</p>
-                    <span class="text-xs text-gray-500 ml-2">${formatTimeAgo(activity.time)}</span>
-                </div>
-                <div class="flex items-center space-x-2 mt-1">
-                    <span class="text-xs text-gray-500">${activity.ticket.createdBy}</span>
-                    <span class="text-xs text-gray-400">•</span>
-                    <span class="inline-flex px-1.5 py-0.5 text-xs font-medium rounded ${getPriorityClass(activity.ticket.priority)}">
-                        ${getPriorityText(activity.ticket.priority)}
-                    </span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
 
-function getActivityIcon(type) {
-    switch(type) {
-        case 'created': return 'fa-plus-circle';
-        case 'approved': return 'fa-check-circle';
-        case 'rejected': return 'fa-times-circle';
-        case 'completed': return 'fa-flag-checkered';
-        default: return 'fa-info-circle';
-    }
-}
-
-function getActivityIconClass(type) {
-    switch(type) {
-        case 'created': return 'bg-blue-500';
-        case 'approved': return 'bg-green-500';
-        case 'rejected': return 'bg-red-500';
-        case 'completed': return 'bg-purple-500';
-        default: return 'bg-gray-500';
-    }
-}
-
-// Tickets management
-function loadTickets() {
-    const ticketsTable = document.getElementById('ticketsTable');
-    
-    ticketsTable.innerHTML = tickets.map(ticket => `
-        <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(ticket.status)}">
-                    ${getStatusText(ticket.status)}
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
-                    ${getPriorityText(ticket.priority)}
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
-                ${ticket.status === 'pending' ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
-            </td>
-        </tr>
-    `).join('');
-}
-
-// Approvals management
-function loadApprovals() {
-    const approvalsTable = document.getElementById('approvalsTable');
-    const pendingTickets = tickets.filter(t => t.status === 'pending');
-    
-    approvalsTable.innerHTML = pendingTickets.map(ticket => `
-        <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
-                    ${getPriorityText(ticket.priority)}
-                </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
-                <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900">Xem</button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// Form handlers
-function initializeFormHandlers() {
-    const newTicketForm = document.getElementById('newTicketForm');
-    const cancelTicket = document.getElementById('cancelTicket');
-    
-    newTicketForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        createNewTicket();
-    });
-    
-    cancelTicket.addEventListener('click', function() {
-        newTicketForm.reset();
-        document.querySelector('a[href="#tickets"]').click();
-    });
-}
-
-function createNewTicket() {
-    const newTicket = {
-        id: `TKT-${String(tickets.length + 1).padStart(3, '0')}`,
-        title: document.getElementById('ticketTitle').value,
-        description: document.getElementById('ticketDescription').value,
-        category: document.getElementById('ticketCategory').value,
-        priority: document.getElementById('ticketPriority').value,
-        status: 'pending',
-        createdBy: currentUser.name,
-        createdAt: new Date().toISOString()
-    };
-    
-    tickets.unshift(newTicket);
-    document.getElementById('newTicketForm').reset();
-    showNotification('Ticket đã được tạo thành công!', 'success');
-    document.querySelector('a[href="#tickets"]').click();
-}
-
-// Modal functions
-function initializeModals() {
-    const ticketModal = document.getElementById('ticketModal');
-    const closeTicketModal = document.getElementById('closeTicketModal');
-    const approvalModal = document.getElementById('approvalModal');
-    const cancelApproval = document.getElementById('cancelApproval');
-    
-    closeTicketModal.addEventListener('click', () => ticketModal.classList.add('hidden'));
-    cancelApproval.addEventListener('click', () => approvalModal.classList.add('hidden'));
-    
-    ticketModal.addEventListener('click', (e) => {
-        if (e.target === ticketModal) ticketModal.classList.add('hidden');
-    });
-    
-    approvalModal.addEventListener('click', (e) => {
-        if (e.target === approvalModal) approvalModal.classList.add('hidden');
-    });
-    
-    document.getElementById('approveTicket').addEventListener('click', approveCurrentTicket);
-    document.getElementById('rejectTicket').addEventListener('click', rejectCurrentTicket);
-}
-
-let currentApprovalTicket = null;
-
-function openApprovalModal(ticketId) {
-    const ticket = tickets.find(t => t.id === ticketId);
-    if (!ticket) return;
-    
-    currentApprovalTicket = ticket;
-    const approvalModal = document.getElementById('approvalModal');
-    const approvalTicketInfo = document.getElementById('approvalTicketInfo');
-    
-    approvalTicketInfo.innerHTML = `
-        <div class="bg-gray-50 p-4 rounded-lg">
-            <h4 class="font-semibold text-gray-800 mb-2">${ticket.title}</h4>
-            <p class="text-sm text-gray-600 mb-2">${ticket.description}</p>
-            <div class="grid grid-cols-2 gap-4 text-sm">
-                <div><span class="font-medium">Loại:</span> ${getCategoryText(ticket.category)}</div>
-                <div><span class="font-medium">Độ ưu tiên:</span> <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">${getPriorityText(ticket.priority)}</span></div>
-                <div><span class="font-medium">Người tạo:</span> ${ticket.createdBy}</div>
-                <div><span class="font-medium">Ngày tạo:</span> ${formatDate(ticket.createdAt)}</div>
-            </div>
-        </div>
-    `;
-    
-    approvalModal.classList.remove('hidden');
-}
-
-function approveCurrentTicket() {
-    if (!currentApprovalTicket) return;
-    
-    currentApprovalTicket.status = 'approved';
-    document.getElementById('approvalModal').classList.add('hidden');
-    showNotification('Ticket đã được phê duyệt!', 'success');
-    loadTickets();
-    loadApprovals();
-    loadDashboard();
-}
-
-function rejectCurrentTicket() {
-    if (!currentApprovalTicket) return;
-    
-    currentApprovalTicket.status = 'rejected';
-    document.getElementById('approvalModal').classList.add('hidden');
-    showNotification('Ticket đã bị từ chối!', 'error');
-    loadTickets();
-    loadApprovals();
-    loadDashboard();
-}
-
-function viewTicket(ticketId) {
-    const ticket = tickets.find(t => t.id === ticketId);
-    if (!ticket) return;
-    
-    const ticketModal = document.getElementById('ticketModal');
-    const ticketModalContent = document.getElementById('ticketModalContent');
-    
-    ticketModalContent.innerHTML = `
-        <div class="space-y-6">
-            <div>
-                <h4 class="text-xl font-semibold text-gray-800 mb-2">${ticket.title}</h4>
-                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                    <span>ID: ${ticket.id}</span>
-                    <span>•</span>
-                    <span>${formatDate(ticket.createdAt)}</span>
-                    <span>•</span>
-                    <span>${ticket.createdBy}</span>
-                </div>
-            </div>
+        function createNewTicket() {
+            const newTicket = {
+                id: `TKT-${String(tickets.length + 1).padStart(3, '0')}`,
+                title: document.getElementById('ticketTitle').value,
+                description: document.getElementById('ticketDescription').value,
+                category: document.getElementById('ticketCategory').value,
+                priority: document.getElementById('ticketPriority').value,
+                status: 'pending',
+                createdBy: currentUser.name,
+                createdAt: new Date().toISOString()
+            };
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h5 class="font-medium text-gray-800 mb-2">Trạng thái</h5>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(ticket.status)}">
-                        ${getStatusText(ticket.status)}
-                    </span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h5 class="font-medium text-gray-800 mb-2">Độ ưu tiên</h5>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
-                        ${getPriorityText(ticket.priority)}
-                    </span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                    <h5 class="font-medium text-gray-800 mb-2">Loại</h5>
-                    <span class="text-sm text-gray-600">${getCategoryText(ticket.category)}</span>
-                </div>
-            </div>
+            tickets.unshift(newTicket);
+            document.getElementById('newTicketForm').reset();
+            showNotification('Ticket đã được tạo thành công!', 'success');
+            document.querySelector('a[href="#tickets"]').click();
+        }
+
+        // Modal functions
+        function initializeModals() {
+            const ticketModal = document.getElementById('ticketModal');
+            const closeTicketModal = document.getElementById('closeTicketModal');
+            const approvalModal = document.getElementById('approvalModal');
+            const cancelApproval = document.getElementById('cancelApproval');
             
-            <div>
-                <h5 class="font-medium text-gray-800 mb-2">Mô tả</h5>
-                <p class="text-gray-600">${ticket.description}</p>
-            </div>
-        </div>
-    `;
-    
-    ticketModal.classList.remove('hidden');
-}
+            closeTicketModal.addEventListener('click', () => ticketModal.classList.add('hidden'));
+            cancelApproval.addEventListener('click', () => approvalModal.classList.add('hidden'));
+            
+            ticketModal.addEventListener('click', (e) => {
+                if (e.target === ticketModal) ticketModal.classList.add('hidden');
+            });
+            
+            approvalModal.addEventListener('click', (e) => {
+                if (e.target === approvalModal) approvalModal.classList.add('hidden');
+            });
+            
+            document.getElementById('approveTicket').addEventListener('click', approveCurrentTicket);
+            document.getElementById('rejectTicket').addEventListener('click', rejectCurrentTicket);
+        }
 
-// Notifications
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${
-        type === 'success' ? 'bg-green-500 text-white' :
-        type === 'error' ? 'bg-red-500 text-white' :
-        'bg-blue-500 text-white'
-    }`;
-    notification.innerHTML = `
-        <div class="flex items-center space-x-2">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-            <span>${message}</span>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => notification.classList.remove('translate-x-full'), 100);
-    setTimeout(() => {
-        notification.classList.add('translate-x-full');
-        setTimeout(() => document.body.removeChild(notification), 300);
-    }, 3000);
-}
+        let currentApprovalTicket = null;
 
-// Utility functions
-function getStatusClass(status) {
-    switch(status) {
-        case 'pending': return 'status-pending text-white';
-        case 'approved': return 'status-approved text-white';
-        case 'rejected': return 'status-rejected text-white';
-        case 'in-progress': return 'status-in-progress text-white';
-        case 'completed': return 'status-completed text-white';
-        default: return 'bg-gray-100 text-gray-800';
-    }
-}
+        function openApprovalModal(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            currentApprovalTicket = ticket;
+            const approvalModal = document.getElementById('approvalModal');
+            const approvalTicketInfo = document.getElementById('approvalTicketInfo');
+            
+            approvalTicketInfo.innerHTML = `
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-gray-800 mb-2">${ticket.title}</h4>
+                    <p class="text-sm text-gray-600 mb-2">${ticket.description}</p>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div><span class="font-medium">Loại:</span> ${getCategoryText(ticket.category)}</div>
+                        <div><span class="font-medium">Độ ưu tiên:</span> <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">${getPriorityText(ticket.priority)}</span></div>
+                        <div><span class="font-medium">Người tạo:</span> ${ticket.createdBy}</div>
+                        <div><span class="font-medium">Ngày tạo:</span> ${formatDate(ticket.createdAt)}</div>
+                    </div>
+                </div>
+            `;
+            
+            approvalModal.classList.remove('hidden');
+        }
 
-function getStatusText(status) {
-    switch(status) {
-        case 'pending': return 'Chờ phê duyệt';
-        case 'approved': return 'Đã phê duyệt';
-        case 'rejected': return 'Từ chối';
-        case 'in-progress': return 'Đang xử lý';
-        case 'completed': return 'Hoàn thành';
-        default: return 'Không xác định';
-    }
-}
+        function approveCurrentTicket() {
+            if (!currentApprovalTicket) return;
+            
+            currentApprovalTicket.status = 'approved';
+            document.getElementById('approvalModal').classList.add('hidden');
+            showNotification('Ticket đã được phê duyệt!', 'success');
+            loadTickets();
+            loadApprovals();
+            loadDashboard();
+        }
 
-function getPriorityClass(priority) {
-    switch(priority) {
-        case 'low': return 'bg-gray-100 text-gray-800';
-        case 'medium': return 'bg-yellow-100 text-yellow-800';
-        case 'high': return 'bg-orange-100 text-orange-800';
-        case 'urgent': return 'bg-red-100 text-red-800';
-        default: return 'bg-gray-100 text-gray-800';
-    }
-}
+        function rejectCurrentTicket() {
+            if (!currentApprovalTicket) return;
+            
+            currentApprovalTicket.status = 'rejected';
+            document.getElementById('approvalModal').classList.add('hidden');
+            showNotification('Ticket đã bị từ chối!', 'error');
+            loadTickets();
+            loadApprovals();
+            loadDashboard();
+        }
 
-function getPriorityText(priority) {
-    switch(priority) {
-        case 'low': return 'Thấp';
-        case 'medium': return 'Trung bình';
-        case 'high': return 'Cao';
-        case 'urgent': return 'Khẩn cấp';
-        default: return 'Không xác định';
-    }
-}
+        function viewTicket(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            const ticketModal = document.getElementById('ticketModal');
+            const ticketModalContent = document.getElementById('ticketModalContent');
+            
+            ticketModalContent.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">${ticket.title}</h4>
+                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <span>ID: ${ticket.id}</span>
+                            <span>•</span>
+                            <span>${formatDate(ticket.createdAt)}</span>
+                            <span>•</span>
+                            <span>${ticket.createdBy}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-800 mb-2">Trạng thái</h5>
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(ticket.status)}">
+                                ${getStatusText(ticket.status)}
+                            </span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-800 mb-2">Độ ưu tiên</h5>
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+                                ${getPriorityText(ticket.priority)}
+                            </span>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-800 mb-2">Loại</h5>
+                            <span class="text-sm text-gray-600">${getCategoryText(ticket.category)}</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-medium text-gray-800 mb-2">Mô tả</h5>
+                        <p class="text-gray-600">${ticket.description}</p>
+                    </div>
+                </div>
+            `;
+            
+            ticketModal.classList.remove('hidden');
+        }
 
-function getCategoryText(category) {
-    switch(category) {
-        case 'hardware': return 'Phần cứng';
-        case 'software': return 'Phần mềm';
-        case 'network': return 'Mạng';
-        case 'access': return 'Quyền truy cập';
-        case 'other': return 'Khác';
-        default: return 'Không xác định';
-    }
-}
+        // Notifications
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
+        // Utility functions
+        function getStatusClass(status) {
+            switch(status) {
+                case 'pending': return 'status-pending text-white';
+                case 'approved': return 'status-approved text-white';
+                case 'rejected': return 'status-rejected text-white';
+                case 'in-progress': return 'status-in-progress text-white';
+                case 'completed': return 'status-completed text-white';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
 
-function formatTimeAgo(dateString) {
-    const now = new Date();
-    const date = new Date(dateString);
-    const diffInSeconds = Math.floor((now - date) / 1000);
-    
-    if (diffInSeconds < 60) {
-        return 'Vừa xong';
-    } else if (diffInSeconds < 3600) {
-        const minutes = Math.floor(diffInSeconds / 60);
-        return `${minutes} phút trước`;
-    } else if (diffInSeconds < 86400) {
-        const hours = Math.floor(diffInSeconds / 3600);
-        return `${hours} giờ trước`;
-    } else if (diffInSeconds < 2592000) {
-        const days = Math.floor(diffInSeconds / 86400);
-        return `${days} ngày trước`;
-    } else {
-        return date.toLocaleDateString('vi-VN', {
-            month: '2-digit',
-            day: '2-digit'
-        });
-    }
-}
-</script>
+        function getStatusText(status) {
+            switch(status) {
+                case 'pending': return 'Chờ phê duyệt';
+                case 'approved': return 'Đã phê duyệt';
+                case 'rejected': return 'Từ chối';
+                case 'in-progress': return 'Đang xử lý';
+                case 'completed': return 'Hoàn thành';
+                default: return 'Không xác định';
+            }
+        }
+
+        function getPriorityClass(priority) {
+            switch(priority) {
+                case 'low': return 'bg-gray-100 text-gray-800';
+                case 'medium': return 'bg-yellow-100 text-yellow-800';
+                case 'high': return 'bg-orange-100 text-orange-800';
+                case 'urgent': return 'bg-red-100 text-red-800';
+                default: return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        function getPriorityText(priority) {
+            switch(priority) {
+                case 'low': return 'Thấp';
+                case 'medium': return 'Trung bình';
+                case 'high': return 'Cao';
+                case 'urgent': return 'Khẩn cấp';
+                default: return 'Không xác định';
+            }
+        }
+
+        function getCategoryText(category) {
+            switch(category) {
+                case 'hardware': return 'Phần cứng';
+                case 'software': return 'Phần mềm';
+                case 'network': return 'Mạng';
+                case 'access': return 'Quyền truy cập';
+                case 'other': return 'Khác';
+                default: return 'Không xác định';
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatTimeAgo(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) {
+                return 'Vừa xong';
+            } else if (diffInSeconds < 3600) {
+                const minutes = Math.floor(diffInSeconds / 60);
+                return `${minutes} phút trước`;
+            } else if (diffInSeconds < 86400) {
+                const hours = Math.floor(diffInSeconds / 3600);
+                return `${hours} giờ trước`;
+            } else if (diffInSeconds < 2592000) {
+                const days = Math.floor(diffInSeconds / 86400);
+                return `${days} ngày trước`;
+            } else {
+                return date.toLocaleDateString('vi-VN', {
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            }
+        }
+    </script>
+</body>
+</html>
