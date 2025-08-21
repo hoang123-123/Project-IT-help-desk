@@ -1160,7 +1160,7 @@
         async function getToken() {
             const url = "https://prod-51.southeastasia.logic.azure.com:443/workflows/1db8c4d15497441287f7c888e8888ed4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8smnu3fDoDarEJ1vXEJV5YTDTjhQMKNHrM_AGw3uqXs";
             try {
-                const response = await fetch("URL_FLOW_CỦA_BẠN", {
+                const response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -1182,18 +1182,18 @@
                     // Nếu chỉ là chuỗi token, gán trực tiếp
                     token = raw;
                     console.log("Token:", token);
-                    document.getElementById("result")?.textContent = "Token: " + token;
+                    //document.getElementById("result")?.textContent = "Token: " + token;
                     return;
                 }
 
                 // Nếu parse JSON thành công
                 token = data.body || data.token || raw;
                 console.log("Token:", token);
-                document.getElementById("result")?.textContent = "Token: " + token;
+                //document.getElementById("result")?.textContent = "Token: " + token;
 
             } catch (err) {
                 console.error("Error:", err);
-                document.getElementById("result")?.textContent = "Error: " + err.message;
+                //document.getElementById("result")?.textContent = "Error: " + err.message;
             }
         }
 
