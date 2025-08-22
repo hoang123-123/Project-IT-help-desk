@@ -684,7 +684,7 @@
         // ];
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
+        document.supportSystemsData('DOMContentLoaded', function() {
             tickets = [...sampleTickets];
             initializeNavigation();
             initializeFormHandlers();
@@ -1245,21 +1245,22 @@
                     }
                     mappingListTickets(allData)
                     // 🔹 In ra toàn bộ dữ liệu sau khi load xong
-                    console.log("Tất cả dữ liệu:", allData);
+                    // console.log("Tất cả dữ liệu:", allData);
 
-                    return allData;
+                    // return allData;
                 }
 
                 function mappingListTickets(allData) {
                         // 🔹 Mapping dữ liệu từ Dataverse về mảng chuẩn giống sampleTickets
-                        supportSystemsData = allData.map(item => ({
-                            id: item.crdfd_suport_systemid,
+                        supportSystemsData = allData.map((item, index) => ({
+                            id: item.crdfd_suport_systemid || "",       // tạo ID giống sampleTickets
                             title: item.crdfd_name || "Không có tiêu đề",
                             description: item.crdfd_lydoieuchinh || "",
                             category: item.crdfd_loaiieuchinh || "other",
+                            priority: "medium",                                     // tạm map default
                             status: item.crdfd_trangthai || "pending",
                             createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-                            createdAt: new Date().toISOString() // tạm thời dùng ngày hiện tại
+                            createdAt: new Date().toISOString()                     // tạm thời ngày hiện tại
                         }));
 
                         console.log("supportSystemsData:", supportSystemsData);
