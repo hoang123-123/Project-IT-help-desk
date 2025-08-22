@@ -930,7 +930,7 @@
         "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
         "&$filter=statecode eq 0";
 
-      const User_QUERY =
+      const USER_QUERY =
         "/crdfd_employees" +
         "?$select=cr1bb_emailcal,crdfd_name,crdfd_phongbantext" +
         "&$filter=statecode eq 0";
@@ -941,19 +941,19 @@
           const token = await getToken(); // chờ token
           //console.log("Token lấy được:", token);
 
-          const data = await getAllXseptions(
-            token,
-            XSEPTIONS_QUERY,
-            mappingListTickets
-          ); // gọi API
+        //   const data = await getAllXseptions(
+        //     token,
+        //     XSEPTIONS_QUERY,
+        //     mappingListTickets
+        //   ); // gọi API
           const dataUser = await getAllXseptions(
             token,
-            User_QUERY,
+            USER_QUERY,
             mappingUser
           );
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
-          console.log("Tickets sau khi lấy data:", tickets);
+          console.log("user data:", approversData);
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
