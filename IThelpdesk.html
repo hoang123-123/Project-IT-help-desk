@@ -847,7 +847,7 @@
         "/crdfd_saleorderdetails" +
         "?$select=crdfd_saleorderdetailid, crdfd_name" +
         "&$filter=statecode eq 0 and crdfd_trangthaionhang1 ne 191920000" +
-        "&$top=5000";
+        "&$top=500";
       // ========== Function ================
 
       async function init() {
@@ -865,11 +865,6 @@
             USER_QUERY,
             mappingUser
           );
-          const dataSOD = await getAllXseptions(
-            token,
-            SOD_QUERY,
-            mappingSOD
-          );
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
           initializeNavigation();
@@ -880,6 +875,13 @@
           loadDashboard();
           initApproverChoices();
           loadDepartments();
+
+
+           const dataSOD = await getAllXseptions(
+            token,
+            SOD_QUERY,
+            mappingSOD
+          );
         } catch (err) {
           console.error("Error init:", err);
         }
@@ -1811,6 +1813,7 @@
         const uniqueDepartments = [
           ...new Set(approversData.map((u) => u.phongban)),
         ];
+        deptSelect.innerHTML = '<option value="">Chọn phòng ban</option>';
         uniqueDepartments.forEach((dept) => {
           const option = document.createElement("option");
           option.value = dept;
