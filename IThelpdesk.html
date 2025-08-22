@@ -874,6 +874,7 @@
           loadDashboard();
           initApproverChoices();
           loadDepartments();
+          initOrderChoices();
 
           const dataSOD = await getAllXseptions(token, SOD_QUERY, mappingSOD);
         } catch (err) {
@@ -1679,11 +1680,11 @@
           case "adjust-price":
             container.innerHTML = `
                    <div>
-  <label class="block text-sm font-medium text-gray-700 mb-2">
-    Chọn mã đơn hàng cần điều chỉnh giá
-  </label>
-  <select id="ticketOrder" multiple></select>
-</div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Chọn mã đơn hàng cần điều chỉnh giá
+                        </label>
+                        <select id="ticketOrder" multiple></select>
+                    </div>
                 `;
             break;
 
