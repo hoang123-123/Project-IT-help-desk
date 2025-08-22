@@ -666,6 +666,8 @@
         // Global variables
         let tickets = [];
         let supportSystemsData = [];
+        // URL gốc Dataverse
+        const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
         let currentUser = { name: 'Admin User', role: 'admin' };
          async function init() {
                 try {
@@ -940,16 +942,16 @@
         console.log("Ticket đã tạo trên Dataverse:", createdRecord);
 
         // Thêm vào mảng local tickets để render luôn
-        tickets.unshift({
-            id: createdRecord.crdfd_suport_systemid,
-            title: newTicket.crdfd_name,
-            description: newTicket.crdfd_lydoieuchinh,
-            category: newTicket.crdfd_loaiieuchinh,
-            priority: newTicket.crdfd_priority,
-            status: newTicket.crdfd_trangthai,
-            createdBy: newTicket.crdfd_nguoiyeucau,
-            createdAt: newTicket.createdon
-        });
+        // tickets.unshift({
+        //     id: createdRecord.crdfd_suport_systemid,
+        //     title: newTicket.crdfd_name,
+        //     description: newTicket.crdfd_lydoieuchinh,
+        //     category: newTicket.crdfd_loaiieuchinh,
+        //     priority: newTicket.crdfd_priority,
+        //     status: newTicket.crdfd_trangthai,
+        //     createdBy: newTicket.crdfd_nguoiyeucau,
+        //     createdAt: newTicket.createdon
+        // });
 
         document.getElementById('newTicketForm').reset();
         showNotification('Ticket đã được tạo thành công trên Dataverse!', 'success');
@@ -1243,9 +1245,6 @@
                     throw err;
                 }
             }
-
-        // URL gốc Dataverse
-            const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
 
             // Query cho bảng 
            const XSEPTIONS_QUERY = "/crdfd_suport_systems" +
