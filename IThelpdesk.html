@@ -1816,18 +1816,19 @@
       // function setup value chọn đơn hàng
       function initOrderChoices() {
         const orderSelect = document.getElementById("ticketOrder");
-           return new Choices(selector, {
-        searchEnabled: true,       // bật search
-        searchChoices: true,       // cho phép tìm trong danh sách
-        searchFields: ['label'], // tìm trong cả label và value
-        fuseOptions: {
+        const choices = new Choices(orderSelect, {
+          removeItemButton: true, // cho phép xóa khi chọn
+          searchEnabled: true,
+          searchFields: ['label'],
+          fuseOptions: {
             includeScore: true,
             threshold: 0.3, // càng nhỏ càng khớp chính xác, tăng lên thì cho phép match mờ hơn
-        },
-        placeholder: true,
-        placeholderValue: 'Chọn người duyệt...',
-        shouldSort: false
-    });
+        }, // bật search
+          searchResultLimit: 10, // tối đa 10 kết quả khi search
+          placeholderValue: "Chọn đơn hàng",
+          noResultsText: "Không tìm thấy",
+          shouldSort: false, // giữ nguyên thứ tự
+        });
 
         // map dữ liệu từ ordersDetailData
         const options = ordersDetailData.map((o) => ({
