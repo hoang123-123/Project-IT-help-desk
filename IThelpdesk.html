@@ -560,87 +560,6 @@
         </div>
 
         <!-- New Ticket Section -->
-        <!-- <div id="new-ticket" class="page-content hidden">
-                <div class="max-w-4xl mx-auto">
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-                        <div class="p-6 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-800">Tạo Ticket mới</h3>
-                        </div>
-                        <div class="p-6">
-                            <form id="newTicketForm" class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Phòng ban *</label>
-                                        <select id="ticketDepartment" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                            <option value="">Chọn phòng ban</option>
-                                            <option value="it">IT</option>
-                                            <option value="hr">Nhân sự</option>
-                                            <option value="finance">Tài chính</option>
-                                            <option value="marketing">Marketing</option>
-                                            <option value="sales">Kinh doanh</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Loại yêu cầu *</label>
-                                        <select id="ticketCategory" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                            <option value="">Chọn loại yêu cầu</option>
-                                            <option value="adjust-price">Điều chỉnh giá đơn hàng chi tiết</option>
-                                            <option value="other">Khác</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Người duyệt *</label>
-                                        <input type="text" id="ticketApprover" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="Nhập tên hoặc chọn người duyệt">
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin điều chỉnh *</label>
-                                        <input type="text" id="ticketAdjustmentInfo" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="Ví dụ: điều chỉnh giá từ 1.000.000 → 950.000">
-                                    </div>
-                                </div>
-                            
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết *</label>
-                                    <textarea id="ticketDescription" rows="6" required
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="Mô tả chi tiết vấn đề hoặc yêu cầu của bạn..."></textarea>
-                                </div>
-                            
-                                
-                                <div id="discountOptionContainer" class="hidden">
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Chiết khấu</label>
-                                    <select id="discountOption"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                        <option value="">Chọn hành động</option>
-                                        <option value="cancel">Hủy chiết khấu</option>
-                                        <option value="keep">Giữ nguyên chiết khấu</option>
-                                    </select>
-                                </div>
-                            
-                                <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
-                                    <button type="button" id="cancelTicket"
-                                        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                                        Hủy
-                                    </button>
-                                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                        Tạo Ticket
-                                    </button>
-                                </div>
-                                </form>
-
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-
         <div id="new-ticket" class="page-content hidden">
           <div class="max-w-4xl mx-auto">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
@@ -661,12 +580,12 @@
                       required
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="">Chọn phòng ban</option>
+                      <!-- <option value="">Chọn phòng ban</option>
                       <option value="it">IT</option>
                       <option value="hr">Nhân sự</option>
                       <option value="finance">Tài chính</option>
                       <option value="marketing">Marketing</option>
-                      <option value="sales">Kinh doanh</option>
+                      <option value="sales">Kinh doanh</option> -->
                     </select>
                   </div>
 
@@ -960,6 +879,7 @@
           loadApprovals();
           loadDashboard();
           initApproverChoices();
+          loadDepartments();
         } catch (err) {
           console.error("Error init:", err);
         }
@@ -1858,32 +1778,9 @@
         }
       }
 
-      // document.addEventListener("DOMContentLoaded", () => {
-      //   const approverSelect = document.getElementById("ticketApprover");
-
-      //   // Khởi tạo Choices.js
-      //   const choices = new Choices(approverSelect, {
-      //     removeItemButton: true,
-      //     searchEnabled: true,
-      //     searchResultLimit: 5, // hiển thị tối đa 5 kết quả
-      //     placeholderValue: "Chọn người duyệt",
-      //     noResultsText: "Không tìm thấy",
-      //     shouldSort: false,
-      //   });
-
-      //   // Load dữ liệu tạm
-      //   approversData.forEach((u) => {
-      //     choices.setChoices(
-      //       [{ value: u.idU, label: u.useName }],
-      //       "value",
-      //       "label",
-      //       false
-      //     );
-      //   });
-      // });
+      // function setup value chọn user duyệt
       function initApproverChoices() {
         const approverSelect = document.getElementById("ticketApprover");
-
         const choices = new Choices(approverSelect, {
           removeItemButton: true,
           searchEnabled: true,
@@ -1899,6 +1796,27 @@
         }));
 
         choices.setChoices(options, "value", "label", false);
+      }
+
+      // function setup value chọn phòng ban
+      function loadDepartments() {
+        const deptSelect = document.getElementById("ticketDepartment");
+
+        // Lấy danh sách phòng ban duy nhất
+        const uniqueDepartments = [
+          ...new Set(approversData.map((u) => u.phongban)),
+        ];
+
+        // Xóa các option cứng hiện tại
+        deptSelect.innerHTML = '<option value="">Chọn phòng ban</option>';
+
+        // Render lại option từ dữ liệu unique
+        uniqueDepartments.forEach((dept) => {
+          const option = document.createElement("option");
+          option.value = dept;
+          option.textContent = dept;
+          deptSelect.appendChild(option);
+        });
       }
     </script>
   </body>
