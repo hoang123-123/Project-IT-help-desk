@@ -579,13 +579,8 @@
                       id="ticketDepartment"
                       required
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Chọn phòng ban"
                     >
-                      <!-- <option value="">Chọn phòng ban</option>
-                      <option value="it">IT</option>
-                      <option value="hr">Nhân sự</option>
-                      <option value="finance">Tài chính</option>
-                      <option value="marketing">Marketing</option>
-                      <option value="sales">Kinh doanh</option> -->
                     </select>
                   </div>
 
@@ -832,13 +827,7 @@
       let tickets = [];
       let supportSystemsData = [];
 
-      const ordersData = [
-        { id: "ORD-001", name: "Đơn hàng 001" },
-        { id: "ORD-002", name: "Đơn hàng 002" },
-        { id: "ORD-003", name: "Đơn hàng 003" },
-        { id: "ORD-004", name: "Đơn hàng 004" },
-        { id: "ORD-005", name: "Đơn hàng 005" },
-      ];
+      const ordersDetailData = [];
       let approversData = [];
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
@@ -853,6 +842,12 @@
         "/crdfd_employees" +
         "?$select=cr1bb_emailcal,crdfd_name,crdfd_phongbantext" +
         "&$filter=statecode eq 0";
+
+      const SOD_QUERY = 
+        "/crdfd_saleorderdetails" +
+        "?$select=crdfd_saleorderdetailid, crdfd_name" +
+        "&$filter=statecode eq 0 and crdfd_trangthaionhang1 ne 191920000" +
+        "&$top=5000";
       // ========== Function ================
 
       async function init() {
@@ -864,11 +859,16 @@
             token,
             XSEPTIONS_QUERY,
             mappingListTickets
-          ); // gọi API
+          ); 
           const dataUser = await getAllXseptions(
             token,
             USER_QUERY,
             mappingUser
+          );
+          const dataSOD = await getAllXseptions(
+            token,
+            SOD_QUERY,
+            mappingSOD
           );
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
@@ -1655,11 +1655,18 @@
         }));
       }
 
+      function mappingSOD(allData) {
+        approversData = allData.map((item, index) => ({
+          idSOD: item.crdfd_saleorderdetailid || "Không xác định",
+          sodName: item.crdfd_name || "Không xác định"
+        }));
+      }
+
       function renderOrderSelect(id) {
         return `
             <select id="${id}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
                 <option value="">Chọn mã đơn hàng</option>
-                ${ordersData
+                ${ordersDetailData
                   .map(
                     (order) =>
                       `<option value="${order.id}">${order.name}</option>`
@@ -1801,16 +1808,9 @@
       // function setup value chọn phòng ban
       function loadDepartments() {
         const deptSelect = document.getElementById("ticketDepartment");
-
-        // Lấy danh sách phòng ban duy nhất
         const uniqueDepartments = [
           ...new Set(approversData.map((u) => u.phongban)),
         ];
-
-        // Xóa các option cứng hiện tại
-        deptSelect.innerHTML = '<option value="">Chọn phòng ban</option>';
-
-        // Render lại option từ dữ liệu unique
         uniqueDepartments.forEach((dept) => {
           const option = document.createElement("option");
           option.value = dept;
