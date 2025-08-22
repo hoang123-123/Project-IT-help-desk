@@ -941,11 +941,19 @@
           const token = await getToken(); // chờ token
           //console.log("Token lấy được:", token);
 
-          const data = await getAllXseptions(token); // gọi API
+          const data = await getAllXseptions(
+            token,
+            XSEPTIONS_QUERY,
+            mappingListTickets
+          ); // gọi API
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
           console.log("Tickets sau khi lấy data:", tickets);
-
+          const dataUser = await getAllXseptions(
+            token,
+            User_QUERY,
+            mappingUser
+          );
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
@@ -1722,11 +1730,11 @@
       }
 
       function mappingUser(allData) {
-        approversData =  allData.map((item, index) => ({
-            id : item.cr1bb_emailcal || "Không xác định",
-            name : item.crdfd_name || "Không xác định",
-            phongban : item.crdfd_phongbantext || "Không xác định"
-        }))
+        approversData = allData.map((item, index) => ({
+          id: item.cr1bb_emailcal || "Không xác định",
+          name: item.crdfd_name || "Không xác định",
+          phongban: item.crdfd_phongbantext || "Không xác định",
+        }));
       }
 
       function renderOrderSelect(id) {
