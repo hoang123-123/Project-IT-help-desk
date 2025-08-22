@@ -941,11 +941,11 @@
           const token = await getToken(); // chờ token
           //console.log("Token lấy được:", token);
 
-            const data = await getAllXseptions(
-              token,
-              XSEPTIONS_QUERY,
-              mappingListTickets
-            ); // gọi API
+          const data = await getAllXseptions(
+            token,
+            XSEPTIONS_QUERY,
+            mappingListTickets
+          ); // gọi API
           const dataUser = await getAllXseptions(
             token,
             USER_QUERY,
@@ -953,13 +953,13 @@
           );
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
-          console.log("user data:", approversData);
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
           loadTickets();
           loadApprovals();
           loadDashboard();
+          initApproverChoices();
         } catch (err) {
           console.error("Error init:", err);
         }
@@ -1858,50 +1858,48 @@
         }
       }
 
-        document.addEventListener("DOMContentLoaded", () => {
-          const approverSelect = document.getElementById("ticketApprover");
+      // document.addEventListener("DOMContentLoaded", () => {
+      //   const approverSelect = document.getElementById("ticketApprover");
 
-          // Khởi tạo Choices.js
-          const choices = new Choices(approverSelect, {
-            removeItemButton: true,
-            searchEnabled: true,
-            searchResultLimit: 5, // hiển thị tối đa 5 kết quả
-            placeholderValue: "Chọn người duyệt",
-            noResultsText: "Không tìm thấy",
-            shouldSort: false,
-          });
+      //   // Khởi tạo Choices.js
+      //   const choices = new Choices(approverSelect, {
+      //     removeItemButton: true,
+      //     searchEnabled: true,
+      //     searchResultLimit: 5, // hiển thị tối đa 5 kết quả
+      //     placeholderValue: "Chọn người duyệt",
+      //     noResultsText: "Không tìm thấy",
+      //     shouldSort: false,
+      //   });
 
-          // Load dữ liệu tạm
-          approversData.forEach((u) => {
-            choices.setChoices(
-              [{ value: u.idU, label: u.useName }],
-              "value",
-              "label",
-              false
-            );
-          });
+      //   // Load dữ liệu tạm
+      //   approversData.forEach((u) => {
+      //     choices.setChoices(
+      //       [{ value: u.idU, label: u.useName }],
+      //       "value",
+      //       "label",
+      //       false
+      //     );
+      //   });
+      // });
+      function initApproverChoices() {
+        const approverSelect = document.getElementById("ticketApprover");
+
+        const choices = new Choices(approverSelect, {
+          removeItemButton: true,
+          searchEnabled: true,
+          searchResultLimit: 5,
+          placeholderValue: "Chọn người duyệt",
+          noResultsText: "Không tìm thấy",
+          shouldSort: false,
         });
-    //   document.addEventListener("DOMContentLoaded", () => {
-    //     const approverSelect = document.getElementById("ticketApprover");
 
-    //     // Khởi tạo Choices.js
-    //     const choices = new Choices(approverSelect, {
-    //       removeItemButton: true,
-    //       searchEnabled: true,
-    //       searchResultLimit: 5, // hiển thị tối đa 5 kết quả
-    //       placeholderValue: "Chọn người duyệt",
-    //       noResultsText: "Không tìm thấy",
-    //       shouldSort: false,
-    //     });
+        const options = approversData.map((u) => ({
+          value: u.id,
+          label: `${u.useName} (${u.phongban})`,
+        }));
 
-    //     // Đổ dữ liệu vào select
-    //     const options = approversData.map((u) => ({
-    //       value: u.id,
-    //       label: u.name,
-    //     }));
-
-    //     choices.setChoices(options, "value", "label", false);
-    //   });
+        choices.setChoices(options, "value", "label", false);
+      }
     </script>
   </body>
 </html>
