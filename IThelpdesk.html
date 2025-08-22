@@ -874,8 +874,6 @@
           loadDashboard();
           initApproverChoices();
           loadDepartments();
-          initOrderChoices();
-
           const dataSOD = await getAllXseptions(token, SOD_QUERY, mappingSOD);
         } catch (err) {
           console.error("Error init:", err);
@@ -1658,19 +1656,19 @@
         return ordersDetailData;
       }
 
-      function renderOrderSelect(id) {
-        return `
-            <select id="${id}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                <option value="">Chọn mã đơn hàng</option>
-                ${ordersDetailData
-                  .map(
-                    (order) =>
-                      `<option value="${order.idSOD}">${order.sodName}</option>`
-                  )
-                  .join("")}
-            </select>
-        `;
-      }
+    //   function renderOrderSelect(id) {
+    //     return `
+    //         <select id="${id}" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+    //             <option value="">Chọn mã đơn hàng</option>
+    //             ${ordersDetailData
+    //               .map(
+    //                 (order) =>
+    //                   `<option value="${order.idSOD}">${order.sodName}</option>`
+    //               )
+    //               .join("")}
+    //         </select>
+    //     `;
+    //   }
 
       function onCategoryChange(category) {
         const container = document.getElementById("dynamicFields");
@@ -1686,6 +1684,7 @@
                         <select id="ticketOrder" multiple></select>
                     </div>
                 `;
+            initOrderChoices();
             break;
 
           case "adjust-quantity":
