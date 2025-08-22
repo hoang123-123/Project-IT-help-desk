@@ -415,7 +415,7 @@
             </div>
 
             <!-- New Ticket Section -->
-            <div id="new-ticket" class="page-content hidden">
+            <!-- <div id="new-ticket" class="page-content hidden">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                         <div class="p-6 border-b border-gray-200">
@@ -469,7 +469,7 @@
                                         placeholder="Mô tả chi tiết vấn đề hoặc yêu cầu của bạn..."></textarea>
                                 </div>
                             
-                                <!-- Trường đặc biệt: hiện ra nếu có chiết khấu -->
+                                
                                 <div id="discountOptionContainer" class="hidden">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Chiết khấu</label>
                                     <select id="discountOption"
@@ -494,7 +494,91 @@
                         </div>
                     </div>
                 </div>
+            </div> -->
+
+            <div id="new-ticket" class="page-content hidden">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">Tạo Ticket mới</h3>
             </div>
+            <div class="p-6">
+                <form id="newTicketForm" class="space-y-6">
+
+                    <!-- Chọn Phòng ban -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phòng ban *</label>
+                        <select id="ticketDepartment" required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Chọn phòng ban</option>
+                            <option value="it">IT</option>
+                            <option value="hr">Nhân sự</option>
+                            <option value="finance">Tài chính</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="sales">Kinh doanh</option>
+                        </select>
+                    </div>
+
+                    <!-- Chọn Loại yêu cầu -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Loại yêu cầu *</label>
+                        <select id="ticketCategory" required onchange="onCategoryChange(this.value)"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <option value="">Chọn loại yêu cầu</option>
+                            <option value="adjust-price">Điều chỉnh giá</option>
+                            <option value="adjust-unit">Điều chỉnh đơn vị</option>
+                            <option value="adjust-quantity">Điều chỉnh số lượng</option>
+                            <option value="apply-vat">Áp dụng VAT</option>
+                            <option value="apply-vat-detail">% VAT cho đơn hàng chi tiết</option>
+                            <option value="discount-total">Chiết khấu tổng</option>
+                            <option value="discount-detail">Chiết khấu chi tiết</option>
+                            <option value="other">Khác</option>
+                        </select>
+                    </div>
+
+                    <!-- Thông tin chung -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Người duyệt *</label>
+                            <input type="text" id="ticketApprover" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Nhập tên người duyệt">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin yêu cầu *</label>
+                            <input type="text" id="ticketAdjustmentInfo" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Nhập thông tin chi tiết">
+                        </div>
+                    </div>
+
+                    <!-- Trường động theo loại yêu cầu -->
+                    <div id="dynamicFields" class="space-y-4">
+                        <!-- Nội dung sẽ được JS thêm vào tùy loại -->
+                    </div>
+
+                    <!-- Mô tả chung -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Mô tả chi tiết</label>
+                        <textarea id="ticketDescription" rows="5"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Mô tả chi tiết vấn đề..."></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <button type="button" id="cancelTicket"
+                            class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Hủy
+                        </button>
+                        <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            Tạo Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Approvals Section -->
             <div id="approvals" class="page-content hidden">
@@ -1153,16 +1237,9 @@
                         const data = await response.json();
                         allData = allData.concat(data.value);
 
-                        // 🔹 In ra dữ liệu vừa lấy được (1 trang)
-                        //console.log(`Trang ${page}:`, data.value);
-
-                        // 🔹 In ra tổng số record đã lấy được tính tới hiện tại
-                        //console.log(`Tổng record sau trang ${page}: ${allData.length}`);
-
-                        // Tăng số trang
+                      
                         page++;
 
-                        // Kiểm tra có nextLink không
                         url = data["@odata.nextLink"] || null;
                     }
                     mappingListTickets(allData)
@@ -1190,6 +1267,87 @@
 
 
                     }
+
+                     function onCategoryChange(category) {
+        const container = document.getElementById('dynamicFields');
+        container.innerHTML = ''; // reset
+
+        switch(category) {
+            case 'adjust-price':
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Giá cũ</label>
+                        <input type="number" id="oldPrice" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập giá cũ">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Giá mới</label>
+                        <input type="number" id="newPrice" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập giá mới">
+                    </div>
+                `;
+                break;
+
+            case 'discount-detail':
+            case 'discount-total':
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">% Chiết khấu</label>
+                        <input type="number" id="discountPercent" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập % chiết khấu">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hành động</label>
+                        <select id="discountAction" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                            <option value="cancel">Hủy chiết khấu</option>
+                            <option value="keep">Giữ nguyên chiết khấu</option>
+                        </select>
+                    </div>
+                `;
+                break;
+
+            case 'apply-vat':
+            case 'apply-vat-detail':
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">% VAT</label>
+                        <input type="number" id="vatPercent" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập % VAT">
+                    </div>
+                `;
+                break;
+
+            case 'adjust-unit':
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị cũ</label>
+                        <input type="text" id="oldUnit" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập đơn vị cũ">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị mới</label>
+                        <input type="text" id="newUnit" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập đơn vị mới">
+                    </div>
+                `;
+                break;
+
+            case 'adjust-quantity':
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng cũ</label>
+                        <input type="number" id="oldQuantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập số lượng cũ">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
+                        <input type="number" id="newQuantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập số lượng mới">
+                    </div>
+                `;
+                break;
+
+            default:
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin thêm</label>
+                        <input type="text" id="extraInfo" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập thông tin...">
+                    </div>
+                `;
+        }
+    }
 
 
     </script>
