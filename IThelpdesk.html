@@ -908,22 +908,16 @@
         }
 
         // Create ticket
-        async function createNewTicket() {
-    // Lấy dữ liệu từ form
+       async function createNewTicket() {
     const newTicket = {
-        //crdfd_name: document.getElementById('ticketTitle').value,
         crdfd_lydoieuchinh: document.getElementById('ticketDescription').value,
         crdfd_loaiieuchinh: 283640008,
-        crdfd_nguoiyeucau: "currentUser.name",
-        //crdfd_priority: 'medium',
-        crdfd_trangthai: 191920002 // trạng thái mặc định "chờ duyệt"
-        
-        // thêm các field dynamic khác nếu có
+        crdfd_nguoiyeucau: currentUser.name,
+        crdfd_trangthai: 191920002
     };
 
     try {
-        // Gọi Dataverse API POST
-        const token = await getToken(); // lấy token trước
+        const token = await getToken();
         const response = await fetch(`${DATAVERSE_URL}/crdfd_suport_systems`, {
             method: "POST",
             headers: {
@@ -938,20 +932,15 @@
             throw new Error(`Lỗi Dataverse: ${response.status} - ${response.statusText}`);
         }
 
-        const createdRecord = await response.json();
-        console.log("Ticket đã tạo trên Dataverse:", createdRecord);
-
-        // Thêm vào mảng local tickets để render luôn
-        // tickets.unshift({
-        //     id: createdRecord.crdfd_suport_systemid,
-        //     title: newTicket.crdfd_name,
-        //     description: newTicket.crdfd_lydoieuchinh,
-        //     category: newTicket.crdfd_loaiieuchinh,
-        //     priority: newTicket.crdfd_priority,
-        //     status: newTicket.crdfd_trangthai,
-        //     createdBy: newTicket.crdfd_nguoiyeucau,
-        //     createdAt: newTicket.createdon
-        // });
+        // Chỉ parse JSON nếu response có content
+        let createdRecord = null;
+        const text = await response.text();
+        if (text) {
+            createdRecord = JSON.parse(text);
+            console.log("Ticket đã tạo trên Dataverse:", createdRecord);
+        } else {
+            console.log("Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về.");
+        }
 
         document.getElementById('newTicketForm').reset();
         showNotification('Ticket đã được tạo thành công trên Dataverse!', 'success');
@@ -963,6 +952,7 @@
         showNotification('Tạo ticket thất bại: ' + err.message, 'error');
     }
 }
+
 
 
         // Modal functions
@@ -1203,24 +1193,23 @@
             }
         }
 
-        document.getElementById("ticketCategory").addEventListener("change", function() {
-        const discountContainer = document.getElementById("discountOptionContainer");
+    //     document.getElementById("ticketCategory").addEventListener("change", function() {
+    //     const discountContainer = document.getElementById("discountOptionContainer");
     
-    if (this.value === "adjust-price") {
-                // 👉 ở đây bạn có thể check thêm điều kiện "đơn hàng có chiết khấu"
-                // ví dụ: let hasDiscount = true;
-                let hasDiscount = true;
+    // if (this.value === "adjust-price") {
+               
+    //             let hasDiscount = true;
 
-                if (hasDiscount) {
-                    discountContainer.classList.remove("hidden");
-                } else {
-                    discountContainer.classList.add("hidden");
-                }
-            } else {
-                discountContainer.classList.add("hidden");
-            }
-        });
-        // function get token
+    //             if (hasDiscount) {
+    //                 discountContainer.classList.remove("hidden");
+    //             } else {
+    //                 discountContainer.classList.add("hidden");
+    //             }
+    //         } else {
+    //             discountContainer.classList.add("hidden");
+    //         }
+    //     });
+        
 
         async function getToken() {
                 const url = "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
