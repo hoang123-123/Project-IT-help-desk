@@ -589,7 +589,7 @@
                     console.log("Token lấy được:", token);
 
                     const data = await getAllXseptions(token); // gọi API
-                    console.log("Done, tổng số record:", data.length);
+                    //console.log("Done, tổng số record:", data.length);
                 } catch (err) {
                     console.error("Error init:", err);
                 }
@@ -685,7 +685,9 @@
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("data temp: ", supportSystemsData);
             tickets = [...supportSystemsData];
+            console.log("data tickets: ", tickets);
             initializeNavigation();
             initializeFormHandlers();
             initializeModals();
@@ -693,7 +695,7 @@
             loadApprovals();
             loadDashboard();
         });
-
+        
         // Navigation functions
         function initializeNavigation() {
             const navItems = document.querySelectorAll('.nav-item');
