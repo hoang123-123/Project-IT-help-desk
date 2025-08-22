@@ -584,15 +584,18 @@
         let currentUser = { name: 'Admin User', role: 'admin' };
          async function init() {
                 try {
-                    const token = await getToken();  // 🔹 chờ lấy token
-                    const data = await getAllXseptions(token); // 🔹 có token mới gọi API
+                    const token = await getToken();   // chờ token
+                    console.log("Token lấy được:", token);
+
+                    const data = await getAllXseptions(token); // gọi API
                     console.log("Done, tổng số record:", data.length);
                 } catch (err) {
-                    console.error("Error:", err);
+                    console.error("Error init:", err);
                 }
             }
 
-            init()
+            init();
+
 
 
         // Sample data
@@ -1170,28 +1173,29 @@
         });
         let token = "";
         async function getToken() {
-            const url = "https://prod-51.southeastasia.logic.azure.com:443/workflows/1db8c4d15497441287f7c888e8888ed4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8smnu3fDoDarEJ1vXEJV5YTDTjhQMKNHrM_AGw3uqXs";
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ key: "value" })
-                });
+                const url = "https://prod-51.southeastasia.logic.azure.com:443/workflows/1db8c4d15497441287f7c888e8888ed4/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=8smnu3fDoDarEJ1vXEJV5YTDTjhQMKNHrM_AGw3uqXs";
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ key: "value" })
+                    });
 
-                if (!response.ok) {
-                    throw new Error("HTTP status " + response.status);
+                    if (!response.ok) {
+                        throw new Error("HTTP status " + response.status);
+                    }
+
+                    const data = await response.json();
+                    console.log("Token response:", data);
+
+                    return data.body; // 👈 lấy token từ field body
+                } catch (err) {
+                    console.error("Error:", err);
+                    throw err;
                 }
-
-                const raw = await response.text();
-                return raw;
-                console.log("Raw response:", raw);
-
-            } catch (err) {
-                console.error("Error:", err);
             }
-        }
 
         // URL gốc Dataverse
             const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
