@@ -582,6 +582,18 @@
         // Global variables
         let tickets = [];
         let currentUser = { name: 'Admin User', role: 'admin' };
+         async function init() {
+                try {
+                    const token = await getToken();  // 🔹 chờ lấy token
+                    const data = await getAllXseptions(token); // 🔹 có token mới gọi API
+                    console.log("Done, tổng số record:", data.length);
+                } catch (err) {
+                    console.error("Error:", err);
+                }
+            }
+
+            init()
+
 
         // Sample data
         const sampleTickets = [
@@ -1140,7 +1152,7 @@
         }
 
         document.getElementById("ticketCategory").addEventListener("change", function() {
-    const discountContainer = document.getElementById("discountOptionContainer");
+        const discountContainer = document.getElementById("discountOptionContainer");
     
     if (this.value === "adjust-price") {
                 // 👉 ở đây bạn có thể check thêm điều kiện "đơn hàng có chiết khấu"
@@ -1172,35 +1184,64 @@
                     throw new Error("HTTP status " + response.status);
                 }
 
-                const raw = await response.text();   // 👈 đọc thẳng text
+                const raw = await response.text();
                 console.log("Raw response:", raw);
-
-                let data;
-                try {
-                    data = JSON.parse(raw); // Nếu thực sự là JSON
-                } catch {
-                    // Nếu chỉ là chuỗi token, gán trực tiếp
-                    token = raw;
-                    console.log("Token:", token);
-                    //document.getElementById("result")?.textContent = "Token: " + token;
-                    return;
-                }
-
-                // Nếu parse JSON thành công
-                token = data.body || data.token || raw;
-                console.log("Token:", token);
-                //document.getElementById("result")?.textContent = "Token: " + token;
-
             } catch (err) {
                 console.error("Error:", err);
-                //document.getElementById("result")?.textContent = "Error: " + err.message;
             }
         }
 
-        // Gọi thử khi load trang
-        getToken();
+        // URL gốc Dataverse
+            const DATAVERSE_URL = "https:/wecare-ii.crm5.dynamics.com/api/data/v9.0";
 
-      
+            // Query cho bảng rc_xseptions
+            const XSEPTIONS_QUERY = "/crdfd_suport_system" +
+                "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau"
+                //"&$expand=rc_categorytypeid($select=rc_value)";
+
+            async function getAllXseptions(token) {
+                    let url = DATAVERSE_URL + XSEPTIONS_QUERY;
+                    let allData = [];
+                    let page = 1;
+
+                    while (url) {
+                        const response = await fetch(url, {
+                            method: "GET",
+                            headers: {
+                                "Authorization": `Bearer ${token}`,
+                                "Accept": "application/json",
+                                "OData-MaxVersion": "4.0",
+                                "OData-Version": "4.0"
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`Error ${response.status}: ${response.statusText}`);
+                        }
+
+                        const data = await response.json();
+                        allData = allData.concat(data.value);
+
+                        // 🔹 In ra dữ liệu vừa lấy được (1 trang)
+                        console.log(`Trang ${page}:`, data.value);
+
+                        // 🔹 In ra tổng số record đã lấy được tính tới hiện tại
+                        console.log(`Tổng record sau trang ${page}: ${allData.length}`);
+
+                        // Tăng số trang
+                        page++;
+
+                        // Kiểm tra có nextLink không
+                        url = data["@odata.nextLink"] || null;
+                    }
+
+                    // 🔹 In ra toàn bộ dữ liệu sau khi load xong
+                    console.log("Tất cả dữ liệu:", allData);
+
+                    return allData;
+                }
+
+
     </script>
 </body>
 </html>
