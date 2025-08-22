@@ -684,8 +684,8 @@
         // ];
 
         // Initialize the application
-        document.supportSystemsData('DOMContentLoaded', function() {
-            tickets = [...sampleTickets];
+        document.addEventListener('DOMContentLoaded', function() {
+            tickets = [...supportSystemsData];
             initializeNavigation();
             initializeFormHandlers();
             initializeModals();
