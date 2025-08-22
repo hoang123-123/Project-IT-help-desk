@@ -590,6 +590,15 @@
 
                     const data = await getAllXseptions(token); // gọi API
                     //console.log("Done, tổng số record:", data.length);
+                    tickets = [...supportSystemsData];
+                    console.log("Tickets sau khi lấy data:", tickets);
+
+                    initializeNavigation();
+                    initializeFormHandlers();
+                    initializeModals();
+                    loadTickets();
+                    loadApprovals();
+                    loadDashboard();
                 } catch (err) {
                     console.error("Error init:", err);
                 }
@@ -684,17 +693,7 @@
         // ];
 
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("data temp: ", supportSystemsData);
-            tickets = [...supportSystemsData];
-            console.log("data tickets: ", tickets);
-            initializeNavigation();
-            initializeFormHandlers();
-            initializeModals();
-            loadTickets();
-            loadApprovals();
-            loadDashboard();
-        });
+        document.addEventListener('DOMContentLoaded', init);
         
         // Navigation functions
         function initializeNavigation() {
