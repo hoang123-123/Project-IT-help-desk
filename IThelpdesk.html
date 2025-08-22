@@ -583,26 +583,6 @@
         let tickets = [];
         let supportSystemsData = [];
         let currentUser = { name: 'Admin User', role: 'admin' };
-        // Object map trạng thái
-    const trangthai_MAP = {
-        "191920000": "Đã duyệt",
-        "191920001": "Từ chối",
-        "191920002": "Chờ"
-    };
-    // Object map loại điều chỉnh
-    const loai_MAP = {
-        "191920000": "Điều chỉnh giá SOD",
-        "191920001": "Điều chỉnh VAT SOD",
-        "283640001": "Điều chỉnh VAT SO",
-        "283640002": "Điều chỉnh giá BOD",
-        "283640003": "Điều chỉnh VAT BOD",
-        "283640004": "Hủy phiếu nhập kho",
-        "283640005": "Điều chỉnh phiếu nhập kho",
-        "283640006": "Điều chỉnh VAT BO",
-        "283640007": "Điều chỉnh định lượng",
-        "283640008": "Hủy phiếu xuất kho",
-        "283640009": "Điều chỉnh phiếu xuất kho"
-    }
          async function init() {
                 try {
                     const token = await getToken();   // chờ token
@@ -793,7 +773,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
-                        ${ticket.status === 'Chờ' ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
+                        ${ticket.status === 191920002 ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
                     </td>
                 </tr>
             `).join('');
@@ -802,7 +782,7 @@
         // Approvals management
         function loadApprovals() {
             const approvalsTable = document.getElementById('approvalsTable');
-            const pendingTickets = tickets.filter(t => t.status === 'Chờ');
+            const pendingTickets = tickets.filter(t => t.status === 191920002);
             
             approvalsTable.innerHTML = pendingTickets.map(ticket => `
                 <tr class="hover:bg-gray-50">
@@ -1004,9 +984,9 @@
         // Utility functions
         function getStatusClass(status) {
             switch(status) {
-                case 'pending': return 'status-pending text-white';
-                case 'approved': return 'status-approved text-white';
-                case 'rejected': return 'status-rejected text-white';
+                case '191920002': return 'status-pending text-white';
+                case '191920000': return 'status-approved text-white';
+                case '191920001': return 'status-rejected text-white';
                 case 'in-progress': return 'status-in-progress text-white';
                 case 'completed': return 'status-completed text-white';
                 default: return 'bg-gray-100 text-gray-800';
@@ -1015,9 +995,9 @@
 
         function getStatusText(status) {
             switch(status) {
-                case 'pending': return 'Chờ phê duyệt';
-                case 'approved': return 'Đã phê duyệt';
-                case 'rejected': return 'Từ chối';
+                case '191920002': return 'Chờ phê duyệt';
+                case '191920000': return 'Đã phê duyệt';
+                case '191920001': return 'Từ chối';
                 case 'in-progress': return 'Đang xử lý';
                 case 'completed': return 'Hoàn thành';
                 default: return 'Không xác định';
@@ -1045,15 +1025,21 @@
         }
 
         function getCategoryText(category) {
-            switch(category) {
-                case 'hardware': return 'Phần cứng';
-                case 'software': return 'Phần mềm';
-                case 'network': return 'Mạng';
-                case 'access': return 'Quyền truy cập';
-                case 'other': return 'Khác';
-                default: return 'Không xác định';
+                switch (category) {
+                    case '191920000': return "Điều chỉnh giá SOD";
+                    case '191920001': return "Điều chỉnh VAT SOD";
+                    case '283640001': return "Điều chỉnh VAT SO";
+                    case '283640002': return "Điều chỉnh giá BOD";
+                    case '283640003': return "Điều chỉnh VAT BOD";
+                    case '283640004': return "Hủy phiếu nhập kho";
+                    case '283640005': return "Điều chỉnh phiếu nhập kho";
+                    case '283640006': return "Điều chỉnh VAT BO";
+                    case '283640007': return "Điều chỉnh định lượng";
+                    case '283640008': return "Hủy phiếu xuất kho";
+                    case '283640009': return "Điều chỉnh phiếu xuất kho";
+                    default: return "Không xác định";
+                }
             }
-        }
 
         function formatDate(dateString) {
             const date = new Date(dateString);
@@ -1187,9 +1173,9 @@
                             id: item.crdfd_name || "",       // tạo ID giống sampleTickets
                             title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
                             description: item.crdfd_lydoieuchinh || "",
-                            category: loai_MAP[item.crdfd_loaiieuchinh] || "other",
+                            category: item.crdfd_loaiieuchinh || "other",
                             priority: "medium",                                    
-                            status: trangthai_MAP[item.crdfd_trangthai] || "Chưa xác định",
+                            status: item.crdfd_trangthai || "Chưa xác định",
                             createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
                             createdAt: item.createdon || "Không xác định date"                    
                         }));
