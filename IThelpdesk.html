@@ -846,7 +846,7 @@
         "/crdfd_saleorderdetails" +
         "?$select=crdfd_saleorderdetailid, crdfd_name" +
         "&$filter=statecode eq 0 and crdfd_trangthaionhang1 ne 191920000" +
-        "&$top=500";
+        "&$top=5000";
       // ========== Function ================
 
       async function init() {
@@ -918,6 +918,23 @@
                   loadApprovals();
                   break;
               }
+            }
+          });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          const btn = document.getElementById("userMenuBtn");
+          const dropdown = document.getElementById("userMenuDropdown");
+
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
+            dropdown.classList.toggle("hidden");
+          });
+
+          // Ẩn menu khi click ra ngoài
+          document.addEventListener("click", () => {
+            if (!dropdown.classList.contains("hidden")) {
+              dropdown.classList.add("hidden");
             }
           });
         });
