@@ -753,25 +753,26 @@
         // Tickets management
         function loadTickets() {
             const ticketsTable = document.getElementById('ticketsTable');
+            const topTickets = tickets.slice(0, 10);
             
-            ticketsTable.innerHTML = tickets.map(ticket => `
+            ticketsTable.innerHTML = topTickets.map(ticket => `
                 <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${ticket.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 truncate">${ticket.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getCategoryText(ticket.category)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${ticket.createdBy}</td>
+                    <td class="px-6 py-4 whitespace-nowrap truncate">
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(ticket.status)}">
                             ${getStatusText(ticket.status)}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-6 py-4 whitespace-nowrap truncate">
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
                             ${getPriorityText(ticket.priority)}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(ticket.createdAt)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium truncate">
                         <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
                         ${ticket.status === 191920002 ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
                     </td>
@@ -782,7 +783,7 @@
         // Approvals management
         function loadApprovals() {
             const approvalsTable = document.getElementById('approvalsTable');
-            const pendingTickets = tickets.filter(t => t.status === 191920000).slice(0, 10);
+            const pendingTickets = tickets.filter(t => t.status === 191920002);
             
             approvalsTable.innerHTML = pendingTickets.map(ticket => `
                 <tr class="hover:bg-gray-50">
