@@ -946,14 +946,14 @@
             XSEPTIONS_QUERY,
             mappingListTickets
           ); // gọi API
-          //console.log("Done, tổng số record:", data.length);
-          tickets = [...supportSystemsData];
-          console.log("Tickets sau khi lấy data:", tickets);
           const dataUser = await getAllXseptions(
             token,
             User_QUERY,
             mappingUser
           );
+          //console.log("Done, tổng số record:", data.length);
+          tickets = [...supportSystemsData];
+          console.log("Tickets sau khi lấy data:", tickets);
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
@@ -964,8 +964,6 @@
           console.error("Error init:", err);
         }
       }
-
-      init();
 
       // Initialize the application
       document.addEventListener("DOMContentLoaded", init);
