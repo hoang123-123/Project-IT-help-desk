@@ -586,7 +586,7 @@
          async function init() {
                 try {
                     const token = await getToken();   // chờ token
-                    console.log("Token lấy được:", token);
+                    //console.log("Token lấy được:", token);
 
                     const data = await getAllXseptions(token); // gọi API
                     //console.log("Done, tổng số record:", data.length);
@@ -984,9 +984,9 @@
         // Utility functions
         function getStatusClass(status) {
             switch(status) {
-                case '191920002': return 'status-pending text-white';
-                case '191920000': return 'status-approved text-white';
-                case '191920001': return 'status-rejected text-white';
+                case 191920002: return 'status-pending text-white';
+                case 191920000: return 'status-approved text-white';
+                case 191920001: return 'status-rejected text-white';
                 case 'in-progress': return 'status-in-progress text-white';
                 case 'completed': return 'status-completed text-white';
                 default: return 'bg-gray-100 text-gray-800';
@@ -995,9 +995,9 @@
 
         function getStatusText(status) {
             switch(status) {
-                case '191920002': return 'Chờ phê duyệt';
-                case '191920000': return 'Đã phê duyệt';
-                case '191920001': return 'Từ chối';
+                case 191920002: return 'Chờ phê duyệt';
+                case 191920000: return 'Đã phê duyệt';
+                case 191920001: return 'Từ chối';
                 case 'in-progress': return 'Đang xử lý';
                 case 'completed': return 'Hoàn thành';
                 default: return 'Không xác định';
@@ -1026,17 +1026,17 @@
 
         function getCategoryText(category) {
                 switch (category) {
-                    case '191920000': return "Điều chỉnh giá SOD";
-                    case '191920001': return "Điều chỉnh VAT SOD";
-                    case '283640001': return "Điều chỉnh VAT SO";
-                    case '283640002': return "Điều chỉnh giá BOD";
-                    case '283640003': return "Điều chỉnh VAT BOD";
-                    case '283640004': return "Hủy phiếu nhập kho";
-                    case '283640005': return "Điều chỉnh phiếu nhập kho";
-                    case '283640006': return "Điều chỉnh VAT BO";
-                    case '283640007': return "Điều chỉnh định lượng";
-                    case '283640008': return "Hủy phiếu xuất kho";
-                    case '283640009': return "Điều chỉnh phiếu xuất kho";
+                    case 191920000: return "Điều chỉnh giá SOD";
+                    case 191920001: return "Điều chỉnh VAT SOD";
+                    case 283640001: return "Điều chỉnh VAT SO";
+                    case 283640002: return "Điều chỉnh giá BOD";
+                    case 283640003: return "Điều chỉnh VAT BOD";
+                    case 283640004: return "Hủy phiếu nhập kho";
+                    case 283640005: return "Điều chỉnh phiếu nhập kho";
+                    case 283640006: return "Điều chỉnh VAT BO";
+                    case 283640007: return "Điều chỉnh định lượng";
+                    case 283640008: return "Hủy phiếu xuất kho";
+                    case 283640009: return "Điều chỉnh phiếu xuất kho";
                     default: return "Không xác định";
                 }
             }
@@ -1153,10 +1153,10 @@
                         allData = allData.concat(data.value);
 
                         // 🔹 In ra dữ liệu vừa lấy được (1 trang)
-                        console.log(`Trang ${page}:`, data.value);
+                        //console.log(`Trang ${page}:`, data.value);
 
                         // 🔹 In ra tổng số record đã lấy được tính tới hiện tại
-                        console.log(`Tổng record sau trang ${page}: ${allData.length}`);
+                        //console.log(`Tổng record sau trang ${page}: ${allData.length}`);
 
                         // Tăng số trang
                         page++;
