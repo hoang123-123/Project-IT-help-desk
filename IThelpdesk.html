@@ -905,23 +905,63 @@
             });
         }
 
-        function createNewTicket() {
-            const newTicket = {
-                id: `TKT-${String(tickets.length + 1).padStart(3, '0')}`,
-                title: document.getElementById('ticketTitle').value,
-                description: document.getElementById('ticketDescription').value,
-                category: document.getElementById('ticketCategory').value,
-                priority: document.getElementById('ticketPriority').value,
-                status: 'pending',
-                createdBy: currentUser.name,
-                createdAt: new Date().toISOString()
-            };
-            
-            tickets.unshift(newTicket);
-            document.getElementById('newTicketForm').reset();
-            showNotification('Ticket đã được tạo thành công!', 'success');
-            document.querySelector('a[href="#tickets"]').click();
+        // Create ticket
+        async function createNewTicket() {
+    // Lấy dữ liệu từ form
+    const newTicket = {
+        crdfd_name: document.getElementById('ticketTitle').value,
+        crdfd_lydoieuchinh: document.getElementById('ticketDescription').value,
+        crdfd_loaiieuchinh: document.getElementById('ticketCategory').value,
+        crdfd_nguoiyeucau: "currentUser.name",
+        crdfd_priority: 'medium',
+        crdfd_trangthai: 191920002, // trạng thái mặc định "chờ duyệt"
+        createdon: new Date().toISOString()
+        // thêm các field dynamic khác nếu có
+    };
+
+    try {
+        // Gọi Dataverse API POST
+        const token = await getToken(); // lấy token trước
+        const response = await fetch(`${DATAVERSE_URL}/crdfd_suport_systems`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(newTicket)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Lỗi Dataverse: ${response.status} - ${response.statusText}`);
         }
+
+        const createdRecord = await response.json();
+        console.log("Ticket đã tạo trên Dataverse:", createdRecord);
+
+        // Thêm vào mảng local tickets để render luôn
+        tickets.unshift({
+            id: createdRecord.crdfd_suport_systemid,
+            title: newTicket.crdfd_name,
+            description: newTicket.crdfd_lydoieuchinh,
+            category: newTicket.crdfd_loaiieuchinh,
+            priority: newTicket.crdfd_priority,
+            status: newTicket.crdfd_trangthai,
+            createdBy: newTicket.crdfd_nguoiyeucau,
+            createdAt: newTicket.createdon
+        });
+
+        document.getElementById('newTicketForm').reset();
+        showNotification('Ticket đã được tạo thành công trên Dataverse!', 'success');
+        document.querySelector('a[href="#tickets"]').click();
+        loadTickets(); // render lại bảng
+
+    } catch (err) {
+        console.error(err);
+        showNotification('Tạo ticket thất bại: ' + err.message, 'error');
+    }
+}
+
 
         // Modal functions
         function initializeModals() {
@@ -1179,7 +1219,7 @@
             }
         });
         // function get token
-        let token = "";
+
         async function getToken() {
                 const url = "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
                 try {
@@ -1196,7 +1236,6 @@
                     // }
 
                     const data = await response.json();
-                    console.log("Token response:", data);
 
                     return data.value; // 👈 lấy token từ field body
                 } catch (err) {
