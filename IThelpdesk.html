@@ -920,7 +920,7 @@
         { id: "ORD-004", name: "Đơn hàng 004" },
         { id: "ORD-005", name: "Đơn hàng 005" },
       ];
-      const approversData = [];
+      let approversData = [];
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       let currentUser = { name: "Admin User", role: "admin" };
@@ -1732,7 +1732,7 @@
       function mappingUser(allData) {
         approversData = allData.map((item, index) => ({
           id: item.cr1bb_emailcal || "Không xác định",
-          name: item.crdfd_name || "Không xác định",
+          useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
         }));
       }
