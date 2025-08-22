@@ -941,11 +941,11 @@
           const token = await getToken(); // chờ token
           //console.log("Token lấy được:", token);
 
-        //   const data = await getAllXseptions(
-        //     token,
-        //     XSEPTIONS_QUERY,
-        //     mappingListTickets
-        //   ); // gọi API
+            const data = await getAllXseptions(
+              token,
+              XSEPTIONS_QUERY,
+              mappingListTickets
+            ); // gọi API
           const dataUser = await getAllXseptions(
             token,
             USER_QUERY,
@@ -1858,6 +1858,29 @@
         }
       }
 
+      //   document.addEventListener("DOMContentLoaded", () => {
+      //     const approverSelect = document.getElementById("ticketApprover");
+
+      //     // Khởi tạo Choices.js
+      //     const choices = new Choices(approverSelect, {
+      //       removeItemButton: true,
+      //       searchEnabled: true,
+      //       searchResultLimit: 5, // hiển thị tối đa 5 kết quả
+      //       placeholderValue: "Chọn người duyệt",
+      //       noResultsText: "Không tìm thấy",
+      //       shouldSort: false,
+      //     });
+
+      //     // Load dữ liệu tạm
+      //     approversData.forEach((u) => {
+      //       choices.setChoices(
+      //         [{ value: u.id, label: u.name }],
+      //         "value",
+      //         "label",
+      //         false
+      //       );
+      //     });
+      //   });
       document.addEventListener("DOMContentLoaded", () => {
         const approverSelect = document.getElementById("ticketApprover");
 
@@ -1871,15 +1894,13 @@
           shouldSort: false,
         });
 
-        // Load dữ liệu tạm
-        approversData.forEach((u) => {
-          choices.setChoices(
-            [{ value: u.id, label: u.name }],
-            "value",
-            "label",
-            false
-          );
-        });
+        // Đổ dữ liệu vào select
+        const options = approversData.map((u) => ({
+          value: u.id,
+          label: u.name,
+        }));
+
+        choices.setChoices(options, "value", "label", false);
       });
     </script>
   </body>
