@@ -782,7 +782,7 @@
         // Approvals management
         function loadApprovals() {
             const approvalsTable = document.getElementById('approvalsTable');
-            const pendingTickets = tickets.filter(t => t.status === 191920002);
+            const pendingTickets = tickets.filter(t => t.status === 191920000);
             
             approvalsTable.innerHTML = pendingTickets.map(ticket => `
                 <tr class="hover:bg-gray-50">
