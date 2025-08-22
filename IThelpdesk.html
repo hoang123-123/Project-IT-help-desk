@@ -911,13 +911,13 @@
         async function createNewTicket() {
     // Lấy dữ liệu từ form
     const newTicket = {
-        crdfd_name: document.getElementById('ticketTitle').value,
+        //crdfd_name: document.getElementById('ticketTitle').value,
         crdfd_lydoieuchinh: document.getElementById('ticketDescription').value,
-        crdfd_loaiieuchinh: document.getElementById('ticketCategory').value,
+        crdfd_loaiieuchinh: 283640008,
         crdfd_nguoiyeucau: "currentUser.name",
-        crdfd_priority: 'medium',
-        crdfd_trangthai: 191920002, // trạng thái mặc định "chờ duyệt"
-        createdon: new Date().toISOString()
+        //crdfd_priority: 'medium',
+        crdfd_trangthai: 191920002 // trạng thái mặc định "chờ duyệt"
+        
         // thêm các field dynamic khác nếu có
     };
 
