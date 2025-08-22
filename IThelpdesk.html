@@ -782,7 +782,7 @@
         // Approvals management
         function loadApprovals() {
             const approvalsTable = document.getElementById('approvalsTable');
-            const pendingTickets = tickets.filter(t => t.status === 191920000);
+            const pendingTickets = tickets.filter(t => t.status === 191920000).slice(0, 10);
             
             approvalsTable.innerHTML = pendingTickets.map(ticket => `
                 <tr class="hover:bg-gray-50">
@@ -1174,15 +1174,20 @@
                             title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
                             description: item.crdfd_lydoieuchinh || "",
                             category: item.crdfd_loaiieuchinh || "other",
-                            priority: "medium",                                    
+                            priority: "medium",
                             status: item.crdfd_trangthai || "Chưa xác định",
                             createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-                            createdAt: item.createdon || "Không xác định date"                    
+                            createdAt: item.createdon || "Không xác định date"
                         }));
+
+
+                        supportSystemsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
                         console.log("supportSystemsData:", supportSystemsData);
 
-                        return supportSystemsData; // trả ra nếu cần
+                        return supportSystemsData;
+
+
                     }
 
 
