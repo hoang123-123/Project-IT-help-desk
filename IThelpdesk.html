@@ -1643,9 +1643,6 @@
         supportSystemsData.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-
-        console.log("supportSystemsData:", supportSystemsData);
-
         return supportSystemsData;
       }
 
@@ -1655,13 +1652,15 @@
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
         }));
+        return approversData;
       }
 
       function mappingSOD(allData) {
-        approversData = allData.map((item, index) => ({
+        ordersDetailData = allData.map((item, index) => ({
           idSOD: item.crdfd_saleorderdetailid || "Không xác định",
           sodName: item.crdfd_name || "Không xác định"
         }));
+        return ordersDetailData;
       }
 
       function renderOrderSelect(id) {
