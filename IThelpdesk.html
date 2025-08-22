@@ -1191,7 +1191,7 @@
                             priority: "medium",                                    
                             status: trangthai_MAP[item.crdfd_trangthai] || "Chưa xác định",
                             createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-                            createdAt: item.createdon.toISOString()                    
+                            createdAt: item.createdon || "Không xác định date"                    
                         }));
 
                         console.log("supportSystemsData:", supportSystemsData);
