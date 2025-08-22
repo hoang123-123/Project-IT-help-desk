@@ -583,6 +583,26 @@
         let tickets = [];
         let supportSystemsData = [];
         let currentUser = { name: 'Admin User', role: 'admin' };
+        // Object map trạng thái
+    const trangthai_MAP = {
+        "191920000": "Đã duyệt",
+        "191920001": "Từ chối",
+        "191920002": "Chờ"
+    };
+    // Object map loại điều chỉnh
+    const loai_MAP = {
+        "191920000": "Điều chỉnh giá SOD",
+        "191920001": "Điều chỉnh VAT SOD",
+        "283640001": "Điều chỉnh VAT SO",
+        "283640002": "Điều chỉnh giá BOD",
+        "283640003": "Điều chỉnh VAT BOD",
+        "283640004": "Hủy phiếu nhập kho",
+        "283640005": "Điều chỉnh phiếu nhập kho",
+        "283640006": "Điều chỉnh VAT BO",
+        "283640007": "Điều chỉnh định lượng",
+        "283640008": "Hủy phiếu xuất kho",
+        "283640009": "Điều chỉnh phiếu xuất kho"
+    }
          async function init() {
                 try {
                     const token = await getToken();   // chờ token
@@ -605,92 +625,6 @@
             }
 
             init();
-
-
-
-        // Sample data
-        // const sampleTickets = [
-        //     {
-        //         id: 'TKT-001',
-        //         title: 'Máy tính không khởi động được',
-        //         description: 'Máy tính của tôi không khởi động được sau khi cập nhật Windows.',
-        //         category: 'hardware',
-        //         priority: 'high',
-        //         status: 'pending',
-        //         createdBy: 'Nguyễn Văn A',
-        //         createdAt: '2024-01-15T09:30:00'
-        //     },
-        //     {
-        //         id: 'TKT-002',
-        //         title: 'Cần cài đặt phần mềm mới',
-        //         description: 'Tôi cần cài đặt phần mềm Adobe Photoshop cho công việc thiết kế.',
-        //         category: 'software',
-        //         priority: 'medium',
-        //         status: 'approved',
-        //         createdBy: 'Trần Thị B',
-        //         createdAt: '2024-01-14T14:20:00'
-        //     },
-        //     {
-        //         id: 'TKT-003',
-        //         title: 'Vấn đề kết nối mạng',
-        //         description: 'Không thể kết nối internet từ máy tính của tôi.',
-        //         category: 'network',
-        //         priority: 'urgent',
-        //         status: 'completed',
-        //         createdBy: 'Lê Văn C',
-        //         createdAt: '2024-01-13T11:15:00'
-        //     },
-        //     {
-        //         id: 'TKT-004',
-        //         title: 'Cần quyền truy cập thư mục',
-        //         description: 'Tôi cần quyền truy cập vào thư mục dự án mới.',
-        //         category: 'access',
-        //         priority: 'low',
-        //         status: 'rejected',
-        //         createdBy: 'Phạm Thị D',
-        //         createdAt: '2024-01-12T16:45:00'
-        //     },
-        //     {
-        //         id: 'TKT-005',
-        //         title: 'Máy in không hoạt động',
-        //         description: 'Máy in HP không in được, hiển thị lỗi kết nối.',
-        //         category: 'hardware',
-        //         priority: 'medium',
-        //         status: 'in-progress',
-        //         createdBy: 'Hoàng Văn E',
-        //         createdAt: '2024-01-11T08:30:00'
-        //     },
-        //     {
-        //         id: 'TKT-006',
-        //         title: 'Cần cài đặt VPN',
-        //         description: 'Tôi cần cài đặt VPN để làm việc từ xa.',
-        //         category: 'software',
-        //         priority: 'high',
-        //         status: 'completed',
-        //         createdBy: 'Nguyễn Thị F',
-        //         createdAt: '2024-01-10T15:45:00'
-        //     },
-        //     {
-        //         id: 'TKT-007',
-        //         title: 'Lỗi đăng nhập hệ thống',
-        //         description: 'Không thể đăng nhập vào hệ thống quản lý.',
-        //         category: 'access',
-        //         priority: 'urgent',
-        //         status: 'approved',
-        //         createdBy: 'Trần Văn G',
-        //         createdAt: '2024-01-09T10:20:00'
-        //     },
-        //     {
-        //         id: 'TKT-008',
-        //         title: 'Màn hình bị mờ',
-        //         description: 'Màn hình máy tính bị mờ, cần thay thế.',
-        //         category: 'hardware',
-        //         priority: 'medium',
-        //         status: 'pending',
-        //         createdBy: 'Lê Thị H',
-        //         createdAt: '2024-01-08T14:15:00'
-        //     }
-        // ];
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', init);
@@ -859,7 +793,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
-                        ${ticket.status === 'pending' ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
+                        ${ticket.status === 'Chờ' ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>` : ''}
                     </td>
                 </tr>
             `).join('');
@@ -868,7 +802,7 @@
         // Approvals management
         function loadApprovals() {
             const approvalsTable = document.getElementById('approvalsTable');
-            const pendingTickets = tickets.filter(t => t.status === 'pending');
+            const pendingTickets = tickets.filter(t => t.status === 'Chờ');
             
             approvalsTable.innerHTML = pendingTickets.map(ticket => `
                 <tr class="hover:bg-gray-50">
@@ -1205,7 +1139,7 @@
 
             // Query cho bảng 
            const XSEPTIONS_QUERY = "/crdfd_suport_systems" +
-                "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh" +
+                "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
                 "&$filter=statecode eq 0";
 
 
@@ -1245,23 +1179,19 @@
                         url = data["@odata.nextLink"] || null;
                     }
                     mappingListTickets(allData)
-                    // 🔹 In ra toàn bộ dữ liệu sau khi load xong
-                    // console.log("Tất cả dữ liệu:", allData);
-
-                    // return allData;
                 }
 
                 function mappingListTickets(allData) {
                         // 🔹 Mapping dữ liệu từ Dataverse về mảng chuẩn giống sampleTickets
                         supportSystemsData = allData.map((item, index) => ({
-                            id: item.crdfd_suport_systemid || "",       // tạo ID giống sampleTickets
-                            title: item.crdfd_name || "Không có tiêu đề",
+                            id: item.crdfd_name || "",       // tạo ID giống sampleTickets
+                            title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
                             description: item.crdfd_lydoieuchinh || "",
-                            category: item.crdfd_loaiieuchinh || "other",
-                            priority: "medium",                                     // tạm map default
-                            status: item.crdfd_trangthai || "pending",
+                            category: loai_MAP[item.crdfd_loaiieuchinh] || "other",
+                            priority: "medium",                                    
+                            status: trangthai_MAP[item.crdfd_trangthai] || "Chưa xác định",
                             createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-                            createdAt: new Date().toISOString()                     // tạm thời ngày hiện tại
+                            createdAt: createdon.toISOString()                    
                         }));
 
                         console.log("supportSystemsData:", supportSystemsData);
