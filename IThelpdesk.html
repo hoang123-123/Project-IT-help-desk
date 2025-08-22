@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <style>
         /* Reset and base styles */
         * {
@@ -540,10 +542,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Người duyệt *</label>
-                            <select id="ticketApprover" multiple
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <!-- options sẽ được load bằng JS -->
-                            </select>
+                            <select id="ticketApprover" multiple></select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin yêu cầu *</label>
@@ -1402,22 +1401,23 @@
         }
     }
 
-    // Hàm load dữ liệu vào select
-function loadApprovers() {
+   document.addEventListener("DOMContentLoaded", () => {
     const approverSelect = document.getElementById("ticketApprover");
-    approverSelect.innerHTML = ""; // reset
 
-    approversData.forEach(user => {
-        const option = document.createElement("option");
-        option.value = user.id;
-        option.textContent = user.name;
-        approverSelect.appendChild(option);
+    // Khởi tạo Choices.js
+    const choices = new Choices(approverSelect, {
+        removeItemButton: true,
+        searchEnabled: true,
+        searchResultLimit: 5,      // hiển thị tối đa 5 kết quả
+        placeholderValue: "Chọn người duyệt",
+        noResultsText: "Không tìm thấy",
+        shouldSort: false
     });
-}
 
-// Khi DOM load
-document.addEventListener("DOMContentLoaded", () => {
-    loadApprovers();
+    // Load dữ liệu tạm
+    approversData.forEach(u => {
+        choices.setChoices([{ value: u.id, label: u.name }], 'value', 'label', false);
+    });
 });
 
 
