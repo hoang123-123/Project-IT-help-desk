@@ -1185,7 +1185,9 @@
                 }
 
                 const raw = await response.text();
+                return raw.access_token;
                 console.log("Raw response:", raw);
+
             } catch (err) {
                 console.error("Error:", err);
             }
