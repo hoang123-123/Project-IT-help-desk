@@ -1910,7 +1910,10 @@
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
   const userNameSpan = btn.querySelector("span.md\\:block"); 
-  const logoutLink = dropdown.querySelector("a:last-child");
+  const links = dropdown.querySelectorAll("a");
+const logoutLink = links[links.length - 1]; // luôn là link cuối cùng (Đăng xuất / Đăng nhập)
+
+console.log(logoutLink); // phải là <a>Đăng xuất</a> hoặc <a>Đăng nhập</a>
 
   let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
