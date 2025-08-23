@@ -1999,76 +1999,76 @@
       //     }
       //   });
       // }
-      function initUserMenu() {
-  const btn = document.getElementById("userMenuBtn");
-  const dropdown = document.getElementById("userMenuDropdown");
-  const loginModal = document.getElementById("loginModal");
-  const loginForm = document.getElementById("loginForm");
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
-  const userNameSpan = btn.querySelector("span.md\\:block"); // span hiển thị tên
-  const logoutLink = dropdown.querySelector("a:last-child");
+//       function initUserMenu() {
+//   const btn = document.getElementById("userMenuBtn");
+//   const dropdown = document.getElementById("userMenuDropdown");
+//   const loginModal = document.getElementById("loginModal");
+//   const loginForm = document.getElementById("loginForm");
+//   const usernameInput = document.getElementById("username");
+//   const passwordInput = document.getElementById("password");
+//   const userNameSpan = btn.querySelector("span.md\\:block"); // span hiển thị tên
+//   const logoutLink = dropdown.querySelector("a:last-child");
 
-  // Lấy thông tin user đã lưu
-  let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+//   // Lấy thông tin user đã lưu
+//   let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-  function updateUI() {
-    if (currentUser) {
-      userNameSpan.textContent = currentUser.fullName;
-      logoutLink.textContent = "Đăng xuất";
-    } else {
-      userNameSpan.textContent = "Khách";
-      logoutLink.textContent = "Đăng nhập";
-    }
-  }
+//   function updateUI() {
+//     if (currentUser) {
+//       userNameSpan.textContent = currentUser.fullName;
+//       logoutLink.textContent = "Đăng xuất";
+//     } else {
+//       userNameSpan.textContent = "Khách";
+//       logoutLink.textContent = "Đăng nhập";
+//     }
+//   }
 
-  updateUI();
+//   updateUI();
 
-  // Toggle dropdown
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdown.classList.toggle("hidden");
-  });
+//   // Toggle dropdown
+//   btn.addEventListener("click", (e) => {
+//     e.stopPropagation();
+//     dropdown.classList.toggle("hidden");
+//   });
 
-  document.addEventListener("click", () => dropdown.classList.add("hidden"));
+//   document.addEventListener("click", () => dropdown.classList.add("hidden"));
 
-  // Xử lý login qua form submit
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
+//   // Xử lý login qua form submit
+//   loginForm.addEventListener("submit", (e) => {
+//     e.preventDefault();
+//     const username = usernameInput.value.trim();
+//     const password = passwordInput.value.trim();
 
-    const found = users.find(
-      (u) => u.username === username && u.password === password
-    );
+//     const found = users.find(
+//       (u) => u.username === username && u.password === password
+//     );
 
-    if (found) {
-      currentUser = found;
-      localStorage.setItem("currentUser", JSON.stringify(found));
-      updateUI();
-      loginModal.classList.add("hidden");
-      alert("Đăng nhập thành công!");
-    } else {
-      alert("Sai tài khoản hoặc mật khẩu!");
-    }
-  });
+//     if (found) {
+//       currentUser = found;
+//       localStorage.setItem("currentUser", JSON.stringify(found));
+//       updateUI();
+//       loginModal.classList.add("hidden");
+//       alert("Đăng nhập thành công!");
+//     } else {
+//       alert("Sai tài khoản hoặc mật khẩu!");
+//     }
+//   });
 
-  // Xử lý click vào logout/login trong menu
-  logoutLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    dropdown.classList.add("hidden");
+//   // Xử lý click vào logout/login trong menu
+//   logoutLink.addEventListener("click", (e) => {
+//     e.preventDefault();
+//     dropdown.classList.add("hidden");
 
-    if (currentUser) {
-      // Đăng xuất
-      localStorage.removeItem("currentUser");
-      currentUser = null;
-      updateUI();
-    } else {
-      // Chưa đăng nhập → mở modal
-      loginModal.classList.remove("hidden");
-    }
-  });
-}
+//     if (currentUser) {
+//       // Đăng xuất
+//       localStorage.removeItem("currentUser");
+//       currentUser = null;
+//       updateUI();
+//     } else {
+//       // Chưa đăng nhập → mở modal
+//       loginModal.classList.remove("hidden");
+//     }
+//   });
+// }
 
     </script>
   </body>
