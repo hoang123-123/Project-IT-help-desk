@@ -1902,84 +1902,6 @@
         choices.setChoices(options, "value", "label", false);
       }
 
-      // function initUserMenu() {
-      //   const btn = document.getElementById("userMenuBtn");
-      //   const dropdown = document.getElementById("userMenuDropdown");
-      //   const loginModal = document.getElementById("loginModal");
-      //   const loginSubmit = document.getElementById("loginSubmit");
-      //   const loginCancel = document.getElementById("loginCancel");
-      //   const userNameSpan = btn.querySelector("span.md\\:block"); // span hiển thị tên
-      //   const logoutLink = dropdown.querySelector("a:last-child");
-
-      //   // Lấy thông tin user đã lưu
-      //   let currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-      //   function updateUI() {
-      //     if (currentUser) {
-      //       userNameSpan.textContent = currentUser.fullName;
-      //       logoutLink.textContent = "Đăng xuất";
-      //     } else {
-      //       userNameSpan.textContent = "Khách";
-      //       logoutLink.textContent = "Đăng nhập";
-      //     }
-      //   }
-
-      //   updateUI();
-
-      //   // Toggle dropdown
-      //   btn.addEventListener("click", (e) => {
-      //     e.stopPropagation();
-      //     dropdown.classList.toggle("hidden");
-      //   });
-
-      //   document.addEventListener("click", () =>
-      //     dropdown.classList.add("hidden")
-      //   );
-
-      //   // Xử lý login
-      //   loginSubmit.addEventListener("click", () => {
-      //     const username = document
-      //       .getElementById("loginUsername")
-      //       .value.trim();
-      //     const password = document
-      //       .getElementById("loginPassword")
-      //       .value.trim();
-
-      //     const found = users.find(
-      //       (u) => u.username === username && u.password === password
-      //     );
-
-      //     if (found) {
-      //       currentUser = found;
-      //       localStorage.setItem("currentUser", JSON.stringify(found));
-      //       updateUI();
-      //       loginModal.classList.add("hidden");
-      //       alert("Đăng nhập thành công!");
-      //     } else {
-      //       alert("Sai tài khoản hoặc mật khẩu!");
-      //     }
-      //   });
-
-      //   loginCancel.addEventListener("click", () => {
-      //     loginModal.classList.add("hidden");
-      //   });
-
-      //   // Xử lý click vào logout/login trong menu
-      //   logoutLink.addEventListener("click", (e) => {
-      //     e.preventDefault();
-      //     dropdown.classList.add("hidden");
-
-      //     if (currentUser) {
-      //       // Đăng xuất
-      //       localStorage.removeItem("currentUser");
-      //       currentUser = null;
-      //       updateUI();
-      //     } else {
-      //       // Chưa đăng nhập → mở modal
-      //       loginModal.classList.remove("hidden");
-      //     }
-      //   });
-      // }
             function initUserMenu() {
   const btn = document.getElementById("userMenuBtn");
   const dropdown = document.getElementById("userMenuDropdown");
@@ -1992,15 +1914,16 @@
 
   let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-  function updateUI() {
-    if (currentUser) {
-      userNameSpan.textContent = currentUser.fullName;
-      logoutLink.textContent = "Đăng xuất";
-    } else {
-      userNameSpan.textContent = "Khách";
-      logoutLink.textContent = "Đăng nhập";
-    }
+ function updateUI() {
+  if (currentUser) {
+    userNameSpan.textContent = currentUser.fullName;
+    logoutLink.textContent = "Đăng xuất";
+  } else {
+    userNameSpan.textContent = "Khách";
+    logoutLink.textContent = "Đăng nhập";
   }
+}
+
 
   updateUI();
 
@@ -2046,19 +1969,20 @@
 
   // Logout/Login
   logoutLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    dropdown.classList.add("hidden");
+  e.preventDefault();
+  dropdown.classList.add("hidden");
 
-    if (currentUser) {
-      // Logout
-      localStorage.removeItem("currentUser");
-      currentUser = null;
-      updateUI();
-    } else {
-      // Show login modal
-      loginModal.classList.remove("hidden");
-    }
-  });
+  if (currentUser) {
+    // logout
+    localStorage.removeItem("currentUser");
+    currentUser = null;
+    updateUI();
+  } else {
+    // chưa đăng nhập → mở modal
+    loginModal.classList.remove("hidden");
+  }
+});
+
 }
     </script>
   </body>
