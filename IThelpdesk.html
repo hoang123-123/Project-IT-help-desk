@@ -1962,20 +1962,24 @@ function initUserMenu() {
 
   // Logout / login link
   logoutLink.addEventListener("click", (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (currentUser) {
-      // logout
-      dropdown.classList.add("hidden");
-      localStorage.removeItem("currentUser");
-      currentUser = null;
-      updateUI();
-      loginModal.classList.remove("hidden"); // bật modal login sau logout
-    } else {
-      // chưa login → show modal luôn
-      loginModal.classList.remove("hidden");
-    }
-  });
+  if (currentUser) {
+    // logout
+    currentUser = null;
+    localStorage.removeItem("currentUser");
+    updateUI();
+
+    // Ẩn dropdown hoàn toàn
+    dropdown.classList.add("hidden");
+
+    // Bật modal login ngay lập tức
+    loginModal.classList.remove("hidden");
+  } else {
+    // chưa login → show modal luôn
+    loginModal.classList.remove("hidden");
+  }
+});
 
   // Nút đóng / hủy modal
   if (closeLoginBtn) closeLoginBtn.addEventListener("click", () => loginModal.classList.add("hidden"));
