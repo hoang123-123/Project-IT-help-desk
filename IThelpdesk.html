@@ -1902,62 +1902,74 @@
         choices.setChoices(options, "value", "label", false);
       }
 
-            function initUserMenu() {
+      // function login 
+      function initUserMenu() {
+  // DOM elements
   const btn = document.getElementById("userMenuBtn");
   const dropdown = document.getElementById("userMenuDropdown");
   const loginModal = document.getElementById("loginModal");
   const loginForm = document.getElementById("loginForm");
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
-  const userNameSpan = btn.querySelector("span.md\\:block"); 
+  const userNameSpan = btn.querySelector("span.md\\:block");
   const links = dropdown.querySelectorAll("a");
-const logoutLink = links[links.length - 1]; // luôn là link cuối cùng (Đăng xuất / Đăng nhập)
+  const logoutLink = links[links.length - 1]; // luôn là link cuối cùng (Đăng xuất / Đăng nhập)
 
-console.log(logoutLink); // phải là <a>Đăng xuất</a> hoặc <a>Đăng nhập</a>
+  // Mảng user demo
+  const users = [
+    { username: "admin", password: "123456", fullName: "Admin User" },
+    { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
+    { username: "linh", password: "111111", fullName: "Ngọc Linh" },
+  ];
 
+  // Lấy user từ localStorage
   let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
- function updateUI() {
-  if (currentUser) {
-    userNameSpan.textContent = currentUser.fullName;
-    logoutLink.textContent = "Đăng xuất";
-  } else {
-    userNameSpan.textContent = "Khách";
-    logoutLink.textContent = "Đăng nhập";
+  // Cập nhật giao diện theo trạng thái login
+  function updateUI() {
+    if (currentUser) {
+      userNameSpan.textContent = currentUser.fullName;
+      logoutLink.textContent = "Đăng xuất";
+    } else {
+      userNameSpan.textContent = "Khách";
+      logoutLink.textContent = "Đăng nhập";
+    }
   }
-}
-
 
   updateUI();
 
-  // Toggle dropdown
+  // Nếu chưa login → mở modal ngay khi load
+  if (!currentUser) {
+    loginModal.classList.remove("hidden");
+  }
+
+  // Click nút user
   btn.addEventListener("click", (e) => {
-    e.stopPropagation(); // tránh document click đóng
-    dropdown.classList.toggle("hidden");
-  });
-
-  // Click ra ngoài đóng dropdown
-  document.addEventListener("click", (e) => {
-    if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
-      dropdown.classList.add("hidden");
-    }
-    if (!loginModal.contains(e.target)) {
-      loginModal.classList.add("hidden");
+    e.stopPropagation();
+    if (!currentUser) {
+      loginModal.classList.remove("hidden"); // mở modal cho user chưa login
+    } else {
+      dropdown.classList.toggle("hidden"); // toggle dropdown cho user đã login
     }
   });
 
-  // Click bên trong modal không đóng
+  // Click ngoài → đóng dropdown và modal
+  document.addEventListener("click", () => {
+    dropdown.classList.add("hidden");
+    loginModal.classList.add("hidden");
+  });
+
+  // Click bên trong modal → không đóng
   loginModal.addEventListener("click", (e) => e.stopPropagation());
 
-  // Xử lý login
+  // Submit form login
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
 
-    const found = users.find(
-      (u) => u.username === username && u.password === password
-    );
+    // Check trong mảng users demo
+    const found = users.find(u => u.username === username && u.password === password);
 
     if (found) {
       currentUser = found;
@@ -1970,23 +1982,25 @@ console.log(logoutLink); // phải là <a>Đăng xuất</a> hoặc <a>Đăng nh�
     }
   });
 
-  // Logout/Login
+  // Click link logout/login
   logoutLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  dropdown.classList.add("hidden");
+    e.preventDefault();
+    dropdown.classList.add("hidden");
 
-  if (currentUser) {
-    // logout
-    localStorage.removeItem("currentUser");
-    currentUser = null;
-    updateUI();
-  } else {
-    // chưa đăng nhập → mở modal
-    loginModal.classList.remove("hidden");
-  }
-});
-
+    if (currentUser) {
+      // logout
+      localStorage.removeItem("currentUser");
+      currentUser = null;
+      updateUI();
+      loginModal.classList.remove("hidden"); // mở modal login sau logout
+    } else {
+      // chưa login → mở modal
+      loginModal.classList.remove("hidden");
+    }
+  });
 }
-    </script>
+
+
+      </script>
   </body>
 </html>
