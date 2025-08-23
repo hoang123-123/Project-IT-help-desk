@@ -821,25 +821,24 @@
     </div>
 
     <!-- Modal Login -->
-    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+ <!-- Modal Login -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
   <div class="flex items-center justify-center min-h-screen p-4">
     <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
-      <!-- Nút đóng -->
-      <button id="closeLoginModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl font-bold">&times;</button>
-      
+      <button id="closeLoginModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">&times;</button>
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Đăng nhập</h3>
       <form id="loginForm" class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Tài khoản</label>
-          <input type="text" id="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Nhập tài khoản"/>
+          <input type="text" id="username" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Nhập tài khoản" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
-          <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Nhập mật khẩu"/>
+          <input type="password" id="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="Nhập mật khẩu" />
         </div>
-        <div class="flex justify-end space-x-2">
+        <div class="flex justify-between">
+          <button type="button" id="cancelLogin" class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">Hủy</button>
           <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Đăng nhập</button>
-          <button type="button" id="cancelLogin" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400">Hủy</button>
         </div>
       </form>
     </div>
@@ -1888,104 +1887,6 @@
       }
 
       // function login 
-//       function initUserMenu() {
-//   // DOM elements
-//   const btn = document.getElementById("userMenuBtn");
-//   const dropdown = document.getElementById("userMenuDropdown");
-//   const loginModal = document.getElementById("loginModal");
-//   const loginForm = document.getElementById("loginForm");
-//   const usernameInput = document.getElementById("username");
-//   const passwordInput = document.getElementById("password");
-//   const userNameSpan = btn.querySelector("span.md\\:block");
-//   const links = dropdown.querySelectorAll("a");
-//   const logoutLink = links[links.length - 1]; // luôn là link cuối cùng (Đăng xuất / Đăng nhập)
-
-//   // Mảng user demo
-//   const users = [
-//     { username: "admin", password: "123456", fullName: "Admin User" },
-//     { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
-//     { username: "linh", password: "111111", fullName: "Ngọc Linh" },
-//   ];
-
-//   // Lấy user từ localStorage
-//   let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-
-//   // Cập nhật giao diện theo trạng thái login
-//   function updateUI() {
-//     if (currentUser) {
-//       userNameSpan.textContent = currentUser.fullName;
-//       logoutLink.textContent = "Đăng xuất";
-//     } else {
-//       userNameSpan.textContent = "Khách";
-//       logoutLink.textContent = "Đăng nhập";
-//     }
-//   }
-
-//   updateUI();
-
-//   // Nếu chưa login → mở modal ngay khi load
-//   if (!currentUser) {
-//     loginModal.classList.remove("hidden");
-//   }
-
-//   // Click nút user
-//   btn.addEventListener("click", (e) => {
-//     e.stopPropagation();
-//     if (!currentUser) {
-//       loginModal.classList.remove("hidden"); // mở modal cho user chưa login
-//     } else {
-//       dropdown.classList.toggle("hidden"); // toggle dropdown cho user đã login
-//     }
-//   });
-
-//   // Click ngoài → đóng dropdown và modal
-//   document.addEventListener("click", () => {
-//     dropdown.classList.add("hidden");
-//     loginModal.classList.add("hidden");
-//   });
-
-//   // Click bên trong modal → không đóng
-//   loginModal.addEventListener("click", (e) => e.stopPropagation());
-
-//   // Submit form login
-//   loginForm.addEventListener("submit", (e) => {
-//     e.preventDefault();
-//     const username = usernameInput.value.trim();
-//     const password = passwordInput.value.trim();
-
-//     // Check trong mảng users demo
-//     const found = users.find(u => u.username === username && u.password === password);
-
-//     if (found) {
-//       currentUser = found;
-//       localStorage.setItem("currentUser", JSON.stringify(found));
-//       updateUI();
-//       loginModal.classList.add("hidden");
-//       alert("Đăng nhập thành công!");
-//       init();
-//     } else {
-//       alert("Sai tài khoản hoặc mật khẩu!");
-//     }
-//   });
-
-//   // Click link logout/login
-//   logoutLink.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     dropdown.classList.add("hidden");
-
-//     if (currentUser) {
-//       // logout
-//       localStorage.removeItem("currentUser");
-//       currentUser = null;
-//       updateUI();
-//       loginModal.classList.remove("hidden"); // mở modal login sau logout
-//     } else {
-//       // chưa login → mở modal
-//       loginModal.classList.remove("hidden");
-//     }
-//   });
-// }
-
 
 function initUserMenu() {
   const btn = document.getElementById("userMenuBtn");
@@ -1996,7 +1897,10 @@ function initUserMenu() {
   const passwordInput = document.getElementById("password");
   const userNameSpan = btn.querySelector("span.md\\:block");
   const links = dropdown.querySelectorAll("a");
-  const logoutLink = links[links.length - 1]; // luôn là link cuối cùng
+  const logoutLink = links[links.length - 1];
+
+  const closeLoginBtn = document.getElementById("closeLoginModal");
+  const cancelLoginBtn = document.getElementById("cancelLogin");
 
   let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
@@ -2017,10 +1921,8 @@ function initUserMenu() {
     e.stopPropagation();
 
     if (!currentUser) {
-      // user chưa login → toggle modal login
       loginModal.classList.toggle("hidden");
     } else {
-      // user đã login → toggle dropdown
       dropdown.classList.toggle("hidden");
     }
   });
@@ -2035,7 +1937,6 @@ function initUserMenu() {
     }
   });
 
-  // Click bên trong modal không đóng
   loginModal.addEventListener("click", (e) => e.stopPropagation());
 
   // Xử lý login
@@ -2044,10 +1945,7 @@ function initUserMenu() {
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
 
-    const found = users.find(
-      (u) => u.username === username && u.password === password
-    );
-
+    const found = users.find(u => u.username === username && u.password === password);
     if (found) {
       currentUser = found;
       localStorage.setItem("currentUser", JSON.stringify(found));
@@ -2060,26 +1958,22 @@ function initUserMenu() {
     }
   });
 
-  // Xử lý logout / login link
+  // Logout / login link
   logoutLink.addEventListener("click", (e) => {
     e.preventDefault();
     dropdown.classList.add("hidden");
 
     if (currentUser) {
-      // logout
       localStorage.removeItem("currentUser");
       currentUser = null;
       updateUI();
-      loginModal.classList.remove("hidden"); // mở lại modal login
+      loginModal.classList.remove("hidden"); // mở modal login sau logout
     } else {
-      // chưa login → mở modal
-      loginModal.classList.remove("hidden");
+      loginModal.classList.toggle("hidden");
     }
   });
 
-  // Nút đóng modal (nếu bạn thêm trong HTML)
-  const closeLoginBtn = document.getElementById("closeLoginModal");
-  const cancelLoginBtn = document.getElementById("cancelLogin");
+  // Nút đóng / hủy modal
   if (closeLoginBtn) closeLoginBtn.addEventListener("click", () => loginModal.classList.add("hidden"));
   if (cancelLoginBtn) cancelLoginBtn.addEventListener("click", () => loginModal.classList.add("hidden"));
 }
