@@ -1899,6 +1899,7 @@ function initUserMenu() {
   const links = dropdown.querySelectorAll("a");
   const logoutLink = links[links.length - 1];
 
+  // Nút đóng modal (nếu có)
   const closeLoginBtn = document.getElementById("closeLoginModal");
   const cancelLoginBtn = document.getElementById("cancelLogin");
 
@@ -1916,72 +1917,67 @@ function initUserMenu() {
 
   updateUI();
 
-  // Nếu user chưa login, show modal login ngay
+  // Nếu chưa login, bật modal ngay
   if (!currentUser) loginModal.classList.remove("hidden");
 
   // Click nút userMenuBtn
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (!currentUser) {
-      loginModal.classList.remove("hidden");
+    if (currentUser) {
+      dropdown.classList.toggle("hidden"); // user đã login → toggle dropdown
     } else {
-      dropdown.classList.toggle("hidden");
+      loginModal.classList.remove("hidden"); // chưa login → bật modal
     }
   });
 
-  // Click ra ngoài → ẩn dropdown + modal
+  // Click ra ngoài → ẩn dropdown (modal không auto ẩn nếu chưa login)
   document.addEventListener("click", (e) => {
-    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+    if (currentUser && !btn.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.add("hidden");
     }
-    if (!loginModal.contains(e.target)) {
-      loginModal.classList.add("hidden");
-    }
   });
 
-  loginModal.addEventListener("click", e => e.stopPropagation());
+  // Click bên trong modal → không đóng
+  loginModal.addEventListener("click", (e) => e.stopPropagation());
 
-  // Xử lý login
+  // Xử lý submit login form
   loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
 
     const found = users.find(u => u.username === username && u.password === password);
+
     if (found) {
       currentUser = found;
       localStorage.setItem("currentUser", JSON.stringify(found));
       updateUI();
       loginModal.classList.add("hidden");
       alert("Đăng nhập thành công!");
-      init(); // render giao diện/data sau khi login
+      init(); // render dữ liệu giao diện sau login
     } else {
       alert("Sai tài khoản hoặc mật khẩu!");
     }
   });
 
-  // Logout / login link
+  // Logout / login link trong dropdown
   logoutLink.addEventListener("click", (e) => {
-  e.preventDefault();
-
-  if (currentUser) {
-    // logout
-    currentUser = null;
-    localStorage.removeItem("currentUser");
-    updateUI();
-
-    // Ẩn dropdown hoàn toàn
+    e.preventDefault();
     dropdown.classList.add("hidden");
 
-    // Bật modal login ngay lập tức
-    loginModal.classList.remove("hidden");
-  } else {
-    // chưa login → show modal luôn
-    loginModal.classList.remove("hidden");
-  }
-});
+    if (currentUser) {
+      // Logout
+      currentUser = null;
+      localStorage.removeItem("currentUser");
+      updateUI();
+      loginModal.classList.remove("hidden"); // bật modal ngay
+    } else {
+      // Chưa login → bật modal luôn
+      loginModal.classList.remove("hidden");
+    }
+  });
 
-  // Nút đóng / hủy modal
+  // Nút đóng/hủy modal nếu có
   if (closeLoginBtn) closeLoginBtn.addEventListener("click", () => loginModal.classList.add("hidden"));
   if (cancelLoginBtn) cancelLoginBtn.addEventListener("click", () => loginModal.classList.add("hidden"));
 }
@@ -1992,7 +1988,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
   if (currentUser) {
-    init(); // render data nếu đã login trước đó
+    init(); // render dữ liệu nếu đã login trước đó
   }
 });
 
