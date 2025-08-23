@@ -979,22 +979,22 @@
           });
         });
 
-        document.addEventListener("DOMContentLoaded", () => {
-          const btn = document.getElementById("userMenuBtn");
-          const dropdown = document.getElementById("userMenuDropdown");
+        // document.addEventListener("DOMContentLoaded", () => {
+        //   const btn = document.getElementById("userMenuBtn");
+        //   const dropdown = document.getElementById("userMenuDropdown");
 
-          btn.addEventListener("click", (e) => {
-            e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
-            dropdown.classList.toggle("hidden");
-          });
+        //   btn.addEventListener("click", (e) => {
+        //     e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
+        //     dropdown.classList.toggle("hidden");
+        //   });
 
-          // Ẩn menu khi click ra ngoài
-          document.addEventListener("click", () => {
-            if (!dropdown.classList.contains("hidden")) {
-              dropdown.classList.add("hidden");
-            }
-          });
-        });
+        //   // Ẩn menu khi click ra ngoài
+        //   document.addEventListener("click", () => {
+        //     if (!dropdown.classList.contains("hidden")) {
+        //       dropdown.classList.add("hidden");
+        //     }
+        //   });
+        // });
 
         // Set default page to tickets
         const defaultNavItem = document.querySelector('a[href="#tickets"]');
@@ -1902,21 +1902,24 @@
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("userMenuBtn");
-        const dropdown = document.getElementById("userMenuDropdown");
+  const btn = document.getElementById("userMenuBtn");
+  const dropdown = document.getElementById("userMenuDropdown");
 
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
-          dropdown.classList.toggle("hidden");
-        });
+  if (!btn || !dropdown) return; // tránh lỗi null
 
-        // Ẩn menu khi click ra ngoài
-        document.addEventListener("click", () => {
-          if (!dropdown.classList.contains("hidden")) {
-            dropdown.classList.add("hidden");
-          }
-        });
-      });
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
+    dropdown.classList.toggle("hidden");
+  });
+
+  // Ẩn menu khi click ra ngoài
+  document.addEventListener("click", (e) => {
+    if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+      dropdown.classList.add("hidden");
+    }
+  });
+});
+
 
       function initUserMenu() {
         const btn = document.getElementById("userMenuBtn");
