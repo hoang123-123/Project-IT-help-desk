@@ -1916,12 +1916,14 @@ function initUserMenu() {
 
   updateUI();
 
+  // Nếu user chưa login, show modal login ngay
+  if (!currentUser) loginModal.classList.remove("hidden");
+
   // Click nút userMenuBtn
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
-
     if (!currentUser) {
-      loginModal.classList.toggle("hidden");
+      loginModal.classList.remove("hidden");
     } else {
       dropdown.classList.toggle("hidden");
     }
@@ -1937,7 +1939,7 @@ function initUserMenu() {
     }
   });
 
-  loginModal.addEventListener("click", (e) => e.stopPropagation());
+  loginModal.addEventListener("click", e => e.stopPropagation());
 
   // Xử lý login
   loginForm.addEventListener("submit", (e) => {
@@ -1961,15 +1963,17 @@ function initUserMenu() {
   // Logout / login link
   logoutLink.addEventListener("click", (e) => {
     e.preventDefault();
-    dropdown.classList.add("hidden");
 
     if (currentUser) {
+      // logout
+      dropdown.classList.add("hidden");
       localStorage.removeItem("currentUser");
       currentUser = null;
       updateUI();
-      loginModal.classList.remove("hidden"); // mở modal login sau logout
+      loginModal.classList.remove("hidden"); // bật modal login sau logout
     } else {
-      loginModal.classList.toggle("hidden");
+      // chưa login → show modal luôn
+      loginModal.classList.remove("hidden");
     }
   });
 
