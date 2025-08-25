@@ -890,11 +890,11 @@
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
-      const users = [
-        { username: "admin", password: "123456", fullName: "Admin User" },
-        { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
-        { username: "linh", password: "111111", fullName: "Ngọc Linh" },
-      ];
+      // const users = [
+      //   { username: "admin", password: "123456", fullName: "Admin User" },
+      //   { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
+      //   { username: "linh", password: "111111", fullName: "Ngọc Linh" },
+      // ];
 
       const XSEPTIONS_QUERY =
         "/crdfd_suport_systems" +
@@ -915,8 +915,8 @@
       // ========== Load web ================
 
       // Initialize the application
-      document.addEventListener("DOMContentLoaded", () => {
-        getData();
+      document.addEventListener("DOMContentLoaded",async () => {
+        await getData();
         initUserMenu(); // init menu + modal login
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
