@@ -914,8 +914,15 @@
       // ========== Load web ================
 
       // Initialize the application
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", async () => {
         initUserMenu(); // init menu + modal login
+        // Lấy danh sách user từ Dataverse trước
+        try {
+          approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
+          console.log("Danh sách user từ Dataverse:", approversData);
+        } catch (err) {
+          console.error("Lỗi khi lấy danh sách user:", err);
+        }
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
         if (currentUser) {
