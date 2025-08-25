@@ -1737,6 +1737,7 @@
           idU: item.cr1bb_emailcal || "Không xác định",
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
+          password : "wecare123@"
         }));
         return approversData;
       }
@@ -1978,7 +1979,7 @@
         loginModal.addEventListener("click", (e) => e.stopPropagation());
 
         // Xử lý login chỉ 1 lần
-        const loginHandler = (e) => {
+          loginForm.onsubmit = (e) => {
           e.preventDefault();
           const username = usernameInput.value.trim();
           const password = passwordInput.value.trim();
@@ -2012,8 +2013,8 @@
           }
         };
 
-        loginForm.removeEventListener("submit", loginHandler);
-        loginForm.addEventListener("submit", loginHandler);
+        // loginForm.removeEventListener("submit", loginHandler);
+        // loginForm.addEventListener("submit", loginHandler);
 
         // Logout / login link trong dropdown
         logoutLink.addEventListener("click", (e) => {
