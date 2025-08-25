@@ -920,7 +920,6 @@
         // Lấy danh sách user từ Dataverse trước
         try {
           approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
-          console.log("Danh sách user từ Dataverse:", approversData);
         } catch (err) {
           console.error("Lỗi khi lấy danh sách user:", err);
         }
@@ -1744,7 +1743,6 @@
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
         }));
-         console.log("👉 Kết quả mapping approversData:", approversData);
         return approversData;
       }
 
@@ -1998,7 +1996,7 @@
 
           // 2. Nếu không phải admin → check trong approversData
           if (!found) {
-            console.log("teepj usset dataver");
+            console.log("daara: ", approversData);
             found = approversData.find(
               (u) => u.idU === username && u.password === password
             );
