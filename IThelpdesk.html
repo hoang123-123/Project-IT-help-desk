@@ -471,94 +471,90 @@
 
         <!-- Tickets Section -->
         <div id="tickets" class="page-content hidden">
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-800">
-                  Quản lý Tickets
-                </h3>
-                <div class="flex items-center space-x-4">
-                  <div class="relative">
-                    <input
-                      type="text"
-                      id="searchTickets"
-                      placeholder="Tìm kiếm tickets..."
-                      class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                    <i
-                      class="fas fa-search absolute left-3 top-3 text-gray-400"
-                    ></i>
-                  </div>
-                  <select
-                    id="statusFilter"
-                    class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="pending">Chờ phê duyệt</option>
-                    <option value="approved">Đã phê duyệt</option>
-                    <option value="in-progress">Đang xử lý</option>
-                    <option value="completed">Hoàn thành</option>
-                    <option value="rejected">Từ chối</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      ID
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Tiêu đề
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Loại
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Người tạo
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Trạng thái
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Độ ưu tiên
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Ngày tạo
-                    </th>
-                    <th
-                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Hành động
-                    </th>
-                  </tr>
-                </thead>
-                <tbody
-                  id="ticketsTable"
-                  class="bg-white divide-y divide-gray-200"
-                >
-                  <!-- Tickets will be populated here -->
-                </tbody>
-              </table>
-            </div>
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+    <div class="p-6 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-gray-800">
+          Quản lý Tickets
+        </h3>
+        <div class="flex items-center space-x-4">
+          <!-- Ô tìm kiếm -->
+          <div class="relative">
+            <input
+              type="text"
+              id="searchTickets"
+              placeholder="Tìm kiếm tickets..."
+              class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
           </div>
+
+          <!-- Bộ lọc trạng thái -->
+          <select
+            id="statusFilter"
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="pending">Chờ phê duyệt</option>
+            <option value="approved">Đã phê duyệt</option>
+            <option value="in-progress">Đang xử lý</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="rejected">Từ chối</option>
+          </select>
+
+          <!-- Nút tạo Ticket -->
+          <button
+            id="btnCreateTicket"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+          >
+            <i class="fas fa-plus-circle mr-2"></i>
+            Tạo Ticket
+          </button>
         </div>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              ID
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Tiêu đề
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Loại
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Người tạo
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Trạng thái
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Độ ưu tiên
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Ngày tạo
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Hành động
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          id="ticketsTable"
+          class="bg-white divide-y divide-gray-200"
+        >
+          <!-- Tickets will be populated here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 
         <!-- New Ticket Section -->
         <div id="new-ticket" class="page-content hidden">
@@ -951,7 +947,7 @@
         const [data, dataUser] = await Promise.all([
           getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
           getAllXseptions(token, USER_QUERY, mappingUser),
-          getAllXseptions(token, SOD_QUERY, mappingSOD)
+          getAllXseptions(token, SOD_QUERY, mappingSOD),
         ]);
         return { data, dataUser };
       }
@@ -1854,33 +1850,33 @@
       }
 
       // function setup value chọn user duyệt
-    function initApproverChoices() {
-  const approverSelect = document.getElementById("ticketApprover");
-  if (!approverSelect) return;
+      function initApproverChoices() {
+        const approverSelect = document.getElementById("ticketApprover");
+        if (!approverSelect) return;
 
-  // Nếu chưa có thì khởi tạo Choices
-  if (!approverChoices) {
-    approverChoices = new Choices(approverSelect, {
-      removeItemButton: true,
-      searchEnabled: true,
-      searchResultLimit: 5,
-      placeholderValue: "Chọn người duyệt",
-      noResultsText: "Không tìm thấy",
-      shouldSort: false,
-    });
-  } else {
-    // Nếu đã init thì clear options cũ
-    approverChoices.clearChoices();
-  }
+        // Nếu chưa có thì khởi tạo Choices
+        if (!approverChoices) {
+          approverChoices = new Choices(approverSelect, {
+            removeItemButton: true,
+            searchEnabled: true,
+            searchResultLimit: 5,
+            placeholderValue: "Chọn người duyệt",
+            noResultsText: "Không tìm thấy",
+            shouldSort: false,
+          });
+        } else {
+          // Nếu đã init thì clear options cũ
+          approverChoices.clearChoices();
+        }
 
-  // Set lại danh sách từ approversData
-  const options = approversData.map((u) => ({
-    value: u.id,
-    label: `${u.useName} (${u.phongban})`,
-  }));
+        // Set lại danh sách từ approversData
+        const options = approversData.map((u) => ({
+          value: u.id,
+          label: `${u.useName} (${u.phongban})`,
+        }));
 
-  approverChoices.setChoices(options, "value", "label", false);
-}
+        approverChoices.setChoices(options, "value", "label", false);
+      }
 
       // function setup value chọn phòng ban
       function loadDepartments() {
@@ -1927,123 +1923,6 @@
       }
 
       // function login
-
-      // function initUserMenu() {
-      //   const btn = document.getElementById("userMenuBtn");
-      //   const dropdown = document.getElementById("userMenuDropdown");
-      //   const loginModal = document.getElementById("loginModal");
-      //   const loginForm = document.getElementById("loginForm");
-      //   const usernameInput = document.getElementById("username");
-      //   const passwordInput = document.getElementById("password");
-      //   const userNameSpan = btn.querySelector("span.md\\:block");
-      //   const links = dropdown.querySelectorAll("a");
-      //   const logoutLink = links[links.length - 1];
-
-      //   const closeLoginBtn = document.getElementById("closeLoginModal");
-      //   const cancelLoginBtn = document.getElementById("cancelLogin");
-
-      //   let currentUser =
-      //     JSON.parse(localStorage.getItem("currentUser")) || null;
-
-      //   function updateUI() {
-      //     if (currentUser) {
-      //       userNameSpan.textContent = currentUser.fullName;
-      //       logoutLink.textContent = "Đăng xuất";
-      //     } else {
-      //       userNameSpan.textContent = "Khách";
-      //       logoutLink.textContent = "Đăng nhập";
-      //     }
-      //   }
-
-      //   updateUI();
-
-      //   // Nếu chưa login, bật modal ngay
-      //   if (!currentUser) loginModal.classList.remove("hidden");
-
-      //   // Click nút userMenuBtn
-      //   btn.addEventListener("click", (e) => {
-      //     e.stopPropagation();
-      //     if (currentUser) {
-      //       dropdown.classList.toggle("hidden");
-      //     } else {
-      //       loginModal.classList.remove("hidden");
-      //     }
-      //   });
-
-      //   // Click ra ngoài → ẩn dropdown (modal không auto ẩn nếu chưa login)
-      //   document.addEventListener("click", (e) => {
-      //     if (
-      //       currentUser &&
-      //       !btn.contains(e.target) &&
-      //       !dropdown.contains(e.target)
-      //     ) {
-      //       dropdown.classList.add("hidden");
-      //     }
-      //   });
-
-      //   loginModal.addEventListener("click", (e) => e.stopPropagation());
-
-      //   // Xử lý login chỉ 1 lần
-      //   const loginHandler = (e) => {
-      //     e.preventDefault();
-      //     const username = usernameInput.value.trim();
-      //     const password = passwordInput.value.trim();
-
-      //     let found = null;
-      //     // 1. Check admin trước
-      //     found = AdminUser.find(
-      //       (u) => u.username === username && u.password === password
-      //     );
-
-      //     // 2. Nếu không phải admin → check trong approversData
-      //     if (!found) {
-      //       found = approversData.find(
-      //         (u) => u.idU === username && u.password === password
-      //       );
-      //     }
-      //     if (found) {
-      //       currentUser = found;
-      //       localStorage.setItem("currentUser", JSON.stringify(found));
-      //       updateUI();
-      //       loginModal.classList.add("hidden");
-      //       showNotification("Đăng nhập thành công", "success");
-      //       init(); // render giao diện/data sau login
-      //     } else {
-      //       showNotification("Sai tài khoản hoặc mật khẩu!", "error");
-      //     }
-      //   };
-
-      //   loginForm.removeEventListener("submit", loginHandler);
-      //   loginForm.addEventListener("submit", loginHandler);
-
-      //   // Logout / login link trong dropdown
-      //   logoutLink.addEventListener("click", (e) => {
-      //     e.preventDefault();
-      //     dropdown.classList.add("hidden");
-
-      //     if (currentUser) {
-      //       // logout
-      //       currentUser = null;
-      //       localStorage.removeItem("currentUser");
-      //       clearUI();
-      //       updateUI();
-      //       loginModal.classList.remove("hidden"); // bật modal ngay
-      //     } else {
-      //       // chưa login → bật modal luôn
-      //       loginModal.classList.remove("hidden");
-      //     }
-      //   });
-
-      //   // Nút đóng/hủy modal nếu có
-      //   if (closeLoginBtn)
-      //     closeLoginBtn.addEventListener("click", () =>
-      //       loginModal.classList.add("hidden")
-      //     );
-      //   if (cancelLoginBtn)
-      //     cancelLoginBtn.addEventListener("click", () =>
-      //       loginModal.classList.add("hidden")
-      //     );
-      // }
       function initUserMenu() {
         // ================================
         // 1. Lấy các phần tử trong DOM
