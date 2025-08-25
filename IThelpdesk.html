@@ -889,7 +889,7 @@
       let approversData = [];
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
-      let currentUser = { name: "Admin User", role: "admin" };
+      //let currentUser = { name: "Admin User", role: "admin" };
       const users = [
         { username: "admin", password: "123456", fullName: "Admin User" },
         { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
@@ -916,12 +916,14 @@
 
       // Initialize the application
       document.addEventListener("DOMContentLoaded", () => {
+        getData();
         initUserMenu(); // init menu + modal login
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
         if (currentUser) {
           init(); // user đã login trước → render giao diện/data luôn
         }
+        console.log("data user: ", approversData)
       });
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -945,11 +947,8 @@
 
       // ========== Function ================
 
-      async function init() {
-        try {
+      async function getData() {
           const token = await getToken(); // chờ token
-          //console.log("Token lấy được:", token);
-
           const data = await getAllXseptions(
             token,
             XSEPTIONS_QUERY,
@@ -960,6 +959,11 @@
             USER_QUERY,
             mappingUser
           );
+      }
+
+
+      async function init() {
+        try {
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
           initializeNavigation();
