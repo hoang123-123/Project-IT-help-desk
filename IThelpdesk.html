@@ -921,7 +921,7 @@
   } catch (err) {
     console.error("Lỗi khi load dữ liệu:", err);
   }
-        initUserMenu(); // init menu + modal login
+        //initUserMenu(); // init menu + modal login
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
         if (currentUser) {
@@ -2069,15 +2069,15 @@
       }
 
       // // Khi load trang
-      // document.addEventListener("DOMContentLoaded", () => {
-      //   initUserMenu();
+      document.addEventListener("DOMContentLoaded", () => {
+        initUserMenu();
 
-      //   const currentUser =
-      //     JSON.parse(localStorage.getItem("currentUser")) || null;
-      //   if (currentUser) {
-      //     init(); // render data nếu đã login trước đó
-      //   }
-      // });
+        const currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || null;
+        if (currentUser) {
+          init(); // render data nếu đã login trước đó
+        }
+      });
     </script>
   </body>
 </html>
