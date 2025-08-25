@@ -915,8 +915,12 @@
 
       // Initialize the application
       document.addEventListener("DOMContentLoaded", async () => {
-        token = await getToken(); // chờ token
-        await getData();
+       try {
+    token = await getToken();        // lấy token
+    await getData();                 // load approversData
+  } catch (err) {
+    console.error("Lỗi khi load dữ liệu:", err);
+  }
         initUserMenu(); // init menu + modal login
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
