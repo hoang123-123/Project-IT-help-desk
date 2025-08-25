@@ -890,12 +890,9 @@
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
-      // const users = [
-      //   { username: "admin", password: "123456", fullName: "Admin User" },
-      //   { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
-      //   { username: "linh", password: "111111", fullName: "Ngọc Linh" },
-      // ];
-
+       const AdminUser = [
+        { username: "admin", password: "123456", fullName: "Admin WC" },
+      ];
       const XSEPTIONS_QUERY =
         "/crdfd_suport_systems" +
         "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
@@ -1985,10 +1982,24 @@
           e.preventDefault();
           const username = usernameInput.value.trim();
           const password = passwordInput.value.trim();
-
-          const found = users.find(
+          
+          let found = null;
+          // 1. Check admin trước
+          found = AdminUser.find(
             (u) => u.username === username && u.password === password
           );
+
+          // 2. Nếu không phải admin → check trong approversData
+          if (!found) {
+            console.log("daara: ", approversData);
+            found = approversData.find(
+              (u) => u.idU === username && u.password === password
+            );
+          }
+
+          // const found = users.find(
+          //   (u) => u.username === username && u.password === password
+          // );
           if (found) {
             currentUser = found;
             localStorage.setItem("currentUser", JSON.stringify(found));
