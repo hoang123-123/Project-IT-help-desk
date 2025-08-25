@@ -883,6 +883,7 @@
     <script>
       // ======== Setting =============
 
+      let token = "";
       let tickets = [];
       let supportSystemsData = [];
 
@@ -915,11 +916,11 @@
 
       // Initialize the application
       document.addEventListener("DOMContentLoaded", async () => {
-        const token = await getToken(); // chờ token
-        initUserMenu(); // init menu + modal login
+        token = await getToken(); // chờ token
         // Lấy danh sách user từ Dataverse trước
         try {
           approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
+          initUserMenu(); // init menu + modal login
         } catch (err) {
           console.error("Lỗi khi lấy danh sách user:", err);
         }
