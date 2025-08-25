@@ -885,7 +885,6 @@
 
       let tickets = [];
       let supportSystemsData = [];
-
       let ordersDetailData = [];
       let approversData = [];
 
@@ -1994,7 +1993,7 @@
             showNotification("Đăng nhập thành công", "success");
             init(); // render giao diện/data sau login
           } else {
-             showNotification("Sai tài khoản hoặc mật khẩu!", "error");
+            showNotification("Sai tài khoản hoặc mật khẩu!", "error");
           }
         };
 
@@ -2010,6 +2009,7 @@
             // logout
             currentUser = null;
             localStorage.removeItem("currentUser");
+            clearUI();
             updateUI();
             loginModal.classList.remove("hidden"); // bật modal ngay
           } else {
@@ -2029,16 +2029,42 @@
           );
       }
 
-      // Khi load trang
-      document.addEventListener("DOMContentLoaded", () => {
-        initUserMenu();
+      function clearUI() {
+        // Reset lại các container dữ liệu
+        const ticketContainer = document.getElementById("ticketsContainer");
+        if (ticketContainer) ticketContainer.innerHTML = "";
 
-        const currentUser =
-          JSON.parse(localStorage.getItem("currentUser")) || null;
-        if (currentUser) {
-          init(); // render data nếu đã login trước đó
-        }
-      });
+        const approvalContainer = document.getElementById("approvalsContainer");
+        if (approvalContainer) approvalContainer.innerHTML = "";
+
+        const dashboardContainer =
+          document.getElementById("dashboardContainer");
+        if (dashboardContainer) dashboardContainer.innerHTML = "";
+
+        // Reset các select box
+        const approverSelect = document.getElementById("ticketApprover");
+        if (approverSelect) approverSelect.innerHTML = "";
+
+        const deptSelect = document.getElementById("ticketDepartment");
+        if (deptSelect)
+          deptSelect.innerHTML = '<option value="">Chọn phòng ban</option>';
+
+        // Reset biến dữ liệu trong JS
+        tickets = [];
+        approversData = [];
+        ordersDetailData = [];
+      }
+
+      // Khi load trang
+      // document.addEventListener("DOMContentLoaded", () => {
+      //   initUserMenu();
+
+      //   const currentUser =
+      //     JSON.parse(localStorage.getItem("currentUser")) || null;
+      //   if (currentUser) {
+      //     init(); // render data nếu đã login trước đó
+      //   }
+      // });
     </script>
   </body>
 </html>
