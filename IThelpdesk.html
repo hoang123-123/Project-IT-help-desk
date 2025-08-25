@@ -15,6 +15,7 @@
       href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link rel="icon" href="data:,">
     <style>
       /* Reset and base styles */
       * {
@@ -887,6 +888,7 @@
       let supportSystemsData = [];
       let ordersDetailData = [];
       let approversData = [];
+      let token = "";
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
@@ -913,6 +915,7 @@
 
       // Initialize the application
       document.addEventListener("DOMContentLoaded",async () => {
+        token = await getToken(); // chờ token
         await getData();
         initUserMenu(); // init menu + modal login
         const currentUser =
@@ -945,7 +948,6 @@
       // ========== Function ================
 
       async function getData() {
-          const token = await getToken(); // chờ token
           const data = await getAllXseptions(
             token,
             XSEPTIONS_QUERY,
