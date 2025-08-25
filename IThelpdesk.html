@@ -947,18 +947,15 @@
 
       // ========== Function ================
 
-      async function getData() {
-          const data = await getAllXseptions(
-            token,
-            XSEPTIONS_QUERY,
-            mappingListTickets
-          );
-          const dataUser = await getAllXseptions(
-            token,
-            USER_QUERY,
-            mappingUser
-          );
-      }
+ async function getData() {
+  const [data, dataUser] = await Promise.all([
+    getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
+    getAllXseptions(token, USER_QUERY, mappingUser)
+  ]);
+
+  return { data, dataUser };
+}
+
 
 
       async function init() {
