@@ -15,7 +15,7 @@
       href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <link rel="icon" href="data:,">
+    <link rel="icon" href="data:," />
     <style>
       /* Reset and base styles */
       * {
@@ -892,7 +892,7 @@
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
-       const AdminUser = [
+      const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
       const XSEPTIONS_QUERY =
@@ -914,7 +914,7 @@
       // ========== Load web ================
 
       // Initialize the application
-      document.addEventListener("DOMContentLoaded",async () => {
+      document.addEventListener("DOMContentLoaded", async () => {
         token = await getToken(); // chờ token
         await getData();
         initUserMenu(); // init menu + modal login
@@ -923,7 +923,7 @@
         if (currentUser) {
           init(); // user đã login trước → render giao diện/data luôn
         }
-        console.log("data user: ", approversData)
+        console.log("data user: ", approversData);
       });
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -947,24 +947,13 @@
 
       // ========== Function ================
 
-async function getData() {
-  try {
-    const [data, dataUser] = await Promise.all([
-      getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
-      getAllXseptions(token, USER_QUERY, mappingUser)
-    ]);
-
-    // ghi vào localStorage
-    localStorage.setItem("listUsers", JSON.stringify(dataUser));
-
-    return { data, dataUser };
-  } catch (error) {
-    console.error("Lỗi khi lấy dữ liệu:", error);
-    return { data: [], dataUser: [] };
-  }
-};
-
-
+      async function getData() {
+        const [data, dataUser] = await Promise.all([
+          getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
+          getAllXseptions(token, USER_QUERY, mappingUser),
+        ]);
+        return { data, dataUser };
+      }
 
       async function init() {
         try {
@@ -1744,7 +1733,7 @@ async function getData() {
           idU: item.cr1bb_emailcal || "Không xác định",
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
-          password : "wecare123@"
+          password: "wecare123@",
         }));
         return approversData;
       }
@@ -1986,11 +1975,11 @@ async function getData() {
         loginModal.addEventListener("click", (e) => e.stopPropagation());
 
         // Xử lý login chỉ 1 lần
-          const loginHandler = (e) => {
+        const loginHandler = (e) => {
           e.preventDefault();
           const username = usernameInput.value.trim();
           const password = passwordInput.value.trim();
-          
+
           let found = null;
           // 1. Check admin trước
           found = AdminUser.find(
@@ -1999,8 +1988,7 @@ async function getData() {
 
           // 2. Nếu không phải admin → check trong approversData
           if (!found) {
-            const users = JSON.parse(localStorage.getItem("listUsers")) || [];
-            found = users.find(
+            found = approversData.find(
               (u) => u.idU === username && u.password === password
             );
           }
@@ -2074,7 +2062,7 @@ async function getData() {
 
         // Reset biến dữ liệu trong JS
         tickets = [];
-        approversData = [];
+        //approversData = [];
         ordersDetailData = [];
       }
 
