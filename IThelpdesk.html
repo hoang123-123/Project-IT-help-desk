@@ -1715,6 +1715,7 @@
         if (typeof callback === "function") {
           callback(allData);
         }
+        return allData; 
       }
 
       function mappingListTickets(allData) {
@@ -1743,6 +1744,7 @@
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
         }));
+         console.log("👉 Kết quả mapping approversData:", approversData);
         return approversData;
       }
 
