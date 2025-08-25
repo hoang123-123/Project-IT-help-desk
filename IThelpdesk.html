@@ -1999,7 +1999,7 @@
           // 2. Nếu không phải admin → check trong approversData
           if (!found) {
             found = approversData.find(
-              (u) => u.username === username && u.password === password
+              (u) => u.idU === username && u.password === password
             );
           }
 
