@@ -2056,15 +2056,15 @@
       }
 
       // Khi load trang
-      // document.addEventListener("DOMContentLoaded", () => {
-      //   initUserMenu();
+      document.addEventListener("DOMContentLoaded", () => {
+        initUserMenu();
 
-      //   const currentUser =
-      //     JSON.parse(localStorage.getItem("currentUser")) || null;
-      //   if (currentUser) {
-      //     init(); // render data nếu đã login trước đó
-      //   }
-      // });
+        const currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || null;
+        if (currentUser) {
+          init(); // render data nếu đã login trước đó
+        }
+      });
     </script>
   </body>
 </html>
