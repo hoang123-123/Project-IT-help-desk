@@ -886,12 +886,10 @@
       let token = "";
       let tickets = [];
       let supportSystemsData = [];
-
       let ordersDetailData = [];
       let approversData = [];
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
-      //let currentUser = { name: "Admin User", role: "admin" };
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin User" },
       ];
@@ -918,9 +916,10 @@
       document.addEventListener("DOMContentLoaded", async () => {
         token = await getToken(); // chờ token
         // Lấy danh sách user từ Dataverse trước
+        initUserMenu(); // init menu + modal login
         try {
           approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
-          initUserMenu(); // init menu + modal login
+
         } catch (err) {
           console.error("Lỗi khi lấy danh sách user:", err);
         }
