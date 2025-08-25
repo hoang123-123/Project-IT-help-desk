@@ -947,14 +947,22 @@
 
       // ========== Function ================
 
- async function getData() {
-  const [data, dataUser] = await Promise.all([
-    getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
-    getAllXseptions(token, USER_QUERY, mappingUser)
-  ]);
+async function getData() {
+  try {
+    const [data, dataUser] = await Promise.all([
+      getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
+      getAllXseptions(token, USER_QUERY, mappingUser)
+    ]);
 
-  return { data, dataUser };
-}
+    // ghi vào localStorage
+    localStorage.setItem("listUsers", JSON.stringify(dataUser));
+
+    return { data, dataUser };
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu:", error);
+    return { data: [], dataUser: [] };
+  }
+};
 
 
 
@@ -1991,8 +1999,8 @@
 
           // 2. Nếu không phải admin → check trong approversData
           if (!found) {
-            console.log("daara: ", approversData);
-            found = approversData.find(
+            const users = JSON.parse(localStorage.getItem("listUsers")) || [];
+            found = users.find(
               (u) => u.idU === username && u.password === password
             );
           }
