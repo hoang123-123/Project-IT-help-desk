@@ -915,6 +915,7 @@
 
       // Initialize the application
       document.addEventListener("DOMContentLoaded", async () => {
+        const token = await getToken(); // chờ token
         initUserMenu(); // init menu + modal login
         // Lấy danh sách user từ Dataverse trước
         try {
@@ -953,9 +954,7 @@
 
       async function init() {
         try {
-          const token = await getToken(); // chờ token
-          //console.log("Token lấy được:", token);
-
+          
           const data = await getAllXseptions(
             token,
             XSEPTIONS_QUERY,
