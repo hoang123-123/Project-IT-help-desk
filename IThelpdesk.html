@@ -913,53 +913,38 @@
 
       // ========== Load web ================
   // Initialize the application
-      // document.addEventListener("DOMContentLoaded", async () => {
-      //   token = await getToken(); // chờ token
-      //   await getData();
-      //   //initUserMenu(); // init menu + modal login
-      //   const currentUser =
-      //     JSON.parse(localStorage.getItem("currentUser")) || null;
-      //   if (currentUser) {
-      //     init(); // user đã login trước → render giao diện/data luôn
-      //   }
-      //   console.log("data user: ", approversData);
-      // });
-
       document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    token = await getToken();
-    await getData();
-  } catch (err) {
-    console.error("Lỗi load dữ liệu:", err);
-  }
+        token = await getToken(); // chờ token
+        await getData();
+        initUserMenu(); // init menu + modal login
+        const currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || null;
+        if (currentUser) {
+          init(); // user đã login trước → render giao diện/data luôn
+        }
+        console.log("data user: ", approversData);
+      });
 
-  initUserMenu(); // init menu + modal login
 
-  const currentUser =
-    JSON.parse(localStorage.getItem("currentUser")) || null;
-  if (currentUser) {
-    init(); // render data nếu đã login trước đó
-  }
-});
 
-      // document.addEventListener("DOMContentLoaded", () => {
-      //   const btn = document.getElementById("userMenuBtn");
-      //   const dropdown = document.getElementById("userMenuDropdown");
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("userMenuBtn");
+        const dropdown = document.getElementById("userMenuDropdown");
 
-      //   if (!btn || !dropdown) return; // tránh lỗi null
+        if (!btn || !dropdown) return; // tránh lỗi null
 
-      //   btn.addEventListener("click", (e) => {
-      //     e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
-      //     dropdown.classList.toggle("hidden");
-      //   });
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation(); // tránh click ra ngoài kích hoạt sự kiện document
+          dropdown.classList.toggle("hidden");
+        });
 
-      //   // Ẩn menu khi click ra ngoài
-      //   document.addEventListener("click", (e) => {
-      //     if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-      //       dropdown.classList.add("hidden");
-      //     }
-      //   });
-      // });
+        // Ẩn menu khi click ra ngoài
+        document.addEventListener("click", (e) => {
+          if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add("hidden");
+          }
+        });
+      });
 
       // ========== Function ================
 
