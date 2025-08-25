@@ -883,15 +883,18 @@
     <script>
       // ======== Setting =============
 
-      let token = "";
       let tickets = [];
       let supportSystemsData = [];
+
       let ordersDetailData = [];
       let approversData = [];
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
-      const AdminUser = [
+      let currentUser = { name: "Admin User", role: "admin" };
+      const users = [
         { username: "admin", password: "123456", fullName: "Admin User" },
+        { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
+        { username: "linh", password: "111111", fullName: "Ngọc Linh" },
       ];
 
       const XSEPTIONS_QUERY =
@@ -913,19 +916,8 @@
       // ========== Load web ================
 
       // Initialize the application
-      document.addEventListener("DOMContentLoaded",  () => {
-        
-        // async function getToken() {
-          
-        //   try {
-        //   approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
-        // } catch (err) {
-        //   console.error("Lỗi khi lấy danh sách user:", err);
-        // }
-        // }
-        // Lấy danh sách user từ Dataverse trước
+      document.addEventListener("DOMContentLoaded", () => {
         initUserMenu(); // init menu + modal login
-        
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
         if (currentUser) {
@@ -956,7 +948,9 @@
 
       async function init() {
         try {
-          token = await getToken(); // chờ token
+          const token = await getToken(); // chờ token
+          //console.log("Token lấy được:", token);
+
           const data = await getAllXseptions(
             token,
             XSEPTIONS_QUERY,
@@ -972,11 +966,11 @@
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
-          loadTickets(); // danh sách top 10 dữ liệu support xem trước
-          loadApprovals(); // danh sách items support đang chờ duyệt
+          loadTickets();
+          loadApprovals();
           loadDashboard();
-          initApproverChoices(); // Tạo danh sách choices option chọn người duyệt cho form tạo yêu cầu
-          loadDepartments(); // Tạo danh sách choices option phòng ban cho form tạo yêu cầu
+          initApproverChoices();
+          loadDepartments();
           const dataSOD = await getAllXseptions(token, SOD_QUERY, mappingSOD);
         } catch (err) {
           console.error("Error init:", err);
@@ -1717,7 +1711,6 @@
         if (typeof callback === "function") {
           callback(allData);
         }
-        return allData; 
       }
 
       function mappingListTickets(allData) {
@@ -1742,7 +1735,6 @@
       function mappingUser(allData) {
         approversData = allData.map((item, index) => ({
           idU: item.cr1bb_emailcal || "Không xác định",
-          password: "wecare123@",
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
         }));
@@ -1991,20 +1983,9 @@
           const username = usernameInput.value.trim();
           const password = passwordInput.value.trim();
 
-          let found = null;
-          // 1. Check admin trước
-          found = AdminUser.find(
+          const found = users.find(
             (u) => u.username === username && u.password === password
           );
-
-          // 2. Nếu không phải admin → check trong approversData
-          if (!found) {
-            console.log("daara: ", approversData);
-            found = approversData.find(
-              (u) => u.idU === username && u.password === password
-            );
-          }
-
           if (found) {
             currentUser = found;
             localStorage.setItem("currentUser", JSON.stringify(found));
@@ -2013,7 +1994,7 @@
             showNotification("Đăng nhập thành công", "success");
             init(); // render giao diện/data sau login
           } else {
-            showNotification("Sai tài khoản hoặc mật khẩu!", "error");
+             showNotification("Sai tài khoản hoặc mật khẩu!", "error");
           }
         };
 
@@ -2049,15 +2030,15 @@
       }
 
       // Khi load trang
-      // document.addEventListener("DOMContentLoaded", () => {
-      //   initUserMenu();
+      document.addEventListener("DOMContentLoaded", () => {
+        initUserMenu();
 
-      //   const currentUser =
-      //     JSON.parse(localStorage.getItem("currentUser")) || null;
-      //   if (currentUser) {
-      //     init(); // render data nếu đã login trước đó
-      //   }
-      // });
+        const currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || null;
+        if (currentUser) {
+          init(); // render data nếu đã login trước đó
+        }
+      });
     </script>
   </body>
 </html>
