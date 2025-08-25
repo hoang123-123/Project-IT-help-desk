@@ -913,16 +913,19 @@
       // ========== Load web ================
 
       // Initialize the application
-      document.addEventListener("DOMContentLoaded", async () => {
-        token = await getToken(); // chờ token
+      document.addEventListener("DOMContentLoaded",  () => {
+        
+        // async function getToken() {
+          
+        //   try {
+        //   approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
+        // } catch (err) {
+        //   console.error("Lỗi khi lấy danh sách user:", err);
+        // }
+        // }
         // Lấy danh sách user từ Dataverse trước
         initUserMenu(); // init menu + modal login
-        try {
-          approversData = await getAllXseptions(token, USER_QUERY, mappingUser);
-
-        } catch (err) {
-          console.error("Lỗi khi lấy danh sách user:", err);
-        }
+        
         const currentUser =
           JSON.parse(localStorage.getItem("currentUser")) || null;
         if (currentUser) {
@@ -953,7 +956,7 @@
 
       async function init() {
         try {
-          
+          token = await getToken(); // chờ token
           const data = await getAllXseptions(
             token,
             XSEPTIONS_QUERY,
