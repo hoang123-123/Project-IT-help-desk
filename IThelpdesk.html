@@ -890,11 +890,9 @@
       let approversData = [];
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
-      let currentUser = { name: "Admin User", role: "admin" };
-      const users = [
+      //let currentUser = { name: "Admin User", role: "admin" };
+      const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin User" },
-        { username: "nghia", password: "654321", fullName: "Nghĩa Sơn" },
-        { username: "linh", password: "111111", fullName: "Ngọc Linh" },
       ];
 
       const XSEPTIONS_QUERY =
@@ -966,11 +964,11 @@
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
-          loadTickets();
-          loadApprovals();
+          loadTickets(); // danh sách top 10 dữ liệu support xem trước
+          loadApprovals(); // danh sách items support đang chờ duyệt
           loadDashboard();
-          initApproverChoices();
-          loadDepartments();
+          initApproverChoices(); // Tạo danh sách choices option chọn người duyệt cho form tạo yêu cầu
+          loadDepartments(); // Tạo danh sách choices option phòng ban cho form tạo yêu cầu
           const dataSOD = await getAllXseptions(token, SOD_QUERY, mappingSOD);
         } catch (err) {
           console.error("Error init:", err);
@@ -1735,6 +1733,7 @@
       function mappingUser(allData) {
         approversData = allData.map((item, index) => ({
           idU: item.cr1bb_emailcal || "Không xác định",
+          password: "wecare123@",
           useName: item.crdfd_name || "Không xác định",
           phongban: item.crdfd_phongbantext || "Không xác định",
         }));
@@ -1983,9 +1982,19 @@
           const username = usernameInput.value.trim();
           const password = passwordInput.value.trim();
 
-          const found = users.find(
+          let found = null;
+          // 1. Check admin trước
+          found = AdminUser.find(
             (u) => u.username === username && u.password === password
           );
+
+          // 2. Nếu không phải admin → check trong approversData
+          if (!found) {
+            found = approversData.find(
+              (u) => u.username === username && u.password === password
+            );
+          }
+
           if (found) {
             currentUser = found;
             localStorage.setItem("currentUser", JSON.stringify(found));
@@ -1994,7 +2003,7 @@
             showNotification("Đăng nhập thành công", "success");
             init(); // render giao diện/data sau login
           } else {
-             showNotification("Sai tài khoản hoặc mật khẩu!", "error");
+            showNotification("Sai tài khoản hoặc mật khẩu!", "error");
           }
         };
 
