@@ -1007,8 +1007,12 @@
       }
 
       async function refreshData() {
-        await getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets);
-        loadTickets();
+        tickets = await getAllXseptions(
+          token,
+          XSEPTIONS_QUERY,
+          mappingListTickets
+        );
+        loadTickets(); // giờ loadTickets dùng tickets mới nhất
       }
 
       async function init() {
@@ -1207,58 +1211,6 @@
       }
 
       // Tickets management
-      // function loadTickets() {
-      //   const ticketsTable = document.getElementById("ticketsTable");
-      //   const topTickets = tickets.slice(0, 10);
-
-      //   ticketsTable.innerHTML = topTickets
-      //     .map(
-      //       (ticket) => `
-      //           <tr class="hover:bg-gray-50">
-      //               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${
-      //                 ticket.id
-      //               }</td>
-      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 truncate">${
-      //                 ticket.title
-      //               }</td>
-      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getCategoryText(
-      //                 ticket.category
-      //               )}</td>
-      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${
-      //                 ticket.createdBy
-      //               }</td>
-      //               <td class="px-6 py-4 whitespace-nowrap truncate">
-      //                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(
-      //                     ticket.status
-      //                   )}">
-      //                       ${getStatusText(ticket.status)}
-      //                   </span>
-      //               </td>
-      //               <td class="px-6 py-4 whitespace-nowrap truncate">
-      //                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
-      //                     ticket.priority
-      //                   )}">
-      //                       ${getPriorityText(ticket.priority)}
-      //                   </span>
-      //               </td>
-      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(
-      //                 ticket.createdAt
-      //               )}</td>
-      //               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium truncate">
-      //                   <button onclick="viewTicket('${
-      //                     ticket.id
-      //                   }')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
-      //                   ${
-      //                     ticket.status === 191920002
-      //                       ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>`
-      //                       : ""
-      //                   }
-      //               </td>
-      //           </tr>
-      //       `
-      //     )
-      //     .join("");
-      // }
       let currentTicketPage = 1;
       const ticketsPerPage = 10;
 
@@ -1855,7 +1807,7 @@
           url = data["@odata.nextLink"] || null;
         }
         if (typeof callback === "function") {
-          callback(allData);
+          return callback(allData);
         }
         return allData; // <-- quan trọng
       }
@@ -2248,29 +2200,6 @@
         //approversData = [];
         ordersDetailData = [];
       }
-
-      // function renderPagination() {
-      //   const totalPages = Math.ceil(pendingTickets.length / ticketsPerPage);
-      //   const paginationContainer = document.getElementById(
-      //     "approvalsPagination"
-      //   );
-
-      //   if (!paginationContainer) return;
-
-      //   paginationContainer.innerHTML = "";
-
-      //   for (let i = 1; i <= totalPages; i++) {
-      //     const btn = document.createElement("button");
-      //     btn.textContent = i;
-      //     btn.className =
-      //       "px-3 py-1 border rounded " +
-      //       (i === currentPage
-      //         ? "bg-blue-600 text-white"
-      //         : "bg-white text-gray-700 hover:bg-gray-100");
-      //     btn.addEventListener("click", () => loadApprovals(i));
-      //     paginationContainer.appendChild(btn);
-      //   }
-      // }
     </script>
   </body>
 </html>
