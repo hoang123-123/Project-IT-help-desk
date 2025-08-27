@@ -456,7 +456,7 @@
         </div>
 
         <!-- Tickets Section -->
-        <div id="tickets" class="page-content hidden">
+        <div id="tickets" class="page-content hidden relative">
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-between">
@@ -552,9 +552,12 @@
                 </tbody>
               </table>
             </div>
-            <div id="ticketsPagination" class="flex justify-center mt-4"></div>
-            <br>
           </div>
+          <div
+            id="ticketsPagination"
+            class="flex justify-center absolute bottom-4 w-full"
+          ></div>
+          <br />
         </div>
 
         <!-- New Ticket Modal -->
@@ -1255,41 +1258,58 @@
       //     )
       //     .join("");
       // }
-let currentTicketPage = 1;
-const ticketsPerPage = 10;
+      let currentTicketPage = 1;
+      const ticketsPerPage = 10;
 
-function loadTickets(page = 1) {
-  currentTicketPage = page;
-  const ticketsTable = document.getElementById("ticketsTable");
-  const paginationContainer = document.getElementById("ticketsPagination");
+      function loadTickets(page = 1) {
+        currentTicketPage = page;
+        const ticketsTable = document.getElementById("ticketsTable");
+        const paginationContainer =
+          document.getElementById("ticketsPagination");
 
-  const totalPages = Math.ceil(tickets.length / ticketsPerPage);
-  const start = (page - 1) * ticketsPerPage;
-  const end = start + ticketsPerPage;
-  const ticketsToRender = tickets.slice(start, end);
+        const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+        const start = (page - 1) * ticketsPerPage;
+        const end = start + ticketsPerPage;
+        const ticketsToRender = tickets.slice(start, end);
 
-  // Render bảng tickets
-  ticketsTable.innerHTML = ticketsToRender
-    .map(
-      (ticket) => `
+        // Render bảng tickets
+        ticketsTable.innerHTML = ticketsToRender
+          .map(
+            (ticket) => `
         <tr class="hover:bg-gray-50">
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${ticket.id}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 truncate">${ticket.title}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getCategoryText(ticket.category)}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${ticket.createdBy}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${
+            ticket.id
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 truncate">${
+            ticket.title
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getCategoryText(
+            ticket.category
+          )}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${
+            ticket.createdBy
+          }</td>
           <td class="px-6 py-4 whitespace-nowrap truncate">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(ticket.status)}">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(
+              ticket.status
+            )}">
               ${getStatusText(ticket.status)}
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap truncate">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
+              ticket.priority
+            )}">
               ${getPriorityText(ticket.priority)}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(ticket.createdAt)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(
+            ticket.createdAt
+          )}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium truncate">
-            <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
+            <button onclick="viewTicket('${
+              ticket.id
+            }')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
             ${
               ticket.status === 191920002
                 ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>`
@@ -1298,42 +1318,52 @@ function loadTickets(page = 1) {
           </td>
         </tr>
       `
-    )
-    .join("");
+          )
+          .join("");
 
-  // Render phân trang
-  let paginationHTML = "";
+        // Render phân trang
+        let paginationHTML = "";
 
-  // Nút Previous
-  paginationHTML += `
+        // Nút Previous
+        paginationHTML += `
     <button ${page === 1 ? "disabled" : ""} onclick="loadTickets(${page - 1})"
-      class="px-3 py-1 mx-1 border rounded ${page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">
+      class="px-3 py-1 mx-1 border rounded ${
+        page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"
+      }">
       Previous
     </button>
   `;
 
-  // Các số trang
-  for (let i = 1; i <= totalPages; i++) {
-    paginationHTML += `
+        // Các số trang
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
       <button onclick="loadTickets(${i})"
         class="px-3 py-1 mx-1 border rounded ${
-          i === page ? "bg-blue-600 text-white" : "text-blue-600 hover:bg-blue-100"
+          i === page
+            ? "bg-blue-600 text-white"
+            : "text-blue-600 hover:bg-blue-100"
         }">
         ${i}
       </button>
     `;
-  }
+        }
 
-  // Nút Next
-  paginationHTML += `
-    <button ${page === totalPages ? "disabled" : ""} onclick="loadTickets(${page + 1})"
-      class="px-3 py-1 mx-1 border rounded ${page === totalPages ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">
+        // Nút Next
+        paginationHTML += `
+    <button ${page === totalPages ? "disabled" : ""} onclick="loadTickets(${
+          page + 1
+        })"
+      class="px-3 py-1 mx-1 border rounded ${
+        page === totalPages
+          ? "text-gray-400"
+          : "text-blue-600 hover:bg-blue-100"
+      }">
       Next
     </button>
   `;
 
-  paginationContainer.innerHTML = paginationHTML;
-}
+        paginationContainer.innerHTML = paginationHTML;
+      }
 
       // Approvals management
       function loadApprovals() {
