@@ -457,7 +457,9 @@
 
         <!-- Tickets Section -->
         <div id="tickets" class="page-content hidden">
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 relative">
+          <div
+            class="bg-white rounded-xl shadow-sm border border-gray-200 relative"
+          >
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-end">
                 <div class="flex items-center space-x-4">
@@ -552,17 +554,13 @@
                 </tbody>
               </table>
             </div>
-                 </div>
-        <!-- page -->
-        <div
-          id="ticketsPagination"
-          class="absolute bottom-4 right-4 flex"
-        ></div>
           </div>
-
-
-   
-
+          <!-- page -->
+          <div
+            id="ticketsPagination"
+            class="absolute bottom-4 right-4 flex"
+          ></div>
+        </div>
         <!-- New Ticket Modal -->
         <div
           id="new-ticket"
@@ -1009,7 +1007,7 @@
       }
 
       async function refreshData() {
-        getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets);
+        await getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets);
         loadTickets();
       }
 
@@ -1859,6 +1857,7 @@
         if (typeof callback === "function") {
           callback(allData);
         }
+        return allData; // <-- quan trọng
       }
 
       function mappingListTickets(allData) {
