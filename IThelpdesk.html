@@ -962,16 +962,15 @@
         loadApprovals(1);
       });
 
-      // // Khi load trang
-      // document.addEventListener("DOMContentLoaded", () => {
-      //   initUserMenu();
+      document.addEventListener("DOMContentLoaded", () => {
+        initUserMenu();
 
-      //   const currentUser =
-      //     JSON.parse(localStorage.getItem("currentUser")) || null;
-      //   if (currentUser) {
-      //     init(); // render data nếu đã login trước đó
-      //   }
-      // });
+        const currentUser =
+          JSON.parse(localStorage.getItem("currentUser")) || null;
+        if (currentUser) {
+          init(); // render data nếu đã login trước đó
+        }
+      });
 
       document.addEventListener("DOMContentLoaded", () => {
         const btnCreateTicket = document.getElementById("btnCreateTicket");
@@ -1401,6 +1400,7 @@
   `;
 
         paginationContainer.innerHTML = paginationHTML;
+        console.log("paginationHTML");
       }
 
       // Form handlers
