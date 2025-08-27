@@ -233,20 +233,6 @@
             <i class="fas fa-ticket-alt w-5 h-5 mr-3"></i>
             <span>Quản lý Ticket</span>
           </a>
-          <!-- <a
-            href="#new-ticket"
-            class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
-          >
-            <i class="fas fa-plus-circle w-5 h-5 mr-3"></i>
-            <span>Tạo Ticket</span>
-          </a> -->
-          <!-- <a
-            href="#approvals"
-            class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
-          >
-            <i class="fas fa-check-circle w-5 h-5 mr-3"></i>
-            <span>Phê duyệt</span>
-          </a> -->
           <a
             href="#dashboard"
             class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
@@ -507,7 +493,6 @@
                   <!-- Nút tạo Ticket -->
                   <button
                     id="btnCreateTicket"
-                    type="submit"
                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
                   >
                     <i class="fas fa-plus-circle mr-2"></i>
@@ -574,7 +559,6 @@
           </div>
         </div>
 
-        <!-- New Ticket Section -->
         <!-- New Ticket Modal -->
         <div
           id="new-ticket"
@@ -692,7 +676,8 @@
                       Hủy
                     </button>
                     <button
-                      type="submit"
+                      type="button"
+                      id="submitTicket"
                       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
                       Tạo Ticket
@@ -847,7 +832,6 @@
       </div>
     </div>
 
-    <!-- Modal Login -->
     <!-- Modal Login -->
     <div
       id="loginModal"
@@ -1280,8 +1264,15 @@
       function initializeFormHandlers() {
         const newTicketForm = document.getElementById("newTicketForm");
         const cancelTicket = document.getElementById("cancelTicket");
+        const submitTicket = document.getElementById("submitTicket");
 
-        newTicketForm.addEventListener("submit", function (e) {
+        // newTicketForm.addEventListener("submit", function (e) {
+        //   e.preventDefault();
+        //   createNewTicket();
+        // });
+
+        // chỉ lắng nghe click của button "Tạo Ticket"
+        submitTicket.addEventListener("click", function () {
           e.preventDefault();
           createNewTicket();
         });
@@ -1294,9 +1285,9 @@
 
       // Create ticket
       async function createNewTicket() {
-
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        console.log("usser create: ", currentUser.fullName);
         const newTicket = {
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
