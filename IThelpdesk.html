@@ -558,7 +558,8 @@
         <!-- New Ticket Modal -->
         <div
           id="new-ticket"
-          class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+          class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50"
+        >
           <div class="max-w-4xl w-full mx-auto">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div
@@ -739,7 +740,10 @@
                 >
                   <!-- Approval tickets will be populated here -->
                 </tbody>
-                <div id="approvalsPagination" class="flex space-x-2 p-4 justify-center"></div>
+                <div
+                  id="approvalsPagination"
+                  class="flex space-x-2 p-4 justify-center"
+                ></div>
               </table>
             </div>
           </div>
@@ -899,8 +903,6 @@
       let ticketHandlersInitialized = false;
       let currentPage = 1;
       const rowsPerPage = 10;
- 
-
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
@@ -934,7 +936,7 @@
         if (currentUser) {
           init(); // user đã login trước → render giao diện/data luôn
         }
-        console.log("data user: ", approversData);
+        //console.log("data user: ", approversData);
       });
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -954,6 +956,46 @@
             dropdown.classList.add("hidden");
           }
         });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadApprovals(1);
+      });
+
+      // // Khi load trang
+      // document.addEventListener("DOMContentLoaded", () => {
+      //   initUserMenu();
+
+      //   const currentUser =
+      //     JSON.parse(localStorage.getItem("currentUser")) || null;
+      //   if (currentUser) {
+      //     init(); // render data nếu đã login trước đó
+      //   }
+      // });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnCreateTicket = document.getElementById("btnCreateTicket");
+        const newTicketModal = document.getElementById("new-ticket");
+        const closeNewTicket = document.getElementById("closeNewTicket");
+        const cancelTicket = document.getElementById("cancelTicket");
+
+        if (btnCreateTicket) {
+          btnCreateTicket.addEventListener("click", () => {
+            newTicketModal.classList.remove("hidden");
+          });
+        }
+
+        if (closeNewTicket) {
+          closeNewTicket.addEventListener("click", () => {
+            newTicketModal.classList.add("hidden");
+          });
+        }
+
+        if (cancelTicket) {
+          cancelTicket.addEventListener("click", () => {
+            newTicketModal.classList.add("hidden");
+          });
+        }
       });
 
       // ========== Function ================
@@ -1266,90 +1308,120 @@
       //     .join("");
       // }
 
-function loadApprovals(page = 1) {
-  currentPage = page;
-  const approvalsTable = document.getElementById("approvalsTable");
-  const paginationContainer = document.getElementById("approvalsPagination");
+      function loadApprovals(page = 1) {
+        currentPage = page;
+        const approvalsTable = document.getElementById("approvalsTable");
+        const paginationContainer = document.getElementById(
+          "approvalsPagination"
+        );
 
-  const pendingTickets = tickets.filter((t) => t.status === 191920002);
-  const totalPages = Math.ceil(pendingTickets.length / rowsPerPage);
+        const pendingTickets = tickets.filter((t) => t.status === 191920002);
+        const totalPages = Math.ceil(pendingTickets.length / rowsPerPage);
 
-  const start = (page - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const ticketsToRender = pendingTickets.slice(start, end);
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const ticketsToRender = pendingTickets.slice(start, end);
 
-  // Render bảng
-  approvalsTable.innerHTML = ticketsToRender
-    .map(
-      (ticket) => `
+        // Render bảng
+        approvalsTable.innerHTML = ticketsToRender
+          .map(
+            (ticket) => `
         <tr class="hover:bg-gray-50">
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
+            ticket.id
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+            ticket.title
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+            ticket.createdBy
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(
+            ticket.category
+          )}</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
+              ticket.priority
+            )}">
               ${getPriorityText(ticket.priority)}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(
+            ticket.createdAt
+          )}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
-            <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900">Xem</button>
+            <button onclick="openApprovalModal('${
+              ticket.id
+            }')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
+            <button onclick="viewTicket('${
+              ticket.id
+            }')" class="text-blue-600 hover:text-blue-900">Xem</button>
           </td>
         </tr>
       `
-    )
-    .join("");
+          )
+          .join("");
 
-  // Render phân trang
-  let paginationHTML = "";
+        // Render phân trang
+        let paginationHTML = "";
 
-  // Nút Previous
-  paginationHTML += `
-    <button ${page === 1 ? "disabled" : ""} onclick="loadApprovals(${page - 1})" 
-      class="px-3 py-1 mx-1 border rounded ${page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">next</button>
+        // Nút Previous
+        paginationHTML += `
+    <button ${page === 1 ? "disabled" : ""} onclick="loadApprovals(${
+          page - 1
+        })" 
+      class="px-3 py-1 mx-1 border rounded ${
+        page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"
+      }">next</button>
   `;
 
-  for (let i = 1; i <= totalPages; i++) {
-    paginationHTML += `
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
       <button onclick="loadApprovals(${i})" 
-        class="px-3 py-1 mx-1 border rounded ${i === page ? "bg-blue-600 text-white" : "text-blue-600 hover:bg-blue-100"}">
+        class="px-3 py-1 mx-1 border rounded ${
+          i === page
+            ? "bg-blue-600 text-white"
+            : "text-blue-600 hover:bg-blue-100"
+        }">
         ${i}
       </button>
     `;
-  }
+        }
 
-  // Nút Next
-  paginationHTML += `
-    <button ${page === totalPages ? "disabled" : ""} onclick="loadApprovals(${page + 1})" 
-      class="px-3 py-1 mx-1 border rounded ${page === totalPages ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">pre</button>
+        // Nút Next
+        paginationHTML += `
+    <button ${page === totalPages ? "disabled" : ""} onclick="loadApprovals(${
+          page + 1
+        })" 
+      class="px-3 py-1 mx-1 border rounded ${
+        page === totalPages
+          ? "text-gray-400"
+          : "text-blue-600 hover:bg-blue-100"
+      }">pre</button>
   `;
 
-  paginationContainer.innerHTML = paginationHTML;
-}
-
-
+        paginationContainer.innerHTML = paginationHTML;
+      }
 
       // Form handlers
-   
-function initializeFormHandlers() {
-  if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
-  ticketHandlersInitialized = true;
 
-  const submitTicket = document.getElementById("submitTicket");
-  const cancelTicket = document.getElementById("cancelTicket");
-  const newTicketForm = document.getElementById("newTicketForm");
+      function initializeFormHandlers() {
+        if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
+        ticketHandlersInitialized = true;
 
-  submitTicket.addEventListener("click", function () {
-    createNewTicket();
-  });
+        const submitTicket = document.getElementById("submitTicket");
+        const cancelTicket = document.getElementById("cancelTicket");
+        const newTicketForm = document.getElementById("newTicketForm");
 
-  cancelTicket.addEventListener("click", function () {
-    newTicketForm.reset();
-    document.querySelector('a[href="#tickets"]').click();
-  });
-}
+        submitTicket.addEventListener("click", function () {
+          createNewTicket();
+        });
+
+        cancelTicket.addEventListener("click", function () {
+          newTicketForm.reset();
+          document.querySelector('a[href="#tickets"]').click();
+        });
+      }
 
       // Create ticket
       async function createNewTicket() {
@@ -1403,7 +1475,7 @@ function initializeFormHandlers() {
             "success"
           );
           document.querySelector('a[href="#tickets"]').click();
-          refreshData() // render lại dữ liệu titkets
+          refreshData(); // render lại dữ liệu titkets
         } catch (err) {
           console.error(err);
           showNotification("Tạo ticket thất bại: " + err.message, "error");
@@ -2168,63 +2240,28 @@ function initializeFormHandlers() {
         ordersDetailData = [];
       }
 
-      // // Khi load trang
-      document.addEventListener("DOMContentLoaded", () => {
-        initUserMenu();
-
-        const currentUser =
-          JSON.parse(localStorage.getItem("currentUser")) || null;
-        if (currentUser) {
-          init(); // render data nếu đã login trước đó
-        }
-      });
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const btnCreateTicket = document.getElementById("btnCreateTicket");
-        const newTicketModal = document.getElementById("new-ticket");
-        const closeNewTicket = document.getElementById("closeNewTicket");
-        const cancelTicket = document.getElementById("cancelTicket");
-
-        if (btnCreateTicket) {
-          btnCreateTicket.addEventListener("click", () => {
-            newTicketModal.classList.remove("hidden");
-          });
-        }
-
-        if (closeNewTicket) {
-          closeNewTicket.addEventListener("click", () => {
-            newTicketModal.classList.add("hidden");
-          });
-        }
-
-        if (cancelTicket) {
-          cancelTicket.addEventListener("click", () => {
-            newTicketModal.classList.add("hidden");
-          });
-        }
-      });
-
       function renderPagination() {
-  const totalPages = Math.ceil(pendingTickets.length / ticketsPerPage);
-  const paginationContainer = document.getElementById("approvalsPagination");
+        const totalPages = Math.ceil(pendingTickets.length / ticketsPerPage);
+        const paginationContainer = document.getElementById(
+          "approvalsPagination"
+        );
 
-  if (!paginationContainer) return;
+        if (!paginationContainer) return;
 
-  paginationContainer.innerHTML = "";
+        paginationContainer.innerHTML = "";
 
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    btn.className =
-      "px-3 py-1 border rounded " +
-      (i === currentPage
-        ? "bg-blue-600 text-white"
-        : "bg-white text-gray-700 hover:bg-gray-100");
-    btn.addEventListener("click", () => loadApprovals(i));
-    paginationContainer.appendChild(btn);
-  }
-}
-
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.className =
+            "px-3 py-1 border rounded " +
+            (i === currentPage
+              ? "bg-blue-600 text-white"
+              : "bg-white text-gray-700 hover:bg-gray-100");
+          btn.addEventListener("click", () => loadApprovals(i));
+          paginationContainer.appendChild(btn);
+        }
+      }
     </script>
   </body>
 </html>
