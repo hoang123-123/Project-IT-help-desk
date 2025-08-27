@@ -1308,7 +1308,7 @@ function loadApprovals(page = 1) {
   // Nút Previous
   paginationHTML += `
     <button ${page === 1 ? "disabled" : ""} onclick="loadApprovals(${page - 1})" 
-      class="px-3 py-1 mx-1 border rounded ${page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">‹</button>
+      class="px-3 py-1 mx-1 border rounded ${page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">next</button>
   `;
 
   for (let i = 1; i <= totalPages; i++) {
@@ -1323,7 +1323,7 @@ function loadApprovals(page = 1) {
   // Nút Next
   paginationHTML += `
     <button ${page === totalPages ? "disabled" : ""} onclick="loadApprovals(${page + 1})" 
-      class="px-3 py-1 mx-1 border rounded ${page === totalPages ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">›</button>
+      class="px-3 py-1 mx-1 border rounded ${page === totalPages ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">pre</button>
   `;
 
   paginationContainer.innerHTML = paginationHTML;
