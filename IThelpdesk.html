@@ -1265,41 +1265,70 @@
       //     )
       //     .join("");
       // }
-      function loadApprovals(page = 1) {
+
+function loadApprovals(page = 1) {
   currentPage = page;
   const approvalsTable = document.getElementById("approvalsTable");
-  pendingTickets = tickets.filter((t) => t.status === 191920002);
+  const paginationContainer = document.getElementById("approvalsPagination");
+
+  const pendingTickets = tickets.filter((t) => t.status === 191920002);
   const totalPages = Math.ceil(pendingTickets.length / rowsPerPage);
 
-  const start = (currentPage - 1) * ticketsPerPage;
-  const end = start + ticketsPerPage;
-  const ticketsToShow = pendingTickets.slice(start, end);
+  const start = (page - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const ticketsToRender = pendingTickets.slice(start, end);
 
-  approvalsTable.innerHTML = ticketsToShow
+  // Render bảng
+  approvalsTable.innerHTML = ticketsToRender
     .map(
       (ticket) => `
-      <tr class="hover:bg-gray-50">
-        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
-        <td class="px-6 py-4 whitespace-nowrap">
-          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
-            ${getPriorityText(ticket.priority)}
-          </span>
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-          <button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
-          <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900">Xem</button>
-        </td>
-      </tr>
-    `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+              ${getPriorityText(ticket.priority)}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
+            <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900">Xem</button>
+          </td>
+        </tr>
+      `
     )
     .join("");
 
-  renderPagination();
+  // Render phân trang
+  let paginationHTML = "";
+
+  // Nút Previous
+  paginationHTML += `
+    <button ${page === 1 ? "disabled" : ""} onclick="loadApprovals(${page - 1})" 
+      class="px-3 py-1 mx-1 border rounded ${page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">‹</button>
+  `;
+
+  for (let i = 1; i <= totalPages; i++) {
+    paginationHTML += `
+      <button onclick="loadApprovals(${i})" 
+        class="px-3 py-1 mx-1 border rounded ${i === page ? "bg-blue-600 text-white" : "text-blue-600 hover:bg-blue-100"}">
+        ${i}
+      </button>
+    `;
+  }
+
+  // Nút Next
+  paginationHTML += `
+    <button ${page === totalPages ? "disabled" : ""} onclick="loadApprovals(${page + 1})" 
+      class="px-3 py-1 mx-1 border rounded ${page === totalPages ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"}">›</button>
+  `;
+
+  paginationContainer.innerHTML = paginationHTML;
 }
+
 
 
       // Form handlers
