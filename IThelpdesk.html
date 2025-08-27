@@ -297,7 +297,7 @@
                 <div
                   class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center"
                 >
-                  <span class="text-white text-sm font-medium">AD</span>
+                  <span class="text-white text-sm font-medium" id="userAvatar">AD</span>
                 </div>
                 <span class="hidden md:block text-sm font-medium"
                   >Admin User</span
@@ -907,7 +907,7 @@
       const ticketsPerPage = 10;
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
-      //let currentUser = { name: "Admin User", role: "admin" };
+      
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
@@ -2072,15 +2072,28 @@
         // ================================
         // 3. Hàm cập nhật giao diện menu theo trạng thái login
         // ================================
-        function updateUI() {
-          if (currentUser) {
-            userNameSpan.textContent = currentUser.fullName; // Đổi tên user trong menu
-            logoutLink.textContent = "Đăng xuất"; // Link cuối = Logout
-          } else {
-            userNameSpan.textContent = "Khách"; // Nếu chưa login
-            logoutLink.textContent = "Đăng nhập"; // Link cuối = Login
-          }
-        }
+      function updateUI() {
+  const avatarSpan = document.getElementById("userAvatar");
+
+  if (currentUser) {
+    userNameSpan.textContent = currentUser.fullName;
+    logoutLink.textContent = "Đăng xuất";
+
+    // đổi avatar theo tên user
+    const initials = getInitials(currentUser.fullName);
+    avatarSpan.textContent = initials;
+    avatarSpan.className =
+      "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
+      getColorFromName(currentUser.fullName);
+  } else {
+    userNameSpan.textContent = "Khách";
+    logoutLink.textContent = "Đăng nhập";
+
+    avatarSpan.textContent = "AD";
+    avatarSpan.className =
+      "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center bg-gray-400";
+  }
+}
         updateUI();
 
         // ================================
@@ -2252,6 +2265,40 @@
           throw err;
         }
       }
+
+      function getInitials(fullName) {
+  if (!fullName) return "AD";
+  const parts = fullName.trim().split(" ");
+  if (parts.length === 1) return parts[0][0].toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+// Sinh màu ngẫu nhiên nhưng cố định theo tên user
+function getColorFromName(name) {
+  const colors = [
+    "bg-red-500", "bg-green-500", "bg-blue-500", "bg-yellow-500",
+    "bg-purple-500", "bg-pink-500", "bg-indigo-500", "bg-teal-500",
+    "bg-orange-500", "bg-cyan-500"
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
+}
+
+// Sau khi login thành công
+const avatarSpan = document.getElementById("userAvatar");
+const initials = getInitials(currentUser.fullName);
+avatarSpan.textContent = initials;
+
+// Xóa màu cũ rồi thêm màu mới
+avatarSpan.className =
+  "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
+  getColorFromName(currentUser.fullName);
+
+
     </script>
   </body>
 </html>
