@@ -739,6 +739,7 @@
                 >
                   <!-- Approval tickets will be populated here -->
                 </tbody>
+                <div id="approvalsPagination" class="flex space-x-2 p-4 justify-center"></div>
               </table>
             </div>
           </div>
@@ -896,6 +897,10 @@
       let token = "";
       let approverChoices = null;
       let ticketHandlersInitialized = false;
+      let currentPage = 1;
+      const rowsPerPage = 10;
+ 
+
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
@@ -960,6 +965,11 @@
           getAllXseptions(token, SOD_QUERY, mappingSOD),
         ]);
         return { data, dataUser };
+      }
+
+      async function refreshData() {
+        getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets);
+        loadTickets();
       }
 
       async function init() {
@@ -1212,49 +1222,85 @@
       }
 
       // Approvals management
-      function loadApprovals() {
-        const approvalsTable = document.getElementById("approvalsTable");
-        const pendingTickets = tickets.filter((t) => t.status === 191920002);
+      // function loadApprovals() {
+      //   const approvalsTable = document.getElementById("approvalsTable");
+      //   const pendingTickets = tickets.filter((t) => t.status === 191920002);
 
-        approvalsTable.innerHTML = pendingTickets
-          .map(
-            (ticket) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
-                      ticket.id
-                    }</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-                      ticket.title
-                    }</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
-                      ticket.createdBy
-                    }</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(
-                      ticket.category
-                    )}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
-                          ticket.priority
-                        )}">
-                            ${getPriorityText(ticket.priority)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(
-                      ticket.createdAt
-                    )}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onclick="openApprovalModal('${
-                          ticket.id
-                        }')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
-                        <button onclick="viewTicket('${
-                          ticket.id
-                        }')" class="text-blue-600 hover:text-blue-900">Xem</button>
-                    </td>
-                </tr>
-            `
-          )
-          .join("");
-      }
+      //   approvalsTable.innerHTML = pendingTickets
+      //     .map(
+      //       (ticket) => `
+      //           <tr class="hover:bg-gray-50">
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
+      //                 ticket.id
+      //               }</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+      //                 ticket.title
+      //               }</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+      //                 ticket.createdBy
+      //               }</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(
+      //                 ticket.category
+      //               )}</td>
+      //               <td class="px-6 py-4 whitespace-nowrap">
+      //                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
+      //                     ticket.priority
+      //                   )}">
+      //                       ${getPriorityText(ticket.priority)}
+      //                   </span>
+      //               </td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(
+      //                 ticket.createdAt
+      //               )}</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+      //                   <button onclick="openApprovalModal('${
+      //                     ticket.id
+      //                   }')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
+      //                   <button onclick="viewTicket('${
+      //                     ticket.id
+      //                   }')" class="text-blue-600 hover:text-blue-900">Xem</button>
+      //               </td>
+      //           </tr>
+      //       `
+      //     )
+      //     .join("");
+      // }
+      function loadApprovals(page = 1) {
+  currentPage = page;
+  const approvalsTable = document.getElementById("approvalsTable");
+  pendingTickets = tickets.filter((t) => t.status === 191920002);
+  const totalPages = Math.ceil(pendingTickets.length / rowsPerPage);
+
+  const start = (currentPage - 1) * ticketsPerPage;
+  const end = start + ticketsPerPage;
+  const ticketsToShow = pendingTickets.slice(start, end);
+
+  approvalsTable.innerHTML = ticketsToShow
+    .map(
+      (ticket) => `
+      <tr class="hover:bg-gray-50">
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ticket.id}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${ticket.title}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ticket.createdBy}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(ticket.category)}</td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(ticket.priority)}">
+            ${getPriorityText(ticket.priority)}
+          </span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(ticket.createdAt)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
+          <button onclick="viewTicket('${ticket.id}')" class="text-blue-600 hover:text-blue-900">Xem</button>
+        </td>
+      </tr>
+    `
+    )
+    .join("");
+
+  renderPagination();
+}
+
 
       // Form handlers
    
@@ -1328,7 +1374,7 @@ function initializeFormHandlers() {
             "success"
           );
           document.querySelector('a[href="#tickets"]').click();
-          loadTickets; // render lại dữ liệu titkets
+          refreshData() // render lại dữ liệu titkets
         } catch (err) {
           console.error(err);
           showNotification("Tạo ticket thất bại: " + err.message, "error");
@@ -2128,6 +2174,28 @@ function initializeFormHandlers() {
           });
         }
       });
+
+      function renderPagination() {
+  const totalPages = Math.ceil(pendingTickets.length / ticketsPerPage);
+  const paginationContainer = document.getElementById("approvalsPagination");
+
+  if (!paginationContainer) return;
+
+  paginationContainer.innerHTML = "";
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className =
+      "px-3 py-1 border rounded " +
+      (i === currentPage
+        ? "bg-blue-600 text-white"
+        : "bg-white text-gray-700 hover:bg-gray-100");
+    btn.addEventListener("click", () => loadApprovals(i));
+    paginationContainer.appendChild(btn);
+  }
+}
+
     </script>
   </body>
 </html>
