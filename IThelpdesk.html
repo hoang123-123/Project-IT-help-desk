@@ -1021,11 +1021,11 @@
         try {
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
-          initializeNavigation();
+          //initializeNavigation();
           initializeFormHandlers();
           initializeModals();
           loadTickets();
-          loadApprovals();
+          //loadApprovals();
           loadDashboard();
           initApproverChoices();
           loadDepartments();
@@ -1035,61 +1035,61 @@
       }
 
       // Navigation functions
-      function initializeNavigation() {
-        const navItems = document.querySelectorAll(".nav-item");
-        const pageContents = document.querySelectorAll(".page-content");
-        const pageTitle = document.getElementById("pageTitle");
+      // function initializeNavigation() {
+      //   const navItems = document.querySelectorAll(".nav-item");
+      //   const pageContents = document.querySelectorAll(".page-content");
+      //   const pageTitle = document.getElementById("pageTitle");
 
-        navItems.forEach((item) => {
-          item.addEventListener("click", function (e) {
-            e.preventDefault();
+      //   navItems.forEach((item) => {
+      //     item.addEventListener("click", function (e) {
+      //       e.preventDefault();
 
-            navItems.forEach((nav) =>
-              nav.classList.remove("active", "bg-blue-50", "text-blue-600")
-            );
-            this.classList.add("active", "bg-blue-50", "text-blue-600");
+      //       navItems.forEach((nav) =>
+      //         nav.classList.remove("active", "bg-blue-50", "text-blue-600")
+      //       );
+      //       this.classList.add("active", "bg-blue-50", "text-blue-600");
 
-            pageContents.forEach((content) => content.classList.add("hidden"));
+      //       pageContents.forEach((content) => content.classList.add("hidden"));
 
-            const targetId = this.getAttribute("href").substring(1);
-            const targetContent = document.getElementById(targetId);
-            if (targetContent) {
-              targetContent.classList.remove("hidden");
-              const title = this.querySelector("span").textContent;
-              pageTitle.textContent = title;
+      //       const targetId = this.getAttribute("href").substring(1);
+      //       const targetContent = document.getElementById(targetId);
+      //       if (targetContent) {
+      //         targetContent.classList.remove("hidden");
+      //         const title = this.querySelector("span").textContent;
+      //         pageTitle.textContent = title;
 
-              switch (targetId) {
-                case "dashboard":
-                  loadDashboard();
-                  break;
-                case "tickets":
-                  loadTickets();
-                  break;
-                case "approvals":
-                  loadApprovals();
-                  break;
-              }
-            }
-          });
-        });
-        // Set default page to tickets
-        const defaultNavItem = document.querySelector('a[href="#tickets"]');
-        if (defaultNavItem) {
-          defaultNavItem.click();
-        }
+      //         switch (targetId) {
+      //           case "dashboard":
+      //             loadDashboard();
+      //             break;
+      //           case "tickets":
+      //             loadTickets();
+      //             break;
+      //           case "approvals":
+      //             loadApprovals();
+      //             break;
+      //         }
+      //       }
+      //     });
+      //   });
+      //   // Set default page to tickets
+      //   const defaultNavItem = document.querySelector('a[href="#tickets"]');
+      //   if (defaultNavItem) {
+      //     defaultNavItem.click();
+      //   }
 
-        // Mobile sidebar
-        const openSidebar = document.getElementById("openSidebar");
-        const closeSidebar = document.getElementById("closeSidebar");
-        const sidebar = document.getElementById("sidebar");
+      //   // Mobile sidebar
+      //   const openSidebar = document.getElementById("openSidebar");
+      //   const closeSidebar = document.getElementById("closeSidebar");
+      //   const sidebar = document.getElementById("sidebar");
 
-        openSidebar.addEventListener("click", () =>
-          sidebar.classList.remove("-translate-x-full")
-        );
-        closeSidebar.addEventListener("click", () =>
-          sidebar.classList.add("-translate-x-full")
-        );
-      }
+      //   openSidebar.addEventListener("click", () =>
+      //     sidebar.classList.remove("-translate-x-full")
+      //   );
+      //   closeSidebar.addEventListener("click", () =>
+      //     sidebar.classList.add("-translate-x-full")
+      //   );
+      // }
 
       // Dashboard functions
       function loadDashboard() {
