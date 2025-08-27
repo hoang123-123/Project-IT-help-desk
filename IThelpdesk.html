@@ -1294,11 +1294,14 @@
 
       // Create ticket
       async function createNewTicket() {
+
+        // Lấy user từ localStorage
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const newTicket = {
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
           crdfd_loaiieuchinh: 283640008,
-          crdfd_nguoiyeucau: currentUser.name,
+          crdfd_nguoiyeucau: currentUser.fullName,
           crdfd_trangthai: 191920002,
         };
 
