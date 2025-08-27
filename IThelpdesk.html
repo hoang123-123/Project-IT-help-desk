@@ -1483,7 +1483,7 @@
             "success"
           );
           document.querySelector('a[href="#tickets"]').click();
-          refreshData(); // render lại dữ liệu titkets
+          await refreshData(); // render lại dữ liệu titkets
         } catch (err) {
           console.error(err);
           showNotification("Tạo ticket thất bại: " + err.message, "error");
