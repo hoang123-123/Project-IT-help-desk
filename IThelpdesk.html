@@ -2076,15 +2076,15 @@
   const avatarSpan = document.getElementById("userAvatar");
 
   if (currentUser) {
-    userNameSpan.textContent = currentUser.fullName;
+    userNameSpan.textContent = currentUser.useName;
     logoutLink.textContent = "Đăng xuất";
 
     // đổi avatar theo tên user
-    const initials = getInitials(currentUser.fullName);
+    const initials = getInitials(currentUser.useName);
     avatarSpan.textContent = initials;
     avatarSpan.className =
       "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
-      getColorFromName(currentUser.fullName);
+      getColorFromName(currentUser.useName);
   } else {
     userNameSpan.textContent = "Khách";
     logoutLink.textContent = "Đăng nhập";
