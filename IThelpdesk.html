@@ -460,9 +460,6 @@
           <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
               <div class="flex items-center justify-between">
-                <!-- <h3 class="text-lg font-semibold text-gray-800">
-          Quản lý Tickets
-        </h3> -->
                 <div class="flex items-center space-x-4">
                   <!-- Ô tìm kiếm -->
                   <div class="relative">
@@ -501,7 +498,6 @@
                 </div>
               </div>
             </div>
-
             <div class="overflow-x-auto">
               <table class="w-full">
                 <thead class="bg-gray-50">
@@ -562,8 +558,7 @@
         <!-- New Ticket Modal -->
         <div
           id="new-ticket"
-          class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50"
-        >
+          class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
           <div class="max-w-4xl w-full mx-auto">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div
@@ -680,7 +675,7 @@
                       id="submitTicket"
                       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      Tạo Ticket
+                      Tạo Ticket dev
                     </button>
                   </div>
                 </form>
@@ -900,6 +895,7 @@
       let approversData = [];
       let token = "";
       let approverChoices = null;
+      let ticketHandlersInitialized = false;
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
@@ -1261,37 +1257,35 @@
       }
 
       // Form handlers
-      function initializeFormHandlers() {
-        const newTicketForm = document.getElementById("newTicketForm");
-        const cancelTicket = document.getElementById("cancelTicket");
-        const submitTicket = document.getElementById("submitTicket");
+   
+function initializeFormHandlers() {
+  if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
+  ticketHandlersInitialized = true;
 
-        // newTicketForm.addEventListener("submit", function (e) {
-        //   e.preventDefault();
-        //   createNewTicket();
-        // });
+  const submitTicket = document.getElementById("submitTicket");
+  const cancelTicket = document.getElementById("cancelTicket");
+  const newTicketForm = document.getElementById("newTicketForm");
 
-        // chỉ lắng nghe click của button "Tạo Ticket"
-        submitTicket.addEventListener("click", function () {
-          createNewTicket();
-        });
+  submitTicket.addEventListener("click", function () {
+    createNewTicket();
+  });
 
-        cancelTicket.addEventListener("click", function () {
-          newTicketForm.reset();
-          document.querySelector('a[href="#tickets"]').click();
-        });
-      }
+  cancelTicket.addEventListener("click", function () {
+    newTicketForm.reset();
+    document.querySelector('a[href="#tickets"]').click();
+  });
+}
 
       // Create ticket
       async function createNewTicket() {
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        console.log("usser create: ", currentUser.fullName);
+        console.log("usser create: ", currentUser.useName);
         const newTicket = {
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
           crdfd_loaiieuchinh: 283640008,
-          crdfd_nguoiyeucau: currentUser.fullName,
+          crdfd_nguoiyeucau: currentUser.useName,
           crdfd_trangthai: 191920002,
         };
 
@@ -1334,7 +1328,7 @@
             "success"
           );
           document.querySelector('a[href="#tickets"]').click();
-          init(); // render lại bảng
+          loadTickets; // render lại dữ liệu titkets
         } catch (err) {
           console.error(err);
           showNotification("Tạo ticket thất bại: " + err.message, "error");
