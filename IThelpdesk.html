@@ -903,18 +903,21 @@
       let token = "";
       let approverChoices = null;
       let ticketHandlersInitialized = false;
-      let currentPage = 1;
-      const rowsPerPage = 10;
+      let currentTicketPage = 1;
+      const ticketsPerPage = 10;
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
       //let currentUser = { name: "Admin User", role: "admin" };
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
+      const currentUser =
+        JSON.parse(localStorage.getItem("currentUser")) || null;
+      const email = currentUser?.idU || currentUser?.username;
       const XSEPTIONS_QUERY =
         "/crdfd_suport_systems" +
         "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
-        "&$filter=statecode eq 0";
+        `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`;
 
       const USER_QUERY =
         "/crdfd_employees" +
@@ -938,7 +941,6 @@
         if (currentUser) {
           init(); // user đã login trước → render giao diện/data luôn
         }
-        //console.log("data user: ", approversData);
       });
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -1211,8 +1213,6 @@
       }
 
       // Tickets management
-      let currentTicketPage = 1;
-      const ticketsPerPage = 10;
 
       function loadTickets(page = 1) {
         currentTicketPage = page;
@@ -1319,49 +1319,49 @@
       }
 
       // Approvals management
-      function loadApprovals() {
-        const approvalsTable = document.getElementById("approvalsTable");
-        const pendingTickets = tickets.filter((t) => t.status === 191920002);
+      // function loadApprovals() {
+      //   const approvalsTable = document.getElementById("approvalsTable");
+      //   const pendingTickets = tickets.filter((t) => t.status === 191920002);
 
-        approvalsTable.innerHTML = pendingTickets
-          .map(
-            (ticket) => `
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
-                      ticket.id
-                    }</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
-                      ticket.title
-                    }</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
-                      ticket.createdBy
-                    }</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(
-                      ticket.category
-                    )}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
-                          ticket.priority
-                        )}">
-                            ${getPriorityText(ticket.priority)}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(
-                      ticket.createdAt
-                    )}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onclick="openApprovalModal('${
-                          ticket.id
-                        }')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
-                        <button onclick="viewTicket('${
-                          ticket.id
-                        }')" class="text-blue-600 hover:text-blue-900">Xem</button>
-                    </td>
-                </tr>
-            `
-          )
-          .join("");
-      }
+      //   approvalsTable.innerHTML = pendingTickets
+      //     .map(
+      //       (ticket) => `
+      //           <tr class="hover:bg-gray-50">
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
+      //                 ticket.id
+      //               }</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${
+      //                 ticket.title
+      //               }</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+      //                 ticket.createdBy
+      //               }</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${getCategoryText(
+      //                 ticket.category
+      //               )}</td>
+      //               <td class="px-6 py-4 whitespace-nowrap">
+      //                   <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
+      //                     ticket.priority
+      //                   )}">
+      //                       ${getPriorityText(ticket.priority)}
+      //                   </span>
+      //               </td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(
+      //                 ticket.createdAt
+      //               )}</td>
+      //               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+      //                   <button onclick="openApprovalModal('${
+      //                     ticket.id
+      //                   }')" class="text-green-600 hover:text-green-900 mr-3">Phê duyệt</button>
+      //                   <button onclick="viewTicket('${
+      //                     ticket.id
+      //                   }')" class="text-blue-600 hover:text-blue-900">Xem</button>
+      //               </td>
+      //           </tr>
+      //       `
+      //     )
+      //     .join("");
+      // }
 
       // Form handlers
 
@@ -1436,6 +1436,7 @@
           );
           document.querySelector('a[href="#tickets"]').click();
           await refreshData(); // render lại dữ liệu titkets
+          document.getElementById("new-ticket").classList.add("hidden");
         } catch (err) {
           console.error(err);
           showNotification("Tạo ticket thất bại: " + err.message, "error");
@@ -1511,26 +1512,40 @@
         approvalModal.classList.remove("hidden");
       }
 
-      function approveCurrentTicket() {
+      async function approveCurrentTicket() {
         if (!currentApprovalTicket) return;
 
-        currentApprovalTicket.status = "approved";
-        document.getElementById("approvalModal").classList.add("hidden");
-        showNotification("Ticket đã được phê duyệt!", "success");
-        loadTickets();
-        loadApprovals();
-        loadDashboard();
+        try {
+          // update lên Dataverse
+          await updateTicketStatus(currentApprovalTicket.id, "approved");
+
+          document.getElementById("approvalModal").classList.add("hidden");
+          showNotification("Ticket đã được phê duyệt!", "success");
+
+          // refresh lại từ server
+          await refreshData();
+          loadApprovals();
+          loadDashboard();
+        } catch (err) {
+          showNotification("Phê duyệt thất bại: " + err.message, "error");
+        }
       }
 
-      function rejectCurrentTicket() {
+      async function rejectCurrentTicket() {
         if (!currentApprovalTicket) return;
 
-        currentApprovalTicket.status = "rejected";
-        document.getElementById("approvalModal").classList.add("hidden");
-        showNotification("Ticket đã bị từ chối!", "error");
-        loadTickets();
-        loadApprovals();
-        loadDashboard();
+        try {
+          await updateTicketStatus(currentApprovalTicket.id, "rejected");
+
+          document.getElementById("approvalModal").classList.add("hidden");
+          showNotification("Ticket đã bị từ chối!", "error");
+
+          await refreshData();
+          loadApprovals();
+          loadDashboard();
+        } catch (err) {
+          showNotification("Từ chối thất bại: " + err.message, "error");
+        }
       }
 
       function viewTicket(ticketId) {
@@ -1823,6 +1838,7 @@
           status: item.crdfd_trangthai || "Chưa xác định",
           createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
           createdAt: item.createdon || "Không xác định date",
+          userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
         }));
 
         supportSystemsData.sort(
@@ -2199,6 +2215,41 @@
         tickets = [];
         //approversData = [];
         ordersDetailData = [];
+      }
+
+      async function updateTicketStatus(ticketId, newStatus) {
+        const url = `${DATAVERSE_URL}/crdfd_xseptions(${ticketId})`;
+        // ⬆ thay "crdfd_xseptions" bằng logical name của entity/table bạn dùng
+
+        const body = {
+          crdfd_trangthai: newStatus, // field trạng thái trong Dataverse
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`, // token global bạn có sẵn
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "OData-MaxVersion": "4.0",
+              "OData-Version": "4.0",
+            },
+            body: JSON.stringify(body),
+          });
+
+          if (!response.ok) {
+            throw new Error(
+              `Update thất bại: ${response.status} ${response.statusText}`
+            );
+          }
+
+          console.log(`✔ Ticket ${ticketId} updated to ${newStatus}`);
+          return true;
+        } catch (err) {
+          console.error("❌ Error update ticket:", err);
+          throw err;
+        }
       }
     </script>
   </body>
