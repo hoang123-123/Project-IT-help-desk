@@ -2147,6 +2147,7 @@
             updateUI(); // Cập nhật lại giao diện
             loginModal.classList.add("hidden"); // Ẩn modal login
             showNotification("Đăng nhập thành công", "success");
+            refreshData()
             init(); // Gọi hàm init() → render giao diện + dữ liệu
           } else {
             // Nếu login thất bại
