@@ -600,33 +600,31 @@
                   </div>
 
                   <!-- Chọn Loại yêu cầu -->
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                      >Loại yêu cầu *</label
-                    >
-                    <select
-                      id="ticketCategory"
-                      required
-                      onchange="onCategoryChange(this.value)"
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Chọn loại yêu cầu</option>
-                      <option value="adjust-price">Điều chỉnh giá</option>
-                      <option value="adjust-unit">Điều chỉnh đơn vị</option>
-                      <option value="adjust-quantity">
-                        Điều chỉnh số lượng
-                      </option>
-                      <option value="apply-vat">Áp dụng VAT</option>
-                      <option value="apply-vat-detail">
-                        % VAT cho đơn hàng chi tiết
-                      </option>
-                      <option value="discount-total">Chiết khấu tổng</option>
-                      <option value="discount-detail">
-                        Chiết khấu chi tiết
-                      </option>
-                      <option value="other">Khác</option>
-                    </select>
-                  </div>
+                <div>
+  <label class="block text-sm font-medium text-gray-700 mb-2">
+    Loại yêu cầu *
+  </label>
+  <select
+    id="ticketCategory"
+    required
+    onchange="onCategoryChange(this.value)"
+    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+  >
+    <option value="">Chọn loại yêu cầu</option>
+    <option value="191920000">Điều chỉnh giá SOD</option>
+    <option value="191920001">Điều chỉnh VAT SOD</option>
+    <option value="283640001">Điều chỉnh VAT SO</option>
+    <option value="283640002">Điều chỉnh giá BOD</option>
+    <option value="283640003">Điều chỉnh VAT BOD</option>
+    <option value="283640004">Hủy phiếu nhập kho</option>
+    <option value="283640005">Điều chỉnh phiếu nhập kho</option>
+    <option value="283640006">Điều chỉnh VAT BO</option>
+    <option value="283640007">Điều chỉnh định lượng</option>
+    <option value="283640008">Hủy phiếu xuất kho</option>
+    <option value="283640009">Điều chỉnh phiếu xuất kho</option>
+  </select>
+</div>
+
 
                   <!-- Thông tin chung -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1431,13 +1429,15 @@
       async function createNewTicket() {
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        console.log("usser create: ", currentUser.useName);
+        // console.log("usser create: ", currentUser.useName);
         const newTicket = {
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
-          crdfd_loaiieuchinh: 283640008,
-          crdfd_nguoiyeucau: currentUser.useName,
+          crdfd_loaiieuchinh: parseInt(document.getElementById("ticketCategory").value),
+          crdfd_nguoiyeucau: currentUser.idU,
           crdfd_trangthai: 191920002,
+          cr1bb_phongban: document.getElementById("ticketDepartment").value,
+          cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo").value
         };
 
         try {
@@ -1905,112 +1905,103 @@
         return ordersDetailData;
       }
       function onCategoryChange(category) {
-        const container = document.getElementById("dynamicFields");
-        container.innerHTML = ""; // reset
+  const container = document.getElementById("dynamicFields");
+  container.innerHTML = ""; // reset
 
-        switch (category) {
-          case "adjust-price":
-            container.innerHTML = `
-                   <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Chọn mã đơn hàng cần điều chỉnh giá
-                        </label>
-                        <select id="ticketOrder"></select>
-                    </div>
-                `;
-            initOrderChoices();
-            break;
+  switch (parseInt(category)) {
+    // ==== Điều chỉnh giá ====
+    case 191920000: // Điều chỉnh giá SOD
+    case 283640002: // Điều chỉnh giá BOD
+      container.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
+          <input type="text" id="orderCodePrice" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị điều chỉnh</label>
+          <input type="number" id="adjustPrice" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị mới">
+        </div>
+      `;
+      break;
 
-          case "adjust-quantity":
-            container.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Chọn mã đơn hàng cần điều chỉnh số lượng</label>
-                        ${renderOrderSelect("orderQuantity")}
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
-                        <input type="number" id="newQuantity" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập số lượng mới">
-                    </div>
-                `;
-            break;
+    // ==== Điều chỉnh số lượng ====
+    case 283640007:
+      container.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
+          <input type="text" id="orderCodeQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
+          <input type="number" id="adjustQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng mới">
+        </div>
+      `;
+      break;
 
-          case "adjust-unit":
-            container.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Chọn mã đơn hàng cần điều chỉnh đơn vị</label>
-                        ${renderOrderSelect("orderUnit")}
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị mới</label>
-                        <input type="text" id="newUnit" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập đơn vị mới">
-                    </div>
-                `;
-            break;
+    // ==== Loại hủy ====
+    case 283640004: // Hủy phiếu nhập kho
+    case 283640008: // Hủy phiếu xuất kho
+      container.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy</label>
+          <input type="text" id="cancelCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy">
+        </div>
+      `;
+      break;
 
-          case "apply-vat": // VAT đơn tổng
-            container.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Chọn mã đơn hàng cần áp VAT</label>
-                    ${renderOrderSelect("orderVatTotal")}
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">VAT trên đơn tổng</label>
-                    <select id="vatTotalOption" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                        <option value="yes">Có VAT</option>
-                        <option value="no">Không VAT</option>
-                    </select>
-                </div>
-            `;
-            break;
+    // ==== Điều chỉnh định lượng ====
+    case 283640007: // Điều chỉnh định lượng
+      container.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm</label>
+          <input type="text" id="productCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã sản phẩm">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị</label>
+          <input type="text" id="unitCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập đơn vị">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị</label>
+          <input type="number" id="adjustValue" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh">
+        </div>
+      `;
+      break;
 
-          case "apply-vat-detail": // VAT đơn chi tiết
-            container.innerHTML = `
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Chọn mã đơn hàng cần áp VAT chi tiết</label>
-                    ${renderOrderSelect("orderVatDetail")}
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">% VAT trên đơn chi tiết</label>
-                    <select id="vatDetailOption" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                        <option value="0">0%</option>
-                        <option value="5">5%</option>
-                        <option value="8">8%</option>
-                        <option value="10">10%</option>
-                    </select>
-                </div>
-            `;
-            break;
+    // ==== Điều chỉnh VAT ====
+    case 191920001: // VAT SOD
+    case 283640001: // VAT SO
+    case 283640003: // VAT BOD
+    case 283640006: // VAT BO
+    case 283640009: // VAT xuất kho
+      container.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
+          <input type="text" id="orderCodeVat" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">VAT</label>
+          <select id="vatOption" class="w-full px-4 py-2 border rounded-lg">
+            <option value="yes">Có VAT</option>
+            <option value="no">Không VAT</option>
+            <option value="0">0%</option>
+            <option value="5">5%</option>
+            <option value="8">8%</option>
+            <option value="10">10%</option>
+          </select>
+        </div>
+      `;
+      break;
 
-          case "discount-total":
-          case "discount-detail":
-            container.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Chọn mã đơn hàng cần áp chiết khấu</label>
-                        ${renderOrderSelect("orderDiscount")}
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">% Chiết khấu</label>
-                        <input type="number" id="discountPercent" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập % chiết khấu">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Hành động</label>
-                        <select id="discountAction" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                            <option value="cancel">Hủy chiết khấu</option>
-                            <option value="keep">Giữ nguyên chiết khấu</option>
-                        </select>
-                    </div>
-                `;
-            break;
+    default:
+      container.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin thêm</label>
+          <input type="text" id="extraInfo" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập thông tin...">
+        </div>
+      `;
+  }
+}
 
-          default:
-            container.innerHTML = `
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin thêm</label>
-                        <input type="text" id="extraInfo" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Nhập thông tin...">
-                    </div>
-                `;
-        }
-      }
 
       // function setup value chọn user duyệt
       function initApproverChoices() {
