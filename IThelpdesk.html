@@ -1014,37 +1014,35 @@
           return cachedToken;
         }
 
-        try {
-          const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key: "value" }),
-          });
+         try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: "value" }),
+    });
 
-          if (!response.ok) {
-            throw new Error("HTTP status " + response.status);
-          }
+    if (!response.ok) throw new Error("HTTP status " + response.status);
 
-          const data = await response.json();
+    const data = await response.json();
+    console.log("DEBUG FULL RESPONSE:", data); // 👈 log ra xem nó là gì
 
-          // 👇 Nếu body là string thì parse lại
-          let body = data.body;
-          if (typeof body === "string") {
-            body = JSON.parse(body);
-          }
+    let body = data.body;
+    if (typeof body === "string") {
+      body = JSON.parse(body);
+    }
 
-          cachedToken = body.access_token;
-          tokenExpiry = now + (body.expires_in || 3500);
+    cachedToken = body.access_token;
+    tokenExpiry = now + (body.expires_in || 3500);
 
-          if (!cachedToken) {
-            throw new Error("Không tìm thấy access_token trong response");
-          }
+    if (!cachedToken) {
+      throw new Error("Không tìm thấy access_token trong response");
+    }
 
-          return cachedToken;
-        } catch (err) {
-          console.error("Error getToken:", err);
-          throw err;
-        }
+    return cachedToken;
+  } catch (err) {
+    console.error("Error getToken:", err);
+    throw err;
+  }
       }
 
       async function getData() {
