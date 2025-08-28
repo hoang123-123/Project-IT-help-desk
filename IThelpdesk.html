@@ -2285,71 +2285,140 @@
       }
 
       async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
-        try {
-          const token = await getToken(); // dùng hàm token safe
+  try {
+    const token = await getToken(); // lấy token an toàn
 
-          // 1. Tìm record trong bảng con
-          const query =
-            `${DATAVERSE_URL}/crdfd_support_system_approvals` +
-            `?$select=crdfd_support_system_approvalid` +
-            `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
-          const res = await fetch(query, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-              "OData-MaxVersion": "4.0",
-              "OData-Version": "4.0",
-            },
-          });
+    // 1. Tìm record approval con dựa trên ticketId và email
+    const query = `${DATAVERSE_URL}/crdfd_support_system_approvals` +
+      `?$select=crdfd_support_system_approvalid` +
+      `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
 
-          if (!res.ok) {
-            throw new Error(
-              `Lỗi khi tìm approval: ${res.status} ${res.statusText}`
-            );
-          }
+    const res = await fetch(query, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+      },
+    });
 
-          const data = await res.json();
-          if (!data.value || data.value.length === 0) {
-            throw new Error("Không tìm thấy approval record cho user này.");
-          }
+    if (!res.ok) {
+      throw new Error(`Lỗi khi tìm approval: ${res.status} ${res.statusText}`);
+    }
 
-          const approvalDetailId =
-            data.value[0].crdfd_support_system_approvalid;
+    const data = await res.json();
 
-          // 2. Update record con
-          const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
-          const body = { cr1bb_trang_thai: newStatus };
+    // Nếu không tìm thấy approval record, chỉ thông báo, không ném lỗi
+    if (!data.value || data.value.length === 0) {
+      console.info(`⚠ User ${currentUserEmail} không có approval record cho ticket này.`);
+      showNotification("User này không có record approval để cập nhật.", "info");
+      return false;
+    }
 
-          const updateRes = await fetch(patchUrl, {
-            method: "PATCH",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "OData-MaxVersion": "4.0",
-              "OData-Version": "4.0",
-            },
-            body: JSON.stringify(body),
-          });
+    const approvalDetailId = data.value[0].crdfd_support_system_approvalid;
+
+    // 2. Update record approval
+    const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
+    const body = { cr1bb_trang_thai: newStatus }; // dùng đúng field trong Dataverse
+
+    const updateRes = await fetch(patchUrl, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!updateRes.ok) {
+      throw new Error(`Update thất bại: ${updateRes.status} ${updateRes.statusText}`);
+    }
+
+    console.log(`✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`);
+    showNotification("Cập nhật trạng thái approval thành công!", "success");
+
+    // Refresh data sau khi update
+    refreshData();
+
+    return true;
+  } catch (err) {
+    console.error("❌ Error update ticket:", err);
+    showNotification("Cập nhật thất bại: " + err.message, "error");
+    return false;
+  }
+}
 
 
-          if (!updateRes.ok) {
-            throw new Error(
-              `Update thất bại: ${updateRes.status} ${updateRes.statusText}`
-            );
-          }
+      // async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
+      //   try {
+      //     const token = await getToken(); // dùng hàm token safe
 
-          console.log(
-            `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
-          );
-          refreshData();
-          return true;
-        } catch (err) {
-          console.error("❌ Error update ticket:", err);
-          throw err;
-        }
-      }
+      //     // 1. Tìm record trong bảng con
+      //     const query =
+      //       `${DATAVERSE_URL}/crdfd_support_system_approvals` +
+      //       `?$select=crdfd_support_system_approvalid` +
+      //       `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
+      //     const res = await fetch(query, {
+      //       method: "GET",
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //         Accept: "application/json",
+      //         "OData-MaxVersion": "4.0",
+      //         "OData-Version": "4.0",
+      //       },
+      //     });
+
+      //     if (!res.ok) {
+      //       throw new Error(
+      //         `Lỗi khi tìm approval: ${res.status} ${res.statusText}`
+      //       );
+      //     }
+
+      //     const data = await res.json();
+      //     if (!data.value || data.value.length === 0) {
+      //       throw new Error("Không tìm thấy approval record cho user này.");
+      //     }
+
+      //     const approvalDetailId =
+      //       data.value[0].crdfd_support_system_approvalid;
+
+      //     // 2. Update record con
+      //     const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
+      //     const body = { cr1bb_trang_thai: newStatus };
+
+      //     const updateRes = await fetch(patchUrl, {
+      //       method: "PATCH",
+      //       headers: {
+      //         Authorization: `Bearer ${token}`,
+      //         Accept: "application/json",
+      //         "Content-Type": "application/json",
+      //         "OData-MaxVersion": "4.0",
+      //         "OData-Version": "4.0",
+      //       },
+      //       body: JSON.stringify(body),
+      //     });
+
+
+      //     if (!updateRes.ok) {
+      //       throw new Error(
+      //         `Update thất bại: ${updateRes.status} ${updateRes.statusText}`
+      //       );
+      //     }
+
+      //     console.log(
+      //       `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
+      //     );
+      //     refreshData();
+      //     return true;
+      //   } catch (err) {
+      //     console.error("❌ Error update ticket:", err);
+      //     throw err;
+      //   }
+      // }
 
       function getInitials(fullName) {
         if (!fullName) return "AD";
