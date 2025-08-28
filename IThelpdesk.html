@@ -1580,14 +1580,20 @@
           }
 
           // update lên Dataverse
-          await updateTicketStatus(
-            currentApprovalTicket.id,
-            283640001,
-            currentUser.idU // 👈 email của user login
-          );
+          const updated = await updateTicketStatus(
+  currentApprovalTicket.id,
+  283640001,
+  currentUser.idU
+);
+document.getElementById("approvalModal").classList.add("hidden");
+if (updated) {
+  showNotification("Ticket đã được phê duyệt!", "success");
+} else {
+  showNotification("User này không có record approval để phê duyệt.", "info");
+}
 
-          document.getElementById("approvalModal").classList.add("hidden");
-          showNotification("Ticket đã được phê duyệt!", "success");
+          
+      
 
           // refresh lại từ server
           await refreshData();
