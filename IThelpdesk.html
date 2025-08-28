@@ -2293,7 +2293,6 @@
             `${DATAVERSE_URL}/crdfd_support_system_approvals` +
             `?$select=crdfd_support_system_approvalid` +
             `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
-
           const res = await fetch(query, {
             method: "GET",
             headers: {
@@ -2320,7 +2319,7 @@
 
           // 2. Update record con
           const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
-          const body = { crdfd_trangthai: newStatus };
+          const body = { cr1bb_trang_thai: newStatus };
 
           const updateRes = await fetch(patchUrl, {
             method: "PATCH",
