@@ -2240,6 +2240,8 @@
             // Nếu đang login → tiến hành logout
             currentUser = null;
             localStorage.removeItem("currentUser"); // Xóa user khỏi localStorage
+            cachedToken = null;  
+            tokenExpiry = null;  
             clearUI(); // Reset giao diện về mặc định
             updateUI(); // Update menu về "Khách"
             loginModal.classList.remove("hidden"); // Hiện modal login lại
