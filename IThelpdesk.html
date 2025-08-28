@@ -1430,10 +1430,13 @@
       async function createNewTicket() {
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
         const selectedApprovers = approverChoices.getValue(true); 
+        
         const approversText = Array.isArray(selectedApprovers) 
-  ? selectedApprovers.join(";") 
+  ? selectedApprovers.join(",") 
   : selectedApprovers;
+
         const newTicket = {
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
@@ -1490,7 +1493,7 @@
             "success"
           );
           document.querySelector('a[href="#tickets"]').click();
-          await refreshData(); // render lại dữ liệu titkets
+          //await refreshData(); // render lại dữ liệu titkets
           document.getElementById("new-ticket").classList.add("hidden");
         } catch (err) {
           console.error(err);
