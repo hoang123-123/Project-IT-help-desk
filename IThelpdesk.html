@@ -1008,11 +1008,12 @@
           if (!response.ok) {
             throw new Error("HTTP status " + response.status);
           }
-          console.log("Full response:", data);
-console.log("Body type:", typeof data.body, data.body);
+       
 
 
           const data = await response.json();
+             console.log("Full response:", data);
+console.log("Body type:", typeof data.body, data.body);
            const body = data.body || {};   // 👈 lấy body
     cachedToken = body.access_token; // 👈 lấy token đúng chỗ
 
