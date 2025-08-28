@@ -1447,13 +1447,13 @@
         };
 
         try {
-          const token = await getToken();
+          const cachedToken = await getToken();
           const response = await fetch(
             `${DATAVERSE_URL}/crdfd_suport_systems`,
             {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${cachedToken}`,
                 "Content-Type": "application/json",
                 Accept: "application/json",
               },
