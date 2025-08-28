@@ -1055,7 +1055,7 @@
         }
 
         const query = buildXseptionsQuery(email);
-        console.log("câu quere lấy data sp: ", XSEPTIONS_QUERY);
+        console.log("câu quere lấy data sp: ", query);
         tickets = await getAllXseptions(cachedToken, query, mappingListTickets);
         loadTickets(); // giờ loadTickets dùng tickets mới nhất
       }
@@ -2150,7 +2150,13 @@
         // ================================
         // 4. Nếu chưa login thì bật modal ngay
         // ================================
-        if (!currentUser) loginModal.classList.remove("hidden");
+        // 4. Nếu chưa login thì bật modal ngay, ngược lại thì fetch data
+        if (!currentUser) {
+          loginModal.classList.remove("hidden");
+        } else {
+          // Đã có user trong localStorage → fetch lại dữ liệu ngay
+          refreshData();
+        }
 
         // ================================
         // 5. Sự kiện click vào nút user menu
@@ -2376,16 +2382,6 @@
         const index = Math.abs(hash) % colors.length;
         return colors[index];
       }
-
-      // Sau khi login thành công
-      const avatarSpan = document.getElementById("userAvatar");
-      const initials = getInitials(name);
-      avatarSpan.textContent = initials;
-
-      // Xóa màu cũ rồi thêm màu mới
-      avatarSpan.className =
-        "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
-        getColorFromName(currentUser.useName);
     </script>
   </body>
 </html>
