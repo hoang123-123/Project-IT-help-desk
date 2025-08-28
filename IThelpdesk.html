@@ -1431,11 +1431,11 @@
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-        const selectedApprovers = approverChoices.getValue(true); 
-        
-        const approversText = Array.isArray(selectedApprovers) 
-  ? selectedApprovers.join(",") 
-  : selectedApprovers;
+        const selectedApprovers = approverChoices.getValue(true);
+
+        const approversText = Array.isArray(selectedApprovers)
+          ? selectedApprovers.join(",")
+          : selectedApprovers;
 
         const newTicket = {
           crdfd_lydoieuchinh:
@@ -1448,7 +1448,7 @@
           cr1bb_phongban: document.getElementById("ticketDepartment").value,
           cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo")
             .value,
-          crdfd_nguoiduyet: approversText
+          crdfd_nguoiduyet: approversText,
         };
 
         console.log("new ticket: ", newTicket);
@@ -1581,19 +1581,19 @@
 
           // update lên Dataverse
           const updated = await updateTicketStatus(
-  currentApprovalTicket.id,
-  283640001,
-  currentUser.idU
-);
-document.getElementById("approvalModal").classList.add("hidden");
-if (updated) {
-  showNotification("Ticket đã được phê duyệt!", "success");
-} else {
-  showNotification("User này không có record approval để phê duyệt.", "info");
-}
-
-          
-      
+            currentApprovalTicket.id,
+            283640001,
+            currentUser.idU
+          );
+          document.getElementById("approvalModal").classList.add("hidden");
+          if (updated) {
+            showNotification("Ticket đã được phê duyệt!", "success");
+          } else {
+            showNotification(
+              "User này không có record approval để phê duyệt.",
+              "info"
+            );
+          }
 
           // refresh lại từ server
           await refreshData();
@@ -1613,14 +1613,21 @@ if (updated) {
             throw new Error("Không tìm thấy user login");
           }
 
-          await updateTicketStatus(
+          const updated = await updateTicketStatus(
             currentApprovalTicket.id,
             283640002,
             currentUser.idU // 👈 email của user login
           );
 
           document.getElementById("approvalModal").classList.add("hidden");
-          showNotification("Ticket đã bị từ chối!", "error");
+          if (updated) {
+            showNotification("Ticket đã bị từ chối!", "error");
+          } else {
+            showNotification(
+              "User này không có record approval để phê duyệt.",
+              "info"
+            );
+          }
 
           await refreshData();
           loadApprovals();
@@ -1945,18 +1952,18 @@ if (updated) {
             break;
 
           // ==== Điều chỉnh số lượng ====
-      //     case 283640007:
-      //       container.innerHTML = `
-      //   <div>
-      //     <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-      //     <input type="text" id="orderCodeQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
-      //   </div>
-      //   <div>
-      //     <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
-      //     <input type="number" id="adjustQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng mới">
-      //   </div>
-      // `;
-      //       break;
+          //     case 283640007:
+          //       container.innerHTML = `
+          //   <div>
+          //     <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
+          //     <input type="text" id="orderCodeQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+          //   </div>
+          //   <div>
+          //     <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
+          //     <input type="number" id="adjustQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng mới">
+          //   </div>
+          // `;
+          //       break;
 
           // ==== Loại hủy ====
           case 283640004: // Hủy phiếu nhập kho
@@ -2291,73 +2298,88 @@ if (updated) {
       }
 
       async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
-  try {
-    const token = await getToken(); // lấy token an toàn
+        try {
+          const token = await getToken(); // lấy token an toàn
 
-    // 1. Tìm record approval con dựa trên ticketId và email
-    const query = `${DATAVERSE_URL}/crdfd_support_system_approvals` +
-      `?$select=crdfd_support_system_approvalid` +
-      `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
+          // 1. Tìm record approval con dựa trên ticketId và email
+          const query =
+            `${DATAVERSE_URL}/crdfd_support_system_approvals` +
+            `?$select=crdfd_support_system_approvalid` +
+            `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
 
-    const res = await fetch(query, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "OData-MaxVersion": "4.0",
-        "OData-Version": "4.0",
-      },
-    });
+          const res = await fetch(query, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "OData-MaxVersion": "4.0",
+              "OData-Version": "4.0",
+            },
+          });
 
-    if (!res.ok) {
-      throw new Error(`Lỗi khi tìm approval: ${res.status} ${res.statusText}`);
-    }
+          if (!res.ok) {
+            throw new Error(
+              `Lỗi khi tìm approval: ${res.status} ${res.statusText}`
+            );
+          }
 
-    const data = await res.json();
+          const data = await res.json();
 
-    // Nếu không tìm thấy approval record, chỉ thông báo, không ném lỗi
-    if (!data.value || data.value.length === 0) {
-      console.info(`⚠ User ${currentUserEmail} không có approval record cho ticket này.`);
-      showNotification("User này không có record approval để cập nhật.", "info");
-      return false;
-    }
+          // Nếu không tìm thấy approval record, chỉ thông báo, không ném lỗi
+          if (!data.value || data.value.length === 0) {
+            console.info(
+              `⚠ User ${currentUserEmail} không có approval record cho ticket này.`
+            );
+            showNotification(
+              "User này không có record approval để cập nhật.",
+              "info"
+            );
+            return false;
+          }
 
-    const approvalDetailId = data.value[0].crdfd_support_system_approvalid;
+          const approvalDetailId =
+            data.value[0].crdfd_support_system_approvalid;
 
-    // 2. Update record approval
-    const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
-    const body = { cr1bb_trang_thai: newStatus }; // dùng đúng field trong Dataverse
+          // 2. Update record approval
+          const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
+          const body = { cr1bb_trang_thai: newStatus }; // dùng đúng field trong Dataverse
 
-    const updateRes = await fetch(patchUrl, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "OData-MaxVersion": "4.0",
-        "OData-Version": "4.0",
-      },
-      body: JSON.stringify(body),
-    });
+          const updateRes = await fetch(patchUrl, {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "OData-MaxVersion": "4.0",
+              "OData-Version": "4.0",
+            },
+            body: JSON.stringify(body),
+          });
 
-    if (!updateRes.ok) {
-      throw new Error(`Update thất bại: ${updateRes.status} ${updateRes.statusText}`);
-    }
+          if (!updateRes.ok) {
+            throw new Error(
+              `Update thất bại: ${updateRes.status} ${updateRes.statusText}`
+            );
+          }
 
-    console.log(`✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`);
-    showNotification("Cập nhật trạng thái approval thành công!", "success");
+          console.log(
+            `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
+          );
+          showNotification(
+            "Cập nhật trạng thái approval thành công!",
+            "success"
+          );
 
-    // Refresh data sau khi update
-    refreshData();
+          // Refresh data sau khi update
+          refreshData();
 
-    return true;
-  } catch (err) {
-    console.error("❌ Error update ticket:", err);
-    showNotification("Cập nhật thất bại: " + err.message, "error");
-    return false;
-  }
-}
-
+          return true;
+        } catch (err) {
+          console.error("❌ Error update ticket:", err);
+          showNotification("Cập nhật thất bại: " + err.message, "error");
+          return false;
+        }
+      }
 
       // async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
       //   try {
@@ -2407,7 +2429,6 @@ if (updated) {
       //       },
       //       body: JSON.stringify(body),
       //     });
-
 
       //     if (!updateRes.ok) {
       //       throw new Error(
