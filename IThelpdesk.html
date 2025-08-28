@@ -600,31 +600,34 @@
                   </div>
 
                   <!-- Chọn Loại yêu cầu -->
-                <div>
-  <label class="block text-sm font-medium text-gray-700 mb-2">
-    Loại yêu cầu *
-  </label>
-  <select
-    id="ticketCategory"
-    required
-    onchange="onCategoryChange(this.value)"
-    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-  >
-    <option value="">Chọn loại yêu cầu</option>
-    <option value="191920000">Điều chỉnh giá SOD</option>
-    <option value="191920001">Điều chỉnh VAT SOD</option>
-    <option value="283640001">Điều chỉnh VAT SO</option>
-    <option value="283640002">Điều chỉnh giá BOD</option>
-    <option value="283640003">Điều chỉnh VAT BOD</option>
-    <option value="283640004">Hủy phiếu nhập kho</option>
-    <option value="283640005">Điều chỉnh phiếu nhập kho</option>
-    <option value="283640006">Điều chỉnh VAT BO</option>
-    <option value="283640007">Điều chỉnh định lượng</option>
-    <option value="283640008">Hủy phiếu xuất kho</option>
-    <option value="283640009">Điều chỉnh phiếu xuất kho</option>
-  </select>
-</div>
-
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Loại yêu cầu *
+                    </label>
+                    <select
+                      id="ticketCategory"
+                      required
+                      onchange="onCategoryChange(this.value)"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Chọn loại yêu cầu</option>
+                      <option value="191920000">Điều chỉnh giá SOD</option>
+                      <option value="191920001">Điều chỉnh VAT SOD</option>
+                      <option value="283640001">Điều chỉnh VAT SO</option>
+                      <option value="283640002">Điều chỉnh giá BOD</option>
+                      <option value="283640003">Điều chỉnh VAT BOD</option>
+                      <option value="283640004">Hủy phiếu nhập kho</option>
+                      <option value="283640005">
+                        Điều chỉnh phiếu nhập kho
+                      </option>
+                      <option value="283640006">Điều chỉnh VAT BO</option>
+                      <option value="283640007">Điều chỉnh định lượng</option>
+                      <option value="283640008">Hủy phiếu xuất kho</option>
+                      <option value="283640009">
+                        Điều chỉnh phiếu xuất kho
+                      </option>
+                    </select>
+                  </div>
 
                   <!-- Thông tin chung -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -911,7 +914,7 @@
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
-  
+
       const USER_QUERY =
         "/crdfd_employees" +
         "?$select=cr1bb_emailcal,crdfd_name,crdfd_phongbantext" +
@@ -993,35 +996,34 @@
       // ========== Function ================
 
       async function getToken() {
-  const url =
-    "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
+        const url =
+          "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
 
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key: "value" }),
-    });
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: "value" }),
+          });
 
-    if (!response.ok) {
-      throw new Error("HTTP status " + response.status);
-    }
+          if (!response.ok) {
+            throw new Error("HTTP status " + response.status);
+          }
 
-    const data = await response.json();
-    console.log("Full response:", data);
+          const data = await response.json();
+          console.log("Full response:", data);
 
-    cachedToken = data.access_token; // 👈 lấy trực tiếp
-    if (!cachedToken) {
-      throw new Error("Không tìm thấy access_token trong response");
-    }
+          cachedToken = data.access_token; // 👈 lấy trực tiếp
+          if (!cachedToken) {
+            throw new Error("Không tìm thấy access_token trong response");
+          }
 
-    return cachedToken;
-  } catch (err) {
-    console.error("Error getToken:", err);
-    throw err;
-  }
-}
-
+          return cachedToken;
+        } catch (err) {
+          console.error("Error getToken:", err);
+          throw err;
+        }
+      }
 
       async function getData() {
         const [data, dataUser] = await Promise.all([
@@ -1425,19 +1427,23 @@
         });
       }
 
-      // Create ticket
+      // ============ Create ticket =====================
       async function createNewTicket() {
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        // console.log("usser create: ", currentUser.useName);
+        const selectedApprovers = approverChoices.getValue(true); 
         const newTicket = {
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
-          crdfd_loaiieuchinh: parseInt(document.getElementById("ticketCategory").value),
+          crdfd_loaiieuchinh: parseInt(
+            document.getElementById("ticketCategory").value
+          ),
           crdfd_nguoiyeucau: currentUser.idU,
           crdfd_trangthai: 191920002,
           cr1bb_phongban: document.getElementById("ticketDepartment").value,
-          cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo").value
+          cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo")
+            .value,
+          crdfd_nguoiduyet: selectedApprovers
         };
 
         try {
@@ -1905,14 +1911,14 @@
         return ordersDetailData;
       }
       function onCategoryChange(category) {
-  const container = document.getElementById("dynamicFields");
-  container.innerHTML = ""; // reset
+        const container = document.getElementById("dynamicFields");
+        container.innerHTML = ""; // reset
 
-  switch (parseInt(category)) {
-    // ==== Điều chỉnh giá ====
-    case 191920000: // Điều chỉnh giá SOD
-    case 283640002: // Điều chỉnh giá BOD
-      container.innerHTML = `
+        switch (parseInt(category)) {
+          // ==== Điều chỉnh giá ====
+          case 191920000: // Điều chỉnh giá SOD
+          case 283640002: // Điều chỉnh giá BOD
+            container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
           <input type="text" id="orderCodePrice" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
@@ -1922,36 +1928,40 @@
           <input type="number" id="adjustPrice" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị mới">
         </div>
       `;
-      break;
+            break;
 
-    // ==== Điều chỉnh số lượng ====
-    case 283640007:
-      container.innerHTML = `
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          <input type="text" id="orderCodeQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
-          <input type="number" id="adjustQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng mới">
-        </div>
-      `;
-      break;
+          // ==== Điều chỉnh số lượng ====
+      //     case 283640007:
+      //       container.innerHTML = `
+      //   <div>
+      //     <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
+      //     <input type="text" id="orderCodeQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+      //   </div>
+      //   <div>
+      //     <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
+      //     <input type="number" id="adjustQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng mới">
+      //   </div>
+      // `;
+      //       break;
 
-    // ==== Loại hủy ====
-    case 283640004: // Hủy phiếu nhập kho
-    case 283640008: // Hủy phiếu xuất kho
-      container.innerHTML = `
+          // ==== Loại hủy ====
+          case 283640004: // Hủy phiếu nhập kho
+          case 283640008: // Hủy phiếu xuất kho
+            container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy</label>
           <input type="text" id="cancelCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy">
         </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy</label>
+          <input type="text" id="cancelCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng cần hủy">
+        </div>
       `;
-      break;
+            break;
 
-    // ==== Điều chỉnh định lượng ====
-    case 283640007: // Điều chỉnh định lượng
-      container.innerHTML = `
+          // ==== Điều chỉnh định lượng ====
+          case 283640007: // Điều chỉnh định lượng
+            container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm</label>
           <input type="text" id="productCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã sản phẩm">
@@ -1965,15 +1975,15 @@
           <input type="number" id="adjustValue" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh">
         </div>
       `;
-      break;
+            break;
 
-    // ==== Điều chỉnh VAT ====
-    case 191920001: // VAT SOD
-    case 283640001: // VAT SO
-    case 283640003: // VAT BOD
-    case 283640006: // VAT BO
-    case 283640009: // VAT xuất kho
-      container.innerHTML = `
+          // ==== Điều chỉnh VAT ====
+          case 191920001: // VAT SOD
+          case 283640001: // VAT SO
+          case 283640003: // VAT BOD
+          case 283640006: // VAT BO
+          case 283640009: // VAT xuất kho
+            container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
           <input type="text" id="orderCodeVat" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
@@ -1990,18 +2000,17 @@
           </select>
         </div>
       `;
-      break;
+            break;
 
-    default:
-      container.innerHTML = `
+          default:
+            container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin thêm</label>
           <input type="text" id="extraInfo" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập thông tin...">
         </div>
       `;
-  }
-}
-
+        }
+      }
 
       // function setup value chọn user duyệt
       function initApproverChoices() {
@@ -2048,33 +2057,33 @@
       }
 
       // function setup value chọn đơn hàng
-      function initOrderChoices() {
-        const orderSelect = document.getElementById("ticketOrder");
-        const choices = new Choices(orderSelect, {
-          removeItemButton: true, // cho phép xóa khi chọn
-          searchEnabled: true,
-          searchFields: ["label"],
-          fuseOptions: {
-            includeScore: true,
-            threshold: 0.3, // càng nhỏ càng khớp chính xác, tăng lên thì cho phép match mờ hơn
-            distance: 100,
-            minMatchCharLength: 2,
-            ignoreLocation: false,
-          }, // bật search
-          searchResultLimit: 10, // tối đa 10 kết quả khi search
-          placeholderValue: "Chọn đơn hàng",
-          noResultsText: "Không tìm thấy",
-          shouldSort: false, // giữ nguyên thứ tự
-        });
+      // function initOrderChoices() {
+      //   const orderSelect = document.getElementById("ticketOrder");
+      //   const choices = new Choices(orderSelect, {
+      //     removeItemButton: true, // cho phép xóa khi chọn
+      //     searchEnabled: true,
+      //     searchFields: ["label"],
+      //     fuseOptions: {
+      //       includeScore: true,
+      //       threshold: 0.3, // càng nhỏ càng khớp chính xác, tăng lên thì cho phép match mờ hơn
+      //       distance: 100,
+      //       minMatchCharLength: 2,
+      //       ignoreLocation: false,
+      //     }, // bật search
+      //     searchResultLimit: 10, // tối đa 10 kết quả khi search
+      //     placeholderValue: "Chọn đơn hàng",
+      //     noResultsText: "Không tìm thấy",
+      //     shouldSort: false, // giữ nguyên thứ tự
+      //   });
 
-        // map dữ liệu từ ordersDetailData
-        const options = ordersDetailData.map((o) => ({
-          value: o.idSOD,
-          label: `${o.sodName}`, // có thể thêm code hoặc ngày tạo nếu muốn
-        }));
+      //   // map dữ liệu từ ordersDetailData
+      //   const options = ordersDetailData.map((o) => ({
+      //     value: o.idSOD,
+      //     label: `${o.sodName}`, // có thể thêm code hoặc ngày tạo nếu muốn
+      //   }));
 
-        choices.setChoices(options, "value", "label", false);
-      }
+      //   choices.setChoices(options, "value", "label", false);
+      // }
 
       // function login
       function initUserMenu() {
@@ -2218,8 +2227,8 @@
             // Nếu đang login → tiến hành logout
             currentUser = null;
             localStorage.removeItem("currentUser"); // Xóa user khỏi localStorage
-            cachedToken = null;  
-            tokenExpiry = null;  
+            cachedToken = null;
+            tokenExpiry = null;
             clearUI(); // Reset giao diện về mặc định
             updateUI(); // Update menu về "Khách"
             loginModal.classList.remove("hidden"); // Hiện modal login lại
@@ -2264,7 +2273,7 @@
 
         // Reset biến dữ liệu trong JS
         tickets = [];
-        //approversData = []; 
+        //approversData = [];
         ordersDetailData = [];
       }
 
