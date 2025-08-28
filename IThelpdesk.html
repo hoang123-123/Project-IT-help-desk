@@ -902,13 +902,11 @@
       let supportSystemsData = [];
       let ordersDetailData = [];
       let approversData = [];
-      let token = "";
       let approverChoices = null;
       let ticketHandlersInitialized = false;
       let currentTicketPage = 1;
       let cachedToken = null;
       let tokenExpiry = null;
-      let email = "";
 
       const ticketsPerPage = 10;
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
@@ -1042,21 +1040,37 @@
 
       async function getData() {
         const [data, dataUser] = await Promise.all([
-          getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
-          getAllXseptions(token, USER_QUERY, mappingUser),
-          getAllXseptions(token, SOD_QUERY, mappingSOD),
+          //getAllXseptions(token, XSEPTIONS_QUERY, mappingListTickets),
+          getAllXseptions(cachedToken, USER_QUERY, mappingUser),
+          getAllXseptions(cachedToken, SOD_QUERY, mappingSOD),
         ]);
         return { data, dataUser };
       }
 
       async function refreshData() {
+        const email = getCurrentUserEmail();
+        if (!email) {
+          console.warn("❌ Chưa login, bỏ qua fetch data");
+          return;
+        }
+
+        const query = buildXseptionsQuery(email);
         console.log("câu quere lấy data sp: ", XSEPTIONS_QUERY);
-        tickets = await getAllXseptions(
-          token,
-          XSEPTIONS_QUERY,
-          mappingListTickets
-        );
+        tickets = await getAllXseptions(cachedToken, query, mappingListTickets);
         loadTickets(); // giờ loadTickets dùng tickets mới nhất
+      }
+
+      function getCurrentUserEmail() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        return currentUser ? currentUser.idU : null;
+      }
+
+      function buildXseptionsQuery(email) {
+        return (
+          "/crdfd_suport_systems" +
+          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
+          `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`
+        );
       }
 
       async function init() {
@@ -2115,7 +2129,6 @@
           if (currentUser) {
             userNameSpan.textContent = currentUser.useName;
             logoutLink.textContent = "Đăng xuất";
-            email = currentUser.idU;
 
             // đổi avatar theo tên user
             const initials = getInitials(currentUser.useName);
@@ -2195,7 +2208,6 @@
             // Nếu login thành công
             currentUser = found;
             localStorage.setItem("currentUser", JSON.stringify(found)); // Lưu vào localStorage
-            email = currentUser.idU;
             updateUI(); // Cập nhật lại giao diện
             loginModal.classList.add("hidden"); // Ẩn modal login
             showNotification("Đăng nhập thành công", "success");
@@ -2367,13 +2379,13 @@
 
       // Sau khi login thành công
       const avatarSpan = document.getElementById("userAvatar");
-      const initials = getInitials(currentUser.fullName);
+      const initials = getInitials(name);
       avatarSpan.textContent = initials;
 
       // Xóa màu cũ rồi thêm màu mới
       avatarSpan.className =
         "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
-        getColorFromName(currentUser.fullName);
+        getColorFromName(currentUser.useName);
     </script>
   </body>
 </html>
