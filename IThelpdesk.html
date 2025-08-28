@@ -914,10 +914,10 @@
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
-      const XSEPTIONS_QUERY =
-        "/crdfd_suport_systems" +
-        "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
-        `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`;
+      // const XSEPTIONS_QUERY =
+      //   "/crdfd_suport_systems" +
+      //   "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
+      //   `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`;
 
       const USER_QUERY =
         "/crdfd_employees" +
