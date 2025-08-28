@@ -1057,6 +1057,7 @@
         const query = buildXseptionsQuery(email);
         console.log("câu quere lấy data sp: ", query);
         tickets = await getAllXseptions(cachedToken, query, mappingListTickets);
+        console.log("data ticket: ", tickets);
         loadTickets(); // giờ loadTickets dùng tickets mới nhất
       }
 
@@ -1847,6 +1848,7 @@
 
       async function getAllXseptions(token, query, callback) {
         let url = DATAVERSE_URL + query;
+        console.log("url: ", url);
         let allData = [];
         let page = 1;
 
@@ -2147,8 +2149,6 @@
         }
         updateUI();
 
-        // ================================
-        // 4. Nếu chưa login thì bật modal ngay
         // ================================
         // 4. Nếu chưa login thì bật modal ngay, ngược lại thì fetch data
         if (!currentUser) {
