@@ -1009,40 +1009,37 @@
 
         const now = Math.floor(Date.now() / 1000);
 
-        // ✅ Nếu token còn hạn thì dùng lại
+        // ✅ Dùng lại token nếu còn hạn > 60s
         if (cachedToken && tokenExpiry && tokenExpiry > now + 60) {
           return cachedToken;
         }
 
-         try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key: "value" }),
-    });
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: "value" }),
+          });
 
-    if (!response.ok) throw new Error("HTTP status " + response.status);
+          if (!response.ok) {
+            throw new Error("HTTP status " + response.status);
+          }
 
-    const data = await response.json();
-    console.log("DEBUG FULL RESPONSE:", data); // 👈 log ra xem nó là gì
+          const data = await response.json();
+          console.log("DEBUG token response:", data);
 
-    let body = data.body;
-    if (typeof body === "string") {
-      body = JSON.parse(body);
-    }
+          cachedToken = data.access_token; // 👈 lấy thẳng ở đây
+          tokenExpiry = now + (data.expires_in || 3500); // dự phòng ~3500s
 
-    cachedToken = body.access_token;
-    tokenExpiry = now + (body.expires_in || 3500);
+          if (!cachedToken) {
+            throw new Error("Không tìm thấy access_token trong response");
+          }
 
-    if (!cachedToken) {
-      throw new Error("Không tìm thấy access_token trong response");
-    }
-
-    return cachedToken;
-  } catch (err) {
-    console.error("Error getToken:", err);
-    throw err;
-  }
+          return cachedToken;
+        } catch (err) {
+          console.error("Error getToken:", err);
+          throw err;
+        }
       }
 
       async function getData() {
