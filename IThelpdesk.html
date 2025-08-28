@@ -906,18 +906,16 @@
       let approverChoices = null;
       let ticketHandlersInitialized = false;
       let currentTicketPage = 1;
-      const ticketsPerPage = 10;
       let cachedToken = null;
       let tokenExpiry = null;
+      let email = "";
 
+      const ticketsPerPage = 10;
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
 
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
-      const currentUser =
-        JSON.parse(localStorage.getItem("currentUser")) || null;
-      const email = currentUser?.idU || currentUser?.username;
       const XSEPTIONS_QUERY =
         "/crdfd_suport_systems" +
         "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
@@ -1832,30 +1830,6 @@
           });
         }
       }
-      // async function getToken() {
-      //   const url =
-      //     "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
-      //   try {
-      //     const response = await fetch(url, {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({ key: "value" }),
-      //     });
-
-      //     // if (!response.ok) {
-      //     //     throw new Error("HTTP status " + response.status);
-      //     // }
-
-      //     const data = await response.json();
-
-      //     return data.value; // 👈 lấy token từ field body
-      //   } catch (err) {
-      //     console.error("Error:", err);
-      //     throw err;
-      //   }
-      // }
 
       async function getAllXseptions(token, query, callback) {
         let url = DATAVERSE_URL + query;
@@ -2141,6 +2115,7 @@
           if (currentUser) {
             userNameSpan.textContent = currentUser.useName;
             logoutLink.textContent = "Đăng xuất";
+            email = currentUser.idU;
 
             // đổi avatar theo tên user
             const initials = getInitials(currentUser.useName);
@@ -2220,6 +2195,7 @@
             // Nếu login thành công
             currentUser = found;
             localStorage.setItem("currentUser", JSON.stringify(found)); // Lưu vào localStorage
+            email = currentUser.idU;
             updateUI(); // Cập nhật lại giao diện
             loginModal.classList.add("hidden"); // Ẩn modal login
             showNotification("Đăng nhập thành công", "success");
