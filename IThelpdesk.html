@@ -1027,10 +1027,14 @@
 
           const data = await response.json();
 
-          // ✅ Flow mới: lấy trong data.body
-          const body = data.body || {};
+          // 👇 Nếu body là string thì parse lại
+          let body = data.body;
+          if (typeof body === "string") {
+            body = JSON.parse(body);
+          }
+
           cachedToken = body.access_token;
-          tokenExpiry = now + (body.expires_in || 3500); // dự phòng ~3500s
+          tokenExpiry = now + (body.expires_in || 3500);
 
           if (!cachedToken) {
             throw new Error("Không tìm thấy access_token trong response");
@@ -2325,7 +2329,8 @@
             throw new Error("Không tìm thấy approval record cho user này.");
           }
 
-          const approvalDetailId = data.value[0].crdfd_support_system_approvalid;
+          const approvalDetailId =
+            data.value[0].crdfd_support_system_approvalid;
 
           // 2. Update record con
           const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
