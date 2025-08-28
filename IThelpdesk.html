@@ -995,38 +995,35 @@
       // ========== Function ================
 
       async function getToken() {
-        const url =
-          "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
+  const url =
+    "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
 
-        try {
-          const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ key: "value" }),
-          });
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: "value" }),
+    });
 
-          if (!response.ok) {
-            throw new Error("HTTP status " + response.status);
-          }
-       
+    if (!response.ok) {
+      throw new Error("HTTP status " + response.status);
+    }
 
+    const data = await response.json();
+    console.log("Full response:", data);
 
-          const data = await response.json();
-             console.log("Full response:", data);
-console.log("Body type:", typeof data.body, data.body);
-           const body = data.body || {};   // 👈 lấy body
-    cachedToken = body.access_token; // 👈 lấy token đúng chỗ
+    cachedToken = data.access_token; // 👈 lấy trực tiếp
+    if (!cachedToken) {
+      throw new Error("Không tìm thấy access_token trong response");
+    }
 
-          if (!cachedToken) {
-            throw new Error("Không tìm thấy access_token trong response");
-          }
+    return cachedToken;
+  } catch (err) {
+    console.error("Error getToken:", err);
+    throw err;
+  }
+}
 
-          return cachedToken;
-        } catch (err) {
-          console.error("Error getToken:", err);
-          throw err;
-        }
-      }
 
       async function getData() {
         const [data, dataUser] = await Promise.all([
