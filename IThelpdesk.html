@@ -1010,7 +1010,8 @@
           }
 
           const data = await response.json();
-          cachedToken = data.access_token; // 👈 lấy thẳng ở đây
+           const body = data.body || {};   // 👈 lấy body
+    cachedToken = body.access_token; // 👈 lấy token đúng chỗ
 
           if (!cachedToken) {
             throw new Error("Không tìm thấy access_token trong response");
