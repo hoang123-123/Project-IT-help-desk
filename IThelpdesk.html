@@ -1883,7 +1883,7 @@
       function mappingListTickets(allData) {
         // 🔹 Mapping dữ liệu từ Dataverse về mảng chuẩn giống sampleTickets
         supportSystemsData = allData.map((item, index) => ({
-          id: item.crdfd_name || "", // tạo ID giống sampleTickets
+          id: item.crdfd_suport_systemid || "", // tạo ID giống sampleTickets
           title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
           description: item.crdfd_lydoieuchinh || "",
           category: item.crdfd_loaiieuchinh || "other",
@@ -1892,6 +1892,7 @@
           createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
           createdAt: item.createdon || "Không xác định date",
           userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
+          name: item.crdfd_name || "",
         }));
 
         supportSystemsData.sort(
