@@ -906,7 +906,6 @@
       let ticketHandlersInitialized = false;
       let currentTicketPage = 1;
       let cachedToken = null;
-      let tokenExpiry = null;
 
       const ticketsPerPage = 10;
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
@@ -914,11 +913,7 @@
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
-      // const XSEPTIONS_QUERY =
-      //   "/crdfd_suport_systems" +
-      //   "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
-      //   `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`;
-
+  
       const USER_QUERY =
         "/crdfd_employees" +
         "?$select=cr1bb_emailcal,crdfd_name,crdfd_phongbantext" +
@@ -1003,13 +998,6 @@
         const url =
           "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
 
-        const now = Math.floor(Date.now() / 1000);
-
-        // ✅ Dùng lại token nếu còn hạn > 60s
-        if (cachedToken && tokenExpiry && tokenExpiry > now + 60) {
-          return cachedToken;
-        }
-
         try {
           const response = await fetch(url, {
             method: "POST",
@@ -1022,10 +1010,7 @@
           }
 
           const data = await response.json();
-          console.log("DEBUG token response:", data);
-
           cachedToken = data.access_token; // 👈 lấy thẳng ở đây
-          tokenExpiry = now + (data.expires_in || 3500); // dự phòng ~3500s
 
           if (!cachedToken) {
             throw new Error("Không tìm thấy access_token trong response");
