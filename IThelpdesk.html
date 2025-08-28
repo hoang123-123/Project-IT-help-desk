@@ -1448,14 +1448,13 @@
           cr1bb_phongban: document.getElementById("ticketDepartment").value,
           cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo")
             .value,
-          crdfd_nguoiduyet: selectedApprovers
+          crdfd_nguoiduyet: approversText
         };
 
         console.log("new ticket: ", newTicket);
 
         try {
           const cachedToken = await getToken();
-          console.log("token new: ", cachedToken);
           const response = await fetch(
             `${DATAVERSE_URL}/crdfd_suport_systems`,
             {
