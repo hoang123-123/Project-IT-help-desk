@@ -1052,6 +1052,7 @@
       }
 
       async function refreshData() {
+        console.log("câu quere lấy data sp: ", XSEPTIONS_QUERY);
         tickets = await getAllXseptions(
           token,
           XSEPTIONS_QUERY,
