@@ -1448,8 +1448,11 @@
           crdfd_nguoiduyet: selectedApprovers
         };
 
+        console.log("new ticket: ", newTicket);
+
         try {
           const cachedToken = await getToken();
+          console.log("token new: ", cachedToken);
           const response = await fetch(
             `${DATAVERSE_URL}/crdfd_suport_systems`,
             {
