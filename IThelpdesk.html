@@ -297,7 +297,9 @@
                 <div
                   class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center"
                 >
-                  <span class="text-white text-sm font-medium" id="userAvatar">AD</span>
+                  <span class="text-white text-sm font-medium" id="userAvatar"
+                    >AD</span
+                  >
                 </div>
                 <span class="hidden md:block text-sm font-medium"
                   >Admin User</span
@@ -905,9 +907,11 @@
       let ticketHandlersInitialized = false;
       let currentTicketPage = 1;
       const ticketsPerPage = 10;
+      let cachedToken = null;
+      let tokenExpiry = null;
 
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
-      
+
       const AdminUser = [
         { username: "admin", password: "123456", fullName: "Admin WC" },
       ];
@@ -998,6 +1002,46 @@
       });
 
       // ========== Function ================
+
+      async function getToken() {
+        const url =
+          "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
+
+        const now = Math.floor(Date.now() / 1000);
+
+        // ✅ Nếu token còn hạn thì dùng lại
+        if (cachedToken && tokenExpiry && tokenExpiry > now + 60) {
+          return cachedToken;
+        }
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ key: "value" }),
+          });
+
+          if (!response.ok) {
+            throw new Error("HTTP status " + response.status);
+          }
+
+          const data = await response.json();
+
+          // ✅ Flow mới: lấy trong data.body
+          const body = data.body || {};
+          cachedToken = body.access_token;
+          tokenExpiry = now + (body.expires_in || 3500); // dự phòng ~3500s
+
+          if (!cachedToken) {
+            throw new Error("Không tìm thấy access_token trong response");
+          }
+
+          return cachedToken;
+        } catch (err) {
+          console.error("Error getToken:", err);
+          throw err;
+        }
+      }
 
       async function getData() {
         const [data, dataUser] = await Promise.all([
@@ -1512,12 +1556,22 @@
         approvalModal.classList.remove("hidden");
       }
 
+      //=========== User Approval ===========
       async function approveCurrentTicket() {
         if (!currentApprovalTicket) return;
 
         try {
+          const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+          if (!currentUser || !currentUser.idU) {
+            throw new Error("Không tìm thấy user login");
+          }
+
           // update lên Dataverse
-          await updateTicketStatus(currentApprovalTicket.id, "approved");
+          await updateTicketStatus(
+            currentApprovalTicket.id,
+            283640001,
+            currentUser.idU // 👈 email của user login
+          );
 
           document.getElementById("approvalModal").classList.add("hidden");
           showNotification("Ticket đã được phê duyệt!", "success");
@@ -1535,7 +1589,16 @@
         if (!currentApprovalTicket) return;
 
         try {
-          await updateTicketStatus(currentApprovalTicket.id, "rejected");
+          const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+          if (!currentUser || !currentUser.idU) {
+            throw new Error("Không tìm thấy user login");
+          }
+
+          await updateTicketStatus(
+            currentApprovalTicket.id,
+            283640002,
+            currentUser.idU // 👈 email của user login
+          );
 
           document.getElementById("approvalModal").classList.add("hidden");
           showNotification("Ticket đã bị từ chối!", "error");
@@ -1769,30 +1832,30 @@
           });
         }
       }
-      async function getToken() {
-        const url =
-          "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
-        try {
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ key: "value" }),
-          });
+      // async function getToken() {
+      //   const url =
+      //     "https://prod-43.southeastasia.logic.azure.com:443/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=R4cX_RbgAONZ2qPVzkykPmDaX96SnPvw4lPAg5AcG78";
+      //   try {
+      //     const response = await fetch(url, {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({ key: "value" }),
+      //     });
 
-          // if (!response.ok) {
-          //     throw new Error("HTTP status " + response.status);
-          // }
+      //     // if (!response.ok) {
+      //     //     throw new Error("HTTP status " + response.status);
+      //     // }
 
-          const data = await response.json();
+      //     const data = await response.json();
 
-          return data.value; // 👈 lấy token từ field body
-        } catch (err) {
-          console.error("Error:", err);
-          throw err;
-        }
-      }
+      //     return data.value; // 👈 lấy token từ field body
+      //   } catch (err) {
+      //     console.error("Error:", err);
+      //     throw err;
+      //   }
+      // }
 
       async function getAllXseptions(token, query, callback) {
         let url = DATAVERSE_URL + query;
@@ -2072,28 +2135,28 @@
         // ================================
         // 3. Hàm cập nhật giao diện menu theo trạng thái login
         // ================================
-      function updateUI() {
-  const avatarSpan = document.getElementById("userAvatar");
+        function updateUI() {
+          const avatarSpan = document.getElementById("userAvatar");
 
-  if (currentUser) {
-    userNameSpan.textContent = currentUser.useName;
-    logoutLink.textContent = "Đăng xuất";
+          if (currentUser) {
+            userNameSpan.textContent = currentUser.useName;
+            logoutLink.textContent = "Đăng xuất";
 
-    // đổi avatar theo tên user
-    const initials = getInitials(currentUser.useName);
-    avatarSpan.textContent = initials;
-    avatarSpan.className =
-      "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
-      getColorFromName(currentUser.useName);
-  } else {
-    userNameSpan.textContent = "Khách";
-    logoutLink.textContent = "Đăng nhập";
+            // đổi avatar theo tên user
+            const initials = getInitials(currentUser.useName);
+            avatarSpan.textContent = initials;
+            avatarSpan.className =
+              "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
+              getColorFromName(currentUser.useName);
+          } else {
+            userNameSpan.textContent = "Khách";
+            logoutLink.textContent = "Đăng nhập";
 
-    avatarSpan.textContent = "AD";
-    avatarSpan.className =
-      "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center bg-gray-400";
-  }
-}
+            avatarSpan.textContent = "AD";
+            avatarSpan.className =
+              "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center bg-gray-400";
+          }
+        }
         updateUI();
 
         // ================================
@@ -2160,7 +2223,7 @@
             updateUI(); // Cập nhật lại giao diện
             loginModal.classList.add("hidden"); // Ẩn modal login
             showNotification("Đăng nhập thành công", "success");
-            refreshData()
+            refreshData();
             init(); // Gọi hàm init() → render giao diện + dữ liệu
           } else {
             // Nếu login thất bại
@@ -2231,19 +2294,47 @@
         ordersDetailData = [];
       }
 
-      async function updateTicketStatus(ticketId, newStatus) {
-        const url = `${DATAVERSE_URL}/crdfd_xseptions(${ticketId})`;
-        // ⬆ thay "crdfd_xseptions" bằng logical name của entity/table bạn dùng
-
-        const body = {
-          crdfd_trangthai: newStatus, // field trạng thái trong Dataverse
-        };
-
+      async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
         try {
-          const response = await fetch(url, {
+          const token = await getToken(); // dùng hàm token safe
+
+          // 1. Tìm record trong bảng con
+          const query =
+            `${DATAVERSE_URL}/crdfd_support_system_approvals` +
+            `?$select=crdfd_support_system_approvalid` +
+            `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
+
+          const res = await fetch(query, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+              "OData-MaxVersion": "4.0",
+              "OData-Version": "4.0",
+            },
+          });
+
+          if (!res.ok) {
+            throw new Error(
+              `Lỗi khi tìm approval: ${res.status} ${res.statusText}`
+            );
+          }
+
+          const data = await res.json();
+          if (!data.value || data.value.length === 0) {
+            throw new Error("Không tìm thấy approval record cho user này.");
+          }
+
+          const approvalDetailId = data.value[0].crdfd_support_system_approvalid;
+
+          // 2. Update record con
+          const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
+          const body = { crdfd_trangthai: newStatus };
+
+          const updateRes = await fetch(patchUrl, {
             method: "PATCH",
             headers: {
-              Authorization: `Bearer ${token}`, // token global bạn có sẵn
+              Authorization: `Bearer ${token}`,
               Accept: "application/json",
               "Content-Type": "application/json",
               "OData-MaxVersion": "4.0",
@@ -2252,13 +2343,15 @@
             body: JSON.stringify(body),
           });
 
-          if (!response.ok) {
+          if (!updateRes.ok) {
             throw new Error(
-              `Update thất bại: ${response.status} ${response.statusText}`
+              `Update thất bại: ${updateRes.status} ${updateRes.statusText}`
             );
           }
 
-          console.log(`✔ Ticket ${ticketId} updated to ${newStatus}`);
+          console.log(
+            `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
+          );
           return true;
         } catch (err) {
           console.error("❌ Error update ticket:", err);
@@ -2267,38 +2360,43 @@
       }
 
       function getInitials(fullName) {
-  if (!fullName) return "AD";
-  const parts = fullName.trim().split(" ");
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
+        if (!fullName) return "AD";
+        const parts = fullName.trim().split(" ");
+        if (parts.length === 1) return parts[0][0].toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
 
-// Sinh màu ngẫu nhiên nhưng cố định theo tên user
-function getColorFromName(name) {
-  const colors = [
-    "bg-red-500", "bg-green-500", "bg-blue-500", "bg-yellow-500",
-    "bg-purple-500", "bg-pink-500", "bg-indigo-500", "bg-teal-500",
-    "bg-orange-500", "bg-cyan-500"
-  ];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % colors.length;
-  return colors[index];
-}
+      // Sinh màu ngẫu nhiên nhưng cố định theo tên user
+      function getColorFromName(name) {
+        const colors = [
+          "bg-red-500",
+          "bg-green-500",
+          "bg-blue-500",
+          "bg-yellow-500",
+          "bg-purple-500",
+          "bg-pink-500",
+          "bg-indigo-500",
+          "bg-teal-500",
+          "bg-orange-500",
+          "bg-cyan-500",
+        ];
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+          hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash) % colors.length;
+        return colors[index];
+      }
 
-// Sau khi login thành công
-const avatarSpan = document.getElementById("userAvatar");
-const initials = getInitials(currentUser.fullName);
-avatarSpan.textContent = initials;
+      // Sau khi login thành công
+      const avatarSpan = document.getElementById("userAvatar");
+      const initials = getInitials(currentUser.fullName);
+      avatarSpan.textContent = initials;
 
-// Xóa màu cũ rồi thêm màu mới
-avatarSpan.className =
-  "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
-  getColorFromName(currentUser.fullName);
-
-
+      // Xóa màu cũ rồi thêm màu mới
+      avatarSpan.className =
+        "text-white text-sm font-medium rounded-full w-8 h-8 flex items-center justify-center " +
+        getColorFromName(currentUser.fullName);
     </script>
   </body>
 </html>
