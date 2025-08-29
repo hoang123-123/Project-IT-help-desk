@@ -1056,7 +1056,7 @@
         return (
           "/crdfd_suport_systems" +
           "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" + 
-          //`&$expand=crdfd_Support_SYSTEM_Approval($select=crdfd_nguoixacnhan,cr1bb_trang_thai)`+
+          `$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai)`+
           `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`
         );
       }
