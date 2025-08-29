@@ -1501,12 +1501,16 @@
                 document.getElementById("productCode").value +
                 "|" +
                 document.getElementById("unitsDropdown").value,
-              cr1bb_giatriexuat: document.getElementById("dieuchinhdinhluong").value
+              cr1bb_giatriexuat:
+                document.getElementById("dieuchinhdinhluong").value,
             });
             break;
 
           default:
-            console.warn("❌ Case không hợp lệ:", caseTicket);
+            console.warn(
+              "❌ Case không hợp lệ:",
+              document.getElementById("ticketCategory").value
+            );
             break;
         }
 
