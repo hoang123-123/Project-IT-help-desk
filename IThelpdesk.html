@@ -619,7 +619,7 @@
                         class="block text-sm font-medium text-gray-700 mb-2"
                         >Người duyệt *</label
                       >
-                      <select id="ticketApprover" multiple></select>
+                      <select id="ticketApprover" multiple required></select>
                     </div>
                     <div>
                       <label
@@ -2125,7 +2125,7 @@
 <div class="flex gap-4 mt-4">
   <div class="w-1/2">
     <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị *</label>
-    <select id="unitsDropdown" class="w-full px-4 py-2 border rounded-lg">
+    <select id="unitsDropdown" class="w-full px-4 py-2 border rounded-lg required>">
  
     </select>
   </div>
@@ -2562,15 +2562,14 @@
 
 function validateUnitChoice() {
   const unitSelect = document.getElementById("unitsDropdown");
-  if (!unitSelect) return true;
+  const value = unitChoices.getValue(true);
 
-  const value = unitChoices.getValue(true); // lấy mảng giá trị đã chọn
   if (!value || value.length === 0) {
-    unitSelect.setCustomValidity("Vui lòng chọn đơn vị"); // set message
-    unitSelect.reportValidity(); // hiện tooltip HTML5
+    unitSelect.setCustomValidity("Vui lòng chọn đơn vị");
+    unitSelect.reportValidity();
     return false;
   } else {
-    unitSelect.setCustomValidity(""); // reset nếu hợp lệ
+    unitSelect.setCustomValidity("");
     return true;
   }
 }
