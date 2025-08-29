@@ -1492,11 +1492,19 @@
             break;
 
           case 283640005: // chỉnhphiếu nhập kho
-          case 283640009: // chỉnh phiếu xuất kho
             Object.assign(newTicket, {
               crdfd_maonhangchitiet:
                 document.getElementById("maPhieuNhapXuat").value,
               cr1bb_giatriexuat: document.getElementById("numberNhapXuatDon").value + document.getElementById("numberNhapXuatKho").value,// đơn|kho
+              crdfd_nguoiduyet: approversText,
+            });
+            break;
+
+          case 283640009: // chỉnh phiếu xuất kho
+            Object.assign(newTicket, {
+              crdfd_maonhangchitiet:
+                document.getElementById("maPhieuNhapXuat").value,
+              cr1bb_giatriexuat: document.getElementById("numberNhapXuatDon").value +"|"+ document.getElementById("numberNhapXuatKho").value,// đơn|kho
               crdfd_nguoiduyet: approversText,
             });
             break;
