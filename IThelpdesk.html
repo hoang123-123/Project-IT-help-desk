@@ -1450,13 +1450,13 @@
         submitTicket.addEventListener("click", function () {
          
           const newTicketForm = document.getElementById("newTicketForm");
-          const htmlValid = newTicketForm.reportValidity();
+          //const htmlValid = newTicketForm.reportValidity();
 
         
           const approverValid = validateApproverChoice();
           const unitValid = validateUnitChoice();
 
-          if (htmlValid && approverValid && unitValid) {
+          if (approverValid && unitValid) {
             createNewTicket();
           }
         });
