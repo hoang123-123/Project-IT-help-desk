@@ -1496,7 +1496,7 @@
             Object.assign(newTicket, {
               crdfd_maonhangchitiet:
                 document.getElementById("maDonPhieuNhapXuat").value +"|"+ document.getElementById("maPhieuNhapXuat").value, // mã đơn hàng|mã phiếu nhập, xuất
-              cr1bb_giatriexuat: document.getElementById("numberNhapXuatDon").value + document.getElementById("numberNhapXuatKho").value,// đơn|kho
+              cr1bb_giatriexuat: document.getElementById("numberNhapXuatDon").value + "|" + document.getElementById("numberNhapXuatKho").value,// đơn|kho
               crdfd_nguoiduyet: approversText,
             });
             break;
