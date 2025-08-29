@@ -1000,7 +1000,7 @@
         }
       });
 
-       document
+      document
         .getElementById("ticketDepartment")
         .addEventListener("change", (e) => {
           onDepartmentChange(e.target.value);
@@ -1448,14 +1448,15 @@
         const newTicketForm = document.getElementById("newTicketForm");
 
         submitTicket.addEventListener("click", function () {
-          // validate HTML5 input/number bằng form.reportValidity()
+         
           const newTicketForm = document.getElementById("newTicketForm");
           const htmlValid = newTicketForm.reportValidity();
 
-          // validate người duyệt
+        
           const approverValid = validateApproverChoice();
+          const unitValid = validateUnitChoice();
 
-          if (htmlValid && approverValid) {
+          if (htmlValid && approverValid && unitValid) {
             createNewTicket();
           }
         });
@@ -2130,7 +2131,7 @@
   </div>
   <div class="w-1/2">
     <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị *</label>
-    <input type="number" id="adjustValue" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh">
+    <input type="number" id="adjustValue" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh" required>
 
   </div>
 </div>
@@ -2544,42 +2545,53 @@
         const index = Math.abs(hash) % colors.length;
         return colors[index];
       }
-      function validateApproverChoice() {
-        const approverSelect = document.getElementById("ticketApprover");
-        if (!approverSelect) return true; // nếu ko tồn tại, bỏ qua
+     function validateApproverChoice() {
+  const approverSelect = document.getElementById("ticketApprover");
+  if (!approverSelect) return true;
 
-        // Xóa lỗi cũ nếu có
-        const oldError =
-          approverSelect.parentElement.querySelector(".error-message");
-        if (oldError) oldError.remove();
-
-        const value = approverChoices.getValue(true); // lấy mảng id đã chọn
-        if (!value || (Array.isArray(value) && value.length === 0)) {
-          const error = document.createElement("div");
-          error.className = "error-message text-red-500 text-sm mt-1";
-          error.textContent = "Vui lòng chọn người duyệt";
-          // chèn ngay dưới container của Choices
-          const container = approverSelect.closest(".choices");
-          container.insertAdjacentElement("afterend", error);
-          return false;
-        }
-        return true;
-      }
-
-   function onDepartmentChange(deptName) {
-  console.log("depname: ", deptName);
-  const categorySelect = document.getElementById("ticketCategory");
-  categorySelect.innerHTML = '<option value="">Chọn loại yêu cầu</option>'; // reset
-
-  if (deptName && categoryByDepartment[deptName]) {
-    categoryByDepartment[deptName].forEach((cat) => {
-      const option = document.createElement("option");
-      option.value = cat.value;
-      option.textContent = cat.text;
-      categorySelect.appendChild(option);
-    });
+  const value = approverChoices.getValue(true);
+  if (!value || value.length === 0) {
+    approverSelect.setCustomValidity("Vui lòng chọn người duyệt");
+    approverSelect.reportValidity(); // hiện tooltip
+    return false;
+  } else {
+    approverSelect.setCustomValidity(""); // reset
+    return true;
   }
 }
+
+function validateUnitChoice() {
+  const unitSelect = document.getElementById("unitsDropdown");
+  if (!unitSelect) return true;
+
+  const value = unitChoices.getValue(true); // lấy mảng giá trị đã chọn
+  if (!value || value.length === 0) {
+    unitSelect.setCustomValidity("Vui lòng chọn đơn vị"); // set message
+    unitSelect.reportValidity(); // hiện tooltip HTML5
+    return false;
+  } else {
+    unitSelect.setCustomValidity(""); // reset nếu hợp lệ
+    return true;
+  }
+}
+
+
+
+      function onDepartmentChange(deptName) {
+        console.log("depname: ", deptName);
+        const categorySelect = document.getElementById("ticketCategory");
+        categorySelect.innerHTML =
+          '<option value="">Chọn loại yêu cầu</option>'; // reset
+
+        if (deptName && categoryByDepartment[deptName]) {
+          categoryByDepartment[deptName].forEach((cat) => {
+            const option = document.createElement("option");
+            option.value = cat.value;
+            option.textContent = cat.text;
+            categorySelect.appendChild(option);
+          });
+        }
+      }
     </script>
   </body>
 </html>
