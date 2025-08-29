@@ -1447,14 +1447,18 @@
         const cancelTicket = document.getElementById("cancelTicket");
         const newTicketForm = document.getElementById("newTicketForm");
 
-       submitTicket.addEventListener("click", function () {
-  if (validateTicketForm()) {
-    createNewTicket();
-  } else {
-    console.log("Form chưa hợp lệ");
-  }
-});
+        submitTicket.addEventListener("click", function () {
+          // validate HTML5 input/number bằng form.reportValidity()
+          const newTicketForm = document.getElementById("newTicketForm");
+          const htmlValid = newTicketForm.reportValidity();
 
+          // validate người duyệt
+          const approverValid = validateApproverChoice();
+
+          if (htmlValid && approverValid) {
+            createNewTicket();
+          }
+        });
 
         cancelTicket.addEventListener("click", function () {
           newTicketForm.reset();
@@ -2540,77 +2544,27 @@
         const index = Math.abs(hash) % colors.length;
         return colors[index];
       }
+      function validateApproverChoice() {
+        const approverSelect = document.getElementById("ticketApprover");
+        if (!approverSelect) return true; // nếu ko tồn tại, bỏ qua
 
-      function onDepartmentChange(deptName) {
-        console.log("depname: ", deptName);
-        const categorySelect = document.getElementById("ticketCategory");
-        categorySelect.innerHTML =
-          '<option value="">Chọn loại yêu cầu</option>'; // reset
+        // Xóa lỗi cũ nếu có
+        const oldError =
+          approverSelect.parentElement.querySelector(".error-message");
+        if (oldError) oldError.remove();
 
-        if (deptName && categoryByDepartment[deptName]) {
-          categoryByDepartment[deptName].forEach((cat) => {
-            const option = document.createElement("option");
-            option.value = cat.value;
-            option.textContent = cat.text;
-            categorySelect.appendChild(option);
-          });
+        const value = approverChoices.getValue(true); // lấy mảng id đã chọn
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          const error = document.createElement("div");
+          error.className = "error-message text-red-500 text-sm mt-1";
+          error.textContent = "Vui lòng chọn người duyệt";
+          // chèn ngay dưới container của Choices
+          const container = approverSelect.closest(".choices");
+          container.insertAdjacentElement("afterend", error);
+          return false;
         }
+        return true;
       }
-
-      function validateTicketForm() {
-  let isValid = true;
-
-  // Xóa hết thông báo cũ
-  document.querySelectorAll(".error-message").forEach((el) => el.remove());
-
-  // === Kiểm tra input text/number ===
-  document.querySelectorAll("#newTicketForm input[required]").forEach((input) => {
-    if (!input.value || input.value.trim() === "") {
-      showError(input, "Vui lòng nhập trường này");
-      isValid = false;
-    }
-    // nếu là number
-    if (input.type === "number" && input.value !== "") {
-      const val = parseFloat(input.value);
-      if (isNaN(val)) {
-        showError(input, "Giá trị phải là số");
-        isValid = false;
-      }
-    }
-  });
-
-  // === Kiểm tra select Choices.js ===
-  // Ví dụ ticketApprover
-  if (typeof approverChoices !== "undefined") {
-    const selected = approverChoices.getValue(true);
-    if (!selected || selected.length === 0) {
-      const container = document.querySelector("#ticketApprover + .choices");
-      showError(container, "Vui lòng chọn người duyệt");
-      isValid = false;
-    }
-  }
-
-  // Ví dụ unitsDropdown
-  if (typeof unitChoices !== "undefined") {
-    const selected = unitChoices.getValue(true);
-    if (!selected || selected.length === 0) {
-      const container = document.querySelector("#unitsDropdown + .choices");
-      showError(container, "Vui lòng chọn đơn vị");
-      isValid = false;
-    }
-  }
-
-  return isValid;
-}
-
-// Hàm hiển thị thông báo lỗi
-function showError(element, message) {
-  const error = document.createElement("div");
-  error.className = "error-message text-red-500 text-sm mt-1";
-  error.textContent = message;
-  element.insertAdjacentElement("afterend", error);
-}
-
     </script>
   </body>
 </html>
