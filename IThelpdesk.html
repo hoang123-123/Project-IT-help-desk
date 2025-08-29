@@ -1428,10 +1428,9 @@
         const submitTicket = document.getElementById("submitTicket");
         const cancelTicket = document.getElementById("cancelTicket");
         const newTicketForm = document.getElementById("newTicketForm");
-        const caseTicket = document.getElementById("ticketCategory")
 
         submitTicket.addEventListener("click", function () {
-          createNewTicket(caseTicket);
+          createNewTicket();
         });
 
         cancelTicket.addEventListener("click", function () {
@@ -1441,8 +1440,8 @@
       }
 
       // ============ Create ticket =====================
-      async function createNewTicket(caseTicket) {
-        console.log("caseTicket", caseTicket);
+      async function createNewTicket() {
+        console.log("dữ liệu don vị: ", document.getElementById("unitsDropdown").value);
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const selectedApprovers = approverChoices.getValue(true);
@@ -1450,68 +1449,94 @@
           ? selectedApprovers.join(",")
           : selectedApprovers;
 
-
-        const newTicket = {
+        let newTicket = {
+          crdfd_nguoiyeucau: currentUser.idU,
+          crdfd_trangthai: 191920002,
+          crdfd_nguoiduyet: approversText,
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
           crdfd_loaiieuchinh: parseInt(
             document.getElementById("ticketCategory").value
           ),
-          crdfd_nguoiyeucau: currentUser.idU,
-          crdfd_trangthai: 191920002,
-          cr1bb_phongban: document.getElementById("ticketDepartment").value,
-          cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo")
-            .value,
-          crdfd_nguoiduyet: approversText,
+          cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo").value
         };
 
-        console.log("new ticket: ", newTicket);
+        // tuỳ loại case mà bổ sung thêm field
+        switch (parseInt(document.getElementById("ticketCategory").value)) {
+          case 283640007: // điều chỉnh định lượng
+            Object.assign(newTicket, {
+            });
+            break;
 
-        try {
-          const cachedToken = await getToken();
-          const response = await fetch(
-            `${DATAVERSE_URL}/crdfd_suport_systems`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${cachedToken}`,
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-              body: JSON.stringify(newTicket),
-            }
-          );
+          case "phongban": // điều chỉnh phòng ban
+            Object.assign(newTicket, {
+              cr1bb_phongban: document.getElementById("ticketDepartment").value,
+            });
+            break;
 
-          if (!response.ok) {
-            throw new Error(
-              `Lỗi Dataverse: ${response.status} - ${response.statusText}`
-            );
-          }
+          case "khac": // điều chỉnh khác
+            Object.assign(newTicket, {
+              crdfd_lydoieuchinh:
+                document.getElementById("ticketDescription").value,
+              cr1bb_thongtinyeucau: document.getElementById(
+                "ticketAdjustmentInfo"
+              ).value,
+            });
+            break;
 
-          // Chỉ parse JSON nếu response có content
-          let createdRecord = null;
-          const text = await response.text();
-          if (text) {
-            createdRecord = JSON.parse(text);
-            console.log("Ticket đã tạo trên Dataverse:", createdRecord);
-          } else {
-            console.log(
-              "Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về."
-            );
-          }
-
-          document.getElementById("newTicketForm").reset();
-          showNotification(
-            "Ticket đã được tạo thành công trên Dataverse!",
-            "success"
-          );
-          document.querySelector('a[href="#tickets"]').click();
-          //await refreshData(); // render lại dữ liệu titkets
-          document.getElementById("new-ticket").classList.add("hidden");
-        } catch (err) {
-          console.error(err);
-          showNotification("Tạo ticket thất bại: " + err.message, "error");
+          default:
+            console.warn("❌ Case không hợp lệ:", caseTicket);
+            break;
         }
+
+        console.log("newTicket:", newTicket);
+        return newTicket;
+
+        // try {
+        //   const cachedToken = await getToken();
+        //   const response = await fetch(
+        //     `${DATAVERSE_URL}/crdfd_suport_systems`,
+        //     {
+        //       method: "POST",
+        //       headers: {
+        //         Authorization: `Bearer ${cachedToken}`,
+        //         "Content-Type": "application/json",
+        //         Accept: "application/json",
+        //       },
+        //       body: JSON.stringify(newTicket),
+        //     }
+        //   );
+
+        //   if (!response.ok) {
+        //     throw new Error(
+        //       `Lỗi Dataverse: ${response.status} - ${response.statusText}`
+        //     );
+        //   }
+
+        //   // Chỉ parse JSON nếu response có content
+        //   let createdRecord = null;
+        //   const text = await response.text();
+        //   if (text) {
+        //     createdRecord = JSON.parse(text);
+        //     console.log("Ticket đã tạo trên Dataverse:", createdRecord);
+        //   } else {
+        //     console.log(
+        //       "Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về."
+        //     );
+        //   }
+
+        //   document.getElementById("newTicketForm").reset();
+        //   showNotification(
+        //     "Ticket đã được tạo thành công trên Dataverse!",
+        //     "success"
+        //   );
+        //   document.querySelector('a[href="#tickets"]').click();
+        //   //await refreshData(); // render lại dữ liệu titkets
+        //   document.getElementById("new-ticket").classList.add("hidden");
+        // } catch (err) {
+        //   console.error(err);
+        //   showNotification("Tạo ticket thất bại: " + err.message, "error");
+        // }
       }
 
       // Modal functions
