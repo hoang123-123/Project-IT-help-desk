@@ -1926,12 +1926,12 @@
       if (item.crdfd_nguoiyeucau === email) return true;
 
       // 2️⃣ Nếu có approvals expand từ server
-      if (item.crdfd_suport_system_approvals) {
-        const pendingApproval = item.crdfd_suport_system_approvals.find(
-          a => a.crdfd_nguoixacnhan === email && a.cr1bb_trang_thai !== 283640001 && a.cr1bb_trang_thai !== 283640002
-        );
-        return !!pendingApproval;
-      }
+    if (item.crdfd_support_system_approval_Masuport_crdfd_suport_system) {
+  const pendingApproval = item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
+    a => a.crdfd_nguoixacnhan === email && a.cr1bb_trang_thai !== 283640001 && a.cr1bb_trang_thai !== 283640002
+  );
+  return !!pendingApproval;
+}
 
       return false;
     })
