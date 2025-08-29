@@ -1434,7 +1434,21 @@
         const cancelTicket = document.getElementById("cancelTicket");
         const newTicketForm = document.getElementById("newTicketForm");
 
-        submitTicket.addEventListener("click", function () {
+        submitTicket.addEventListener("click", function (e) {
+          e.preventDefault(); // Ngăn form submit mặc định
+
+          // Kiểm tra validation HTML5 trước
+          if (!newTicketForm.checkValidity()) {
+            newTicketForm.reportValidity();
+            return;
+          }
+
+          // Kiểm tra các trường custom
+          if (!validateCustomFields()) {
+            return;
+          }
+
+          // Nếu tất cả đều hợp lệ thì tạo ticket
           createNewTicket();
         });
 
@@ -1463,7 +1477,7 @@
           ),
           cr1bb_thongtinyeucau: document.getElementById("ticketAdjustmentInfo")
             .value,
-          cr1bb_phongban: document.getElementById("ticketDepartment").value
+          cr1bb_phongban: document.getElementById("ticketDepartment").value,
         };
 
         // tuỳ loại case mà bổ sung thêm field
@@ -1495,8 +1509,13 @@
           case 283640009: // chỉnh phiếu xuất kho
             Object.assign(newTicket, {
               crdfd_maonhangchitiet:
-                document.getElementById("maDonPhieuNhapXuat").value +"|"+ document.getElementById("maPhieuNhapXuat").value, // mã đơn hàng|mã phiếu nhập, xuất
-              cr1bb_giatriexuat: document.getElementById("numberNhapXuatDon").value + "|" + document.getElementById("numberNhapXuatKho").value,// đơn|kho
+                document.getElementById("maDonPhieuNhapXuat").value +
+                "|" +
+                document.getElementById("maPhieuNhapXuat").value, // mã đơn hàng|mã phiếu nhập, xuất
+              cr1bb_giatriexuat:
+                document.getElementById("numberNhapXuatDon").value +
+                "|" +
+                document.getElementById("numberNhapXuatKho").value, // đơn|kho
               crdfd_nguoiduyet: approversText,
             });
             break;
@@ -1509,7 +1528,6 @@
           //     crdfd_nguoiduyet: approversText,
           //   });
           //   break;
-        
 
           default:
             console.warn(
