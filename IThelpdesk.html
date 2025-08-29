@@ -911,7 +911,7 @@
       //   "&$top=5000";
 
       const Units_QUERY =
-        "/crdfd_unitses" + "?$select=crdfd_name" + "&$filter=statecode eq 0";
+        "/crdfd_unitses" + "?$select=crdfd_name, crdfd_unitsid" + "&$filter=statecode eq 0";
       const categoryByDepartment = {
         "Kho vận": [
           { value: "283640008", text: "Hủy phiếu xuất kho" },
@@ -1972,6 +1972,7 @@
 
       function mappingUnits(dataUnits) {
         units = dataUnits.map((item) => ({
+          unitID: item.crdfd_unitsid || "",
           unitName: item.crdfd_name || "Không xác định",
         }));
         return units;
