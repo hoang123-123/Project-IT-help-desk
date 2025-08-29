@@ -911,7 +911,9 @@
       //   "&$top=5000";
 
       const Units_QUERY =
-        "/crdfd_unitses" + "?$select=crdfd_name, crdfd_unitsid" + "&$filter=statecode eq 0";
+        "/crdfd_unitses" +
+        "?$select=crdfd_name, crdfd_unitsid" +
+        "&$filter=statecode eq 0";
       const categoryByDepartment = {
         "Kho vận": [
           { value: "283640008", text: "Hủy phiếu xuất kho" },
@@ -1982,22 +1984,21 @@
         const dropdown = document.getElementById("unitsDropdown");
         if (!dropdown) return;
 
-        // Nếu chưa khởi tạo Choices thì tạo mới
-        if (!unitChoices) {
-          unitChoices = new Choices(dropdown, {
-            removeItemButton: false, // ko cần nút xóa vì chọn 1 đơn vị
-            searchEnabled: true, // bật search
-            searchResultLimit: 10,
-            placeholderValue: "Chọn đơn vị",
-            noResultsText: "Không tìm thấy",
-            shouldSort: false,
-          });
-        } else {
-          // Nếu đã có thì clear options cũ
-          unitChoices.clearChoices();
+        // Luôn khởi tạo lại Choices khi select bị thay mới
+        if (unitChoices) {
+          unitChoices.destroy(); // hủy instance cũ
+          unitChoices = null;
         }
 
-        // Thêm option mới
+        unitChoices = new Choices(dropdown, {
+          removeItemButton: false,
+          searchEnabled: true,
+          searchResultLimit: 10,
+          placeholderValue: "Chọn đơn vị",
+          noResultsText: "Không tìm thấy",
+          shouldSort: false,
+        });
+
         unitChoices.setChoices(
           units.map((u) => ({
             value: u.unitId || u.unitName,
@@ -2082,7 +2083,7 @@
   </div>
 </div>
   `;
-  console.log("data units: ", units);
+            console.log("data units: ", units);
             renderUnitsDropdown(units);
             break;
 
