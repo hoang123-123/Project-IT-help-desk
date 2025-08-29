@@ -1045,9 +1045,6 @@
           getAllXseptions(cachedToken, USER_QUERY, mappingUser),
           getAllXseptions(cachedToken, Units_QUERY, mappingUnits),
         ]);
-
-         console.log("👉 Data user:", user);
-  console.log("👉 Data units:", units);
         return { user, units };
       }
 
@@ -1973,9 +1970,8 @@
       }
 
       function mappingUnits(dataUnits) {
-        return dataUnits.map((item) => ({
+        units = dataUnits.map((item) => ({
           unitName: item.crdfd_name || "Không xác định",
-          unitId: item.crdfd_unitid || "", // nếu có ID thì giữ lại
         }));
         return units;
       }
