@@ -926,6 +926,26 @@
         "&$filter=statecode eq 0 and crdfd_trangthaionhang1 ne 191920000" +
         "&$top=5000";
 
+      const categoryByDepartment = {
+        "Kho Vận": [
+          { value: "283640008", text: "Hủy phiếu xuất kho" },
+          { value: "283640004", text: "Hủy phiếu nhập kho" },
+          { value: "283640007", text: "Điều chỉnh định lượng" },
+          { value: "283640009", text: "Điều chỉnh phiếu xuất kho" },
+        ],
+        BOD: [
+          { value: "283640002", text: "Điều chỉnh giá BOD" },
+          { value: "283640003", text: "Điều chỉnh VAT BOD" },
+        ],
+        SOD: [
+          { value: "191920000", text: "Điều chỉnh giá SOD" },
+          { value: "191920001", text: "Điều chỉnh VAT SOD" },
+          { value: "283640001", text: "Điều chỉnh VAT SO" },
+          { value: "283640006", text: "Điều chỉnh VAT BO" },
+        ],
+        // add các phòng ban khác nếu cần
+      };
+
       // ========== Load web ================
       // Initialize the application
       document.addEventListener("DOMContentLoaded", async () => {
@@ -992,6 +1012,12 @@
           });
         }
       });
+
+      document
+        .getElementById("ticketDepartment")
+        .addEventListener("change", (e) => {
+          onDepartmentChange(e.target.value);
+        });
 
       // ========== Function ================
 
@@ -1894,27 +1920,6 @@
         return allData; // <-- quan trọng
       }
 
-      // function mappingListTickets(allData) {
-      //   // 🔹 Mapping dữ liệu từ Dataverse về mảng chuẩn giống sampleTickets
-      //   supportSystemsData = allData.map((item, index) => ({
-      //     id: item.crdfd_suport_systemid || "", // tạo ID giống sampleTickets
-      //     title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
-      //     description: item.crdfd_lydoieuchinh || "",
-      //     category: item.crdfd_loaiieuchinh || "other",
-      //     priority: "medium",
-      //     status: item.crdfd_trangthai || "Chưa xác định",
-      //     createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-      //     createdAt: item.createdon || "Không xác định date",
-      //     userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
-      //     name: item.crdfd_name || "",
-      //   }));
-
-      //   supportSystemsData.sort(
-      //     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      //   );
-      //   return supportSystemsData;
-      // }
-
       function mappingListTickets(allData) {
         console.log("all data: ", allData);
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -2123,35 +2128,6 @@
           deptSelect.appendChild(option);
         });
       }
-
-      // function setup value chọn đơn hàng
-      // function initOrderChoices() {
-      //   const orderSelect = document.getElementById("ticketOrder");
-      //   const choices = new Choices(orderSelect, {
-      //     removeItemButton: true, // cho phép xóa khi chọn
-      //     searchEnabled: true,
-      //     searchFields: ["label"],
-      //     fuseOptions: {
-      //       includeScore: true,
-      //       threshold: 0.3, // càng nhỏ càng khớp chính xác, tăng lên thì cho phép match mờ hơn
-      //       distance: 100,
-      //       minMatchCharLength: 2,
-      //       ignoreLocation: false,
-      //     }, // bật search
-      //     searchResultLimit: 10, // tối đa 10 kết quả khi search
-      //     placeholderValue: "Chọn đơn hàng",
-      //     noResultsText: "Không tìm thấy",
-      //     shouldSort: false, // giữ nguyên thứ tự
-      //   });
-
-      //   // map dữ liệu từ ordersDetailData
-      //   const options = ordersDetailData.map((o) => ({
-      //     value: o.idSOD,
-      //     label: `${o.sodName}`, // có thể thêm code hoặc ngày tạo nếu muốn
-      //   }));
-
-      //   choices.setChoices(options, "value", "label", false);
-      // }
 
       // function login
       function initUserMenu() {
@@ -2428,72 +2404,6 @@
         }
       }
 
-      // async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
-      //   try {
-      //     const token = await getToken(); // dùng hàm token safe
-
-      //     // 1. Tìm record trong bảng con
-      //     const query =
-      //       `${DATAVERSE_URL}/crdfd_support_system_approvals` +
-      //       `?$select=crdfd_support_system_approvalid` +
-      //       `&$filter=_crdfd_masuport_value eq ${ticketId} and crdfd_nguoixacnhan eq '${currentUserEmail}'`;
-      //     const res = await fetch(query, {
-      //       method: "GET",
-      //       headers: {
-      //         Authorization: `Bearer ${token}`,
-      //         Accept: "application/json",
-      //         "OData-MaxVersion": "4.0",
-      //         "OData-Version": "4.0",
-      //       },
-      //     });
-
-      //     if (!res.ok) {
-      //       throw new Error(
-      //         `Lỗi khi tìm approval: ${res.status} ${res.statusText}`
-      //       );
-      //     }
-
-      //     const data = await res.json();
-      //     if (!data.value || data.value.length === 0) {
-      //       throw new Error("Không tìm thấy approval record cho user này.");
-      //     }
-
-      //     const approvalDetailId =
-      //       data.value[0].crdfd_support_system_approvalid;
-
-      //     // 2. Update record con
-      //     const patchUrl = `${DATAVERSE_URL}/crdfd_support_system_approvals(${approvalDetailId})`;
-      //     const body = { cr1bb_trang_thai: newStatus };
-
-      //     const updateRes = await fetch(patchUrl, {
-      //       method: "PATCH",
-      //       headers: {
-      //         Authorization: `Bearer ${token}`,
-      //         Accept: "application/json",
-      //         "Content-Type": "application/json",
-      //         "OData-MaxVersion": "4.0",
-      //         "OData-Version": "4.0",
-      //       },
-      //       body: JSON.stringify(body),
-      //     });
-
-      //     if (!updateRes.ok) {
-      //       throw new Error(
-      //         `Update thất bại: ${updateRes.status} ${updateRes.statusText}`
-      //       );
-      //     }
-
-      //     console.log(
-      //       `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
-      //     );
-      //     refreshData();
-      //     return true;
-      //   } catch (err) {
-      //     console.error("❌ Error update ticket:", err);
-      //     throw err;
-      //   }
-      // }
-
       function getInitials(fullName) {
         if (!fullName) return "AD";
         const parts = fullName.trim().split(" ");
@@ -2521,6 +2431,21 @@
         }
         const index = Math.abs(hash) % colors.length;
         return colors[index];
+      }
+
+      function onDepartmentChange(deptName) {
+        const categorySelect = document.getElementById("ticketCategory");
+        categorySelect.innerHTML =
+          '<option value="">Chọn loại yêu cầu</option>'; // reset
+
+        if (deptName && categoryByDepartment[deptName]) {
+          categoryByDepartment[deptName].forEach((cat) => {
+            const option = document.createElement("option");
+            option.value = cat.value;
+            option.textContent = cat.text;
+            categorySelect.appendChild(option);
+          });
+        }
       }
     </script>
   </body>
