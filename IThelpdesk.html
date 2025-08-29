@@ -1000,6 +1000,12 @@
         }
       });
 
+       document
+        .getElementById("ticketDepartment")
+        .addEventListener("change", (e) => {
+          onDepartmentChange(e.target.value);
+        });
+
       // ========== Function ================
 
       async function getToken() {
@@ -2559,6 +2565,21 @@
         }
         return true;
       }
+
+   function onDepartmentChange(deptName) {
+  console.log("depname: ", deptName);
+  const categorySelect = document.getElementById("ticketCategory");
+  categorySelect.innerHTML = '<option value="">Chọn loại yêu cầu</option>'; // reset
+
+  if (deptName && categoryByDepartment[deptName]) {
+    categoryByDepartment[deptName].forEach((cat) => {
+      const option = document.createElement("option");
+      option.value = cat.value;
+      option.textContent = cat.text;
+      categorySelect.appendChild(option);
+    });
+  }
+}
     </script>
   </body>
 </html>
