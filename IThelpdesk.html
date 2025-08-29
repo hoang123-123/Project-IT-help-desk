@@ -1045,7 +1045,6 @@
           getAllXseptions(cachedToken, USER_QUERY, mappingUser),
           getAllXseptions(cachedToken, Units_QUERY, mappingUnits),
         ]);
-        renderUnitsDropdown(units);
         return { user, units };
       }
 
@@ -2065,6 +2064,7 @@
   </div>
 </div>
   `;
+   renderUnitsDropdown(units);
             break;
 
           // ==== Điều chỉnh phiếu phiếu xuất, nhập kho =====
@@ -2434,11 +2434,6 @@
           console.log(
             `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
           );
-          // showNotification(
-          //   "Cập nhật trạng thái approval thành công!",
-          //   "success"
-          // );
-
           // Refresh data sau khi update
           refreshData();
 
