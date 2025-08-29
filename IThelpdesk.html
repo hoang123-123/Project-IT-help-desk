@@ -668,7 +668,7 @@
                       id="submitTicket"
                       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      Tạo Ticket dev
+                      Tạo Ticket
                     </button>
                   </div>
                 </form>
@@ -904,12 +904,6 @@
         "?$select=cr1bb_emailcal,crdfd_name,crdfd_phongbantext" +
         "&$filter=statecode eq 0 and crdfd_trangthai ne 191920004 and crdfd_local ne 'Sài Gòn' and cr1bb_chucvutext ne null ";
 
-      // const SOD_QUERY =
-      //   "/crdfd_saleorderdetails" +
-      //   "?$select=crdfd_saleorderdetailid, crdfd_name" +
-      //   "&$filter=statecode eq 0 and crdfd_trangthaionhang1 ne 191920000" +
-      //   "&$top=5000";
-
       const Units_QUERY =
         "/crdfd_unitses" +
         "?$select=crdfd_name, crdfd_unitsid" +
@@ -920,6 +914,7 @@
           { value: "283640004", text: "Hủy phiếu nhập kho" },
           { value: "283640007", text: "Điều chỉnh định lượng" },
           { value: "283640009", text: "Điều chỉnh phiếu xuất kho" },
+          { value: "283640005", text: "Điều chỉnh phiếu nhập kho" },
         ],
         "Phòng Cung ứng": [
           { value: "283640002", text: "Điều chỉnh giá BOD" },
@@ -1433,9 +1428,10 @@
         const submitTicket = document.getElementById("submitTicket");
         const cancelTicket = document.getElementById("cancelTicket");
         const newTicketForm = document.getElementById("newTicketForm");
+        const caseTicket = document.getElementById("ticketCategory")
 
         submitTicket.addEventListener("click", function () {
-          createNewTicket();
+          createNewTicket(caseTicket);
         });
 
         cancelTicket.addEventListener("click", function () {
@@ -1445,15 +1441,15 @@
       }
 
       // ============ Create ticket =====================
-      async function createNewTicket() {
+      async function createNewTicket(caseTicket) {
+        console.log("caseTicket", caseTicket);
         // Lấy user từ localStorage
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
         const selectedApprovers = approverChoices.getValue(true);
-
         const approversText = Array.isArray(selectedApprovers)
           ? selectedApprovers.join(",")
           : selectedApprovers;
+
 
         const newTicket = {
           crdfd_lydoieuchinh:
@@ -2083,7 +2079,6 @@
   </div>
 </div>
   `;
-            console.log("data units: ", units);
             renderUnitsDropdown(units);
             break;
 
