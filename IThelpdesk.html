@@ -1055,8 +1055,8 @@
       function buildXseptionsQuery(email) {
         return (
           "/crdfd_suport_systems" +
-          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" + 
-          `&$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai)`+
+          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
+          `&$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai)` +
           `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`
         );
       }
@@ -1916,45 +1916,50 @@
       // }
 
       function mappingListTickets(allData) {
-      console.log("all data: ", allData);
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const email = currentUser?.idU;
+        console.log("all data: ", allData);
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const email = currentUser?.idU;
 
-  supportSystemsData = allData
-    .filter(item => {
-      // 1️⃣ Người yêu cầu luôn thấy
-      if (item.crdfd_nguoiyeucau === email) return true;
+        supportSystemsData = allData
+          .filter((item) => {
+            // 1️⃣ Người yêu cầu luôn thấy
+            if (item.crdfd_nguoiyeucau === email) return true;
 
-      // 2️⃣ Nếu có approvals expand từ server
-    if (item.crdfd_support_system_approval_Masuport_crdfd_suport_system) {
-  const pendingApproval = item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
-    a => a.crdfd_nguoixacnhan === email && a.cr1bb_trang_thai !== 283640001 && a.cr1bb_trang_thai !== 283640002
-  );
-  return !!pendingApproval;
-}
+            // 2️⃣ Nếu có approvals expand từ server
+            if (
+              item.crdfd_support_system_approval_Masuport_crdfd_suport_system
+            ) {
+              const pendingApproval =
+                item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
+                  (a) =>
+                    a.crdfd_nguoixacnhan === email &&
+                    a.cr1bb_trang_thai !== 283640001 &&
+                    a.cr1bb_trang_thai !== 283640002
+                );
+              return !!pendingApproval;
+            }
 
-      return false;
-    })
-    .map((item, index) => ({
-      id: item.crdfd_suport_systemid || "",
-      title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
-      description: item.crdfd_lydoieuchinh || "",
-      category: item.crdfd_loaiieuchinh || "other",
-      priority: "medium",
-      status: item.crdfd_trangthai || "Chưa xác định",
-      createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-      createdAt: item.createdon || "Không xác định date",
-      userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
-      name: item.crdfd_name || "",
-    }));
+            return false;
+          })
+          .map((item, index) => ({
+            id: item.crdfd_suport_systemid || "",
+            title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
+            description: item.crdfd_lydoieuchinh || "",
+            category: item.crdfd_loaiieuchinh || "other",
+            priority: "medium",
+            status: item.crdfd_trangthai || "Chưa xác định",
+            createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
+            createdAt: item.createdon || "Không xác định date",
+            userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
+            name: item.crdfd_name || "",
+          }));
 
-  supportSystemsData.sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  );
-  console.log("supportSystemsData: ", supportSystemsData);
-  return supportSystemsData;
-}
-
+        supportSystemsData.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        console.log("supportSystemsData: ", supportSystemsData);
+        return supportSystemsData;
+      }
 
       function mappingUser(allData) {
         approversData = allData.map((item, index) => ({
@@ -2407,10 +2412,10 @@
           console.log(
             `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
           );
-          showNotification(
-            "Cập nhật trạng thái approval thành công!",
-            "success"
-          );
+          // showNotification(
+          //   "Cập nhật trạng thái approval thành công!",
+          //   "success"
+          // );
 
           // Refresh data sau khi update
           refreshData();
