@@ -619,7 +619,12 @@
                         class="block text-sm font-medium text-gray-700 mb-2"
                         >Người duyệt *</label
                       >
-                      <select id="ticketApprover" name="ticketApprover" multiple required></select>
+                      <select
+                        id="ticketApprover"
+                        name="ticketApprover"
+                        multiple
+                        required
+                      ></select>
                     </div>
                     <div>
                       <label
@@ -1421,26 +1426,8 @@
 
       // Form handlers
 
-      // function initializeFormHandlers() {
-      //   if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
-      //   ticketHandlersInitialized = true;
-
-      //   const submitTicket = document.getElementById("submitTicket");
-      //   const cancelTicket = document.getElementById("cancelTicket");
-      //   const newTicketForm = document.getElementById("newTicketForm");
-
-      //   submitTicket.addEventListener("click", function () {
-      //     createNewTicket();
-      //   });
-
-      //   cancelTicket.addEventListener("click", function () {
-      //     newTicketForm.reset();
-      //     document.querySelector('a[href="#tickets"]').click();
-      //   });
-      // }
-
       function initializeFormHandlers() {
-        if (ticketHandlersInitialized) return;
+        if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
         ticketHandlersInitialized = true;
 
         const submitTicket = document.getElementById("submitTicket");
@@ -1448,17 +1435,7 @@
         const newTicketForm = document.getElementById("newTicketForm");
 
         submitTicket.addEventListener("click", function () {
-         
-          const newTicketForm = document.getElementById("newTicketForm");
-          //const htmlValid = newTicketForm.reportValidity();
-
-        
-          const approverValid = validateApproverChoice();
-          const unitValid = validateUnitChoice();
-
-          if (approverValid && unitValid) {
-            createNewTicket();
-          }
+          createNewTicket();
         });
 
         cancelTicket.addEventListener("click", function () {
@@ -1466,6 +1443,33 @@
           document.querySelector('a[href="#tickets"]').click();
         });
       }
+
+      // function initializeFormHandlers() {
+      //   if (ticketHandlersInitialized) return;
+      //   ticketHandlersInitialized = true;
+
+      //   const submitTicket = document.getElementById("submitTicket");
+      //   const cancelTicket = document.getElementById("cancelTicket");
+      //   const newTicketForm = document.getElementById("newTicketForm");
+
+      //   submitTicket.addEventListener("click", function () {
+
+      //     const newTicketForm = document.getElementById("newTicketForm");
+      //     //const htmlValid = newTicketForm.reportValidity();
+
+      //     const approverValid = validateApproverChoice();
+      //     const unitValid = validateUnitChoice();
+
+      //     if (approverValid && unitValid) {
+      //       createNewTicket();
+      //     }
+      //   });
+
+      //   cancelTicket.addEventListener("click", function () {
+      //     newTicketForm.reset();
+      //     document.querySelector('a[href="#tickets"]').click();
+      //   });
+      // }
 
       // ============ Create ticket =====================
       async function createNewTicket() {
@@ -1497,22 +1501,7 @@
                 document.getElementById("productCode").value +
                 "|" +
                 document.getElementById("unitsDropdown").value,
-            });
-            break;
-
-          case "phongban": // điều chỉnh phòng ban
-            Object.assign(newTicket, {
-              cr1bb_phongban: document.getElementById("ticketDepartment").value,
-            });
-            break;
-
-          case "khac": // điều chỉnh khác
-            Object.assign(newTicket, {
-              crdfd_lydoieuchinh:
-                document.getElementById("ticketDescription").value,
-              cr1bb_thongtinyeucau: document.getElementById(
-                "ticketAdjustmentInfo"
-              ).value,
+              cr1bb_giatriexuat: document.getElementById("dieuchinhdinhluong").value
             });
             break;
 
@@ -1524,51 +1513,51 @@
         console.log("newTicket:", newTicket);
         return newTicket;
 
-        // try {
-        //   const cachedToken = await getToken();
-        //   const response = await fetch(
-        //     `${DATAVERSE_URL}/crdfd_suport_systems`,
-        //     {
-        //       method: "POST",
-        //       headers: {
-        //         Authorization: `Bearer ${cachedToken}`,
-        //         "Content-Type": "application/json",
-        //         Accept: "application/json",
-        //       },
-        //       body: JSON.stringify(newTicket),
-        //     }
-        //   );
+        try {
+          const cachedToken = await getToken();
+          const response = await fetch(
+            `${DATAVERSE_URL}/crdfd_suport_systems`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${cachedToken}`,
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(newTicket),
+            }
+          );
 
-        //   if (!response.ok) {
-        //     throw new Error(
-        //       `Lỗi Dataverse: ${response.status} - ${response.statusText}`
-        //     );
-        //   }
+          if (!response.ok) {
+            throw new Error(
+              `Lỗi Dataverse: ${response.status} - ${response.statusText}`
+            );
+          }
 
-        //   // Chỉ parse JSON nếu response có content
-        //   let createdRecord = null;
-        //   const text = await response.text();
-        //   if (text) {
-        //     createdRecord = JSON.parse(text);
-        //     console.log("Ticket đã tạo trên Dataverse:", createdRecord);
-        //   } else {
-        //     console.log(
-        //       "Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về."
-        //     );
-        //   }
+          // Chỉ parse JSON nếu response có content
+          let createdRecord = null;
+          const text = await response.text();
+          if (text) {
+            createdRecord = JSON.parse(text);
+            console.log("Ticket đã tạo trên Dataverse:", createdRecord);
+          } else {
+            console.log(
+              "Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về."
+            );
+          }
 
-        //   document.getElementById("newTicketForm").reset();
-        //   showNotification(
-        //     "Ticket đã được tạo thành công trên Dataverse!",
-        //     "success"
-        //   );
-        //   document.querySelector('a[href="#tickets"]').click();
-        //   //await refreshData(); // render lại dữ liệu titkets
-        //   document.getElementById("new-ticket").classList.add("hidden");
-        // } catch (err) {
-        //   console.error(err);
-        //   showNotification("Tạo ticket thất bại: " + err.message, "error");
-        // }
+          document.getElementById("newTicketForm").reset();
+          showNotification(
+            "Ticket đã được tạo thành công trên Dataverse!",
+            "success"
+          );
+          document.querySelector('a[href="#tickets"]').click();
+          //await refreshData(); // render lại dữ liệu titkets
+          document.getElementById("new-ticket").classList.add("hidden");
+        } catch (err) {
+          console.error(err);
+          showNotification("Tạo ticket thất bại: " + err.message, "error");
+        }
       }
 
       // Modal functions
@@ -2131,7 +2120,7 @@
   </div>
   <div class="w-1/2">
     <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị *</label>
-    <input type="number" id="adjustValue" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh" required>
+    <input type="number" id="dieuchinhdinhluong" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh" required>
 
   </div>
 </div>
@@ -2545,36 +2534,34 @@
         const index = Math.abs(hash) % colors.length;
         return colors[index];
       }
-     function validateApproverChoice() {
-  const approverSelect = document.getElementById("ticketApprover");
-  if (!approverSelect) return true;
+      //      function validateApproverChoice() {
+      //   const approverSelect = document.getElementById("ticketApprover");
+      //   if (!approverSelect) return true;
 
-  const value = approverChoices.getValue(true);
-  if (!value || value.length === 0) {
-    approverSelect.setCustomValidity("Vui lòng chọn người duyệt");
-    approverSelect.reportValidity(); // hiện tooltip
-    return false;
-  } else {
-    approverSelect.setCustomValidity(""); // reset
-    return true;
-  }
-}
+      //   const value = approverChoices.getValue(true);
+      //   if (!value || value.length === 0) {
+      //     approverSelect.setCustomValidity("Vui lòng chọn người duyệt");
+      //     approverSelect.reportValidity(); // hiện tooltip
+      //     return false;
+      //   } else {
+      //     approverSelect.setCustomValidity(""); // reset
+      //     return true;
+      //   }
+      // }
 
-function validateUnitChoice() {
-  const unitSelect = document.getElementById("unitsDropdown");
-  const value = unitChoices.getValue(true);
+      // function validateUnitChoice() {
+      //   const unitSelect = document.getElementById("unitsDropdown");
+      //   const value = unitChoices.getValue(true);
 
-  if (!value || value.length === 0) {
-    unitSelect.setCustomValidity("Vui lòng chọn đơn vị");
-    unitSelect.reportValidity();
-    return false;
-  } else {
-    unitSelect.setCustomValidity("");
-    return true;
-  }
-}
-
-
+      //   if (!value || value.length === 0) {
+      //     unitSelect.setCustomValidity("Vui lòng chọn đơn vị");
+      //     unitSelect.reportValidity();
+      //     return false;
+      //   } else {
+      //     unitSelect.setCustomValidity("");
+      //     return true;
+      //   }
+      // }
 
       function onDepartmentChange(deptName) {
         console.log("depname: ", deptName);
