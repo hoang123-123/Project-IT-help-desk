@@ -933,16 +933,20 @@
           { value: "283640007", text: "Điều chỉnh định lượng" },
           { value: "283640009", text: "Điều chỉnh phiếu xuất kho" },
         ],
-        "BOD": [
+        "Phòng Cung ứng": [
           { value: "283640002", text: "Điều chỉnh giá BOD" },
           { value: "283640003", text: "Điều chỉnh VAT BOD" },
         ],
-        "SOD": [
+        "Phòng Phát triển Kinh doanh": [
           { value: "191920000", text: "Điều chỉnh giá SOD" },
           { value: "191920001", text: "Điều chỉnh VAT SOD" },
           { value: "283640001", text: "Điều chỉnh VAT SO" },
           { value: "283640006", text: "Điều chỉnh VAT BO" },
         ],
+        "Phòng Nhân sự": [],
+        "Phòng Tài chính & Kế toán": [],
+        "Phòng R&D": [],
+        "Phòng Công nghệ": [],
         // add các phòng ban khác nếu cần
       };
 
@@ -2022,28 +2026,66 @@
           <input type="text" id="cancelCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy">
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy</label>
-          <input type="text" id="cancelCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng cần hủy">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng</label>
+          <input type="number" step="any" id="cancelCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng cần hủy">
         </div>
       `;
             break;
 
           // ==== Điều chỉnh định lượng ====
-          case 283640007: // Điều chỉnh định lượng
+          case 283640007:
             container.innerHTML = `
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm</label>
-          <input type="text" id="productCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã sản phẩm">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị</label>
-          <input type="text" id="unitCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập đơn vị">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị</label>
-          <input type="number" id="adjustValue" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh">
-        </div>
-      `;
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm</label>
+      <input type="text" id="productCode" 
+        class="w-full px-4 py-2 border rounded-lg" 
+        placeholder="Nhập mã sản phẩm">
+    </div>
+    
+    <div class="flex gap-4 mt-4">
+      <div class="w-1/2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị</label>
+        <input type="text" id="unitCode" 
+          class="w-full px-4 py-2 border rounded-lg" 
+          placeholder="Nhập đơn vị">
+      </div>
+      <div class="w-1/2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị</label>
+        <input type="number" id="adjustValue" 
+          class="w-full px-4 py-2 border rounded-lg" 
+          placeholder="Nhập giá trị điều chỉnh">
+      </div>
+    </div>
+  `;
+            break;
+
+          // ==== Điều chỉnh phiếu phiếu xuất, nhập kho =====
+          case 283640005: // điều chỉnh phiếu nhập kho
+          case 283640009: // điều chỉnh phiếu xuất kho
+            container.innerHTML = `
+          <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
+      <input type="text" id="productCode" 
+        class="w-full px-4 py-2 border rounded-lg" 
+        placeholder="Nhập mã đơn hàng>
+    </div>
+    
+    <div class="flex gap-4 mt-4">
+      <div class="w-1/2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng theo đơn</label>
+        <input type="text" id="unitCode" 
+          class="w-full px-4 py-2 border rounded-lg" 
+          placeholder="Nhập số lượng">
+      </div>
+      <div class="w-1/2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng theo kho</label>
+        <input type="number" id="adjustValue" 
+          class="w-full px-4 py-2 border rounded-lg" 
+          placeholder="Nhập số lượng">
+      </div>
+    </div>
+    `;
+
             break;
 
           // ==== Điều chỉnh VAT ====
@@ -2051,7 +2093,6 @@
           case 283640001: // VAT SO
           case 283640003: // VAT BOD
           case 283640006: // VAT BO
-          case 283640009: // VAT xuất kho
             container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
