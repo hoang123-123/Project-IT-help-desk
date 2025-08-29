@@ -1483,7 +1483,7 @@
         let newTicket = {
           crdfd_nguoiyeucau: currentUser.idU,
           crdfd_trangthai: 191920002,
-          crdfd_nguoiduyet: approversText,
+          //crdfd_nguoiduyet: approversText,
           crdfd_lydoieuchinh:
             document.getElementById("ticketDescription").value,
           crdfd_loaiieuchinh: parseInt(
@@ -1503,6 +1503,7 @@
                 document.getElementById("unitsDropdown").value,
               cr1bb_giatriexuat:
                 document.getElementById("dieuchinhdinhluong").value,
+              crdfd_nguoiduyet: "Hệ thống",
             });
             break;
 
