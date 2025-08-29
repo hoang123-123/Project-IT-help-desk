@@ -619,7 +619,7 @@
                         class="block text-sm font-medium text-gray-700 mb-2"
                         >Người duyệt *</label
                       >
-                      <select id="ticketApprover" name="userApproval" multiple required></select>
+                      <select id="ticketApprover" multiple></select>
                     </div>
                     <div>
                       <label
@@ -1447,11 +1447,14 @@
         const cancelTicket = document.getElementById("cancelTicket");
         const newTicketForm = document.getElementById("newTicketForm");
 
-        newTicketForm.addEventListener("submit", function (e) {
-          e.preventDefault(); // chặn reload
-          if (!newTicketForm.reportValidity()) return; // check required
-          createNewTicket(); // ok thì chạy
-        });
+       submitTicket.addEventListener("click", function () {
+  if (validateTicketForm()) {
+    createNewTicket();
+  } else {
+    console.log("Form chưa hợp lệ");
+  }
+});
+
 
         cancelTicket.addEventListener("click", function () {
           newTicketForm.reset();
@@ -2045,20 +2048,12 @@
         });
 
         unitChoices.setChoices(
-          [
-            {
-              value: "",
-              label: "Chọn đơn vị",
-              selected: true,
-              disabled: true,
-            },
-            ...units.map((u) => ({
-              value: u.unitId || u.unitName,
-              label: u.unitName,
-              selected: false,
-              disabled: false,
-            })),
-          ],
+          units.map((u) => ({
+            value: u.unitId || u.unitName,
+            label: u.unitName,
+            selected: false,
+            disabled: false,
+          })),
           "value",
           "label",
           false
@@ -2125,13 +2120,13 @@
 <div class="flex gap-4 mt-4">
   <div class="w-1/2">
     <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị *</label>
-    <select id="unitsDropdown" name="unit" class="w-full px-4 py-2 border rounded-lg" required>
+    <select id="unitsDropdown" class="w-full px-4 py-2 border rounded-lg">
  
     </select>
   </div>
   <div class="w-1/2">
     <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị *</label>
-    <input type="number" id="adjustValue" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh" required>
+    <input type="number" id="adjustValue" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh">
 
   </div>
 </div>
@@ -2561,6 +2556,61 @@
           });
         }
       }
+
+      function validateTicketForm() {
+  let isValid = true;
+
+  // Xóa hết thông báo cũ
+  document.querySelectorAll(".error-message").forEach((el) => el.remove());
+
+  // === Kiểm tra input text/number ===
+  document.querySelectorAll("#newTicketForm input[required]").forEach((input) => {
+    if (!input.value || input.value.trim() === "") {
+      showError(input, "Vui lòng nhập trường này");
+      isValid = false;
+    }
+    // nếu là number
+    if (input.type === "number" && input.value !== "") {
+      const val = parseFloat(input.value);
+      if (isNaN(val)) {
+        showError(input, "Giá trị phải là số");
+        isValid = false;
+      }
+    }
+  });
+
+  // === Kiểm tra select Choices.js ===
+  // Ví dụ ticketApprover
+  if (typeof approverChoices !== "undefined") {
+    const selected = approverChoices.getValue(true);
+    if (!selected || selected.length === 0) {
+      const container = document.querySelector("#ticketApprover + .choices");
+      showError(container, "Vui lòng chọn người duyệt");
+      isValid = false;
+    }
+  }
+
+  // Ví dụ unitsDropdown
+  if (typeof unitChoices !== "undefined") {
+    const selected = unitChoices.getValue(true);
+    if (!selected || selected.length === 0) {
+      const container = document.querySelector("#unitsDropdown + .choices");
+      showError(container, "Vui lòng chọn đơn vị");
+      isValid = false;
+    }
+  }
+
+  return isValid;
+}
+
+// Hàm hiển thị thông báo lỗi
+function showError(element, message) {
+  const error = document.createElement("div");
+  error.className = "error-message text-red-500 text-sm mt-1";
+  error.textContent = message;
+  element.insertAdjacentElement("afterend", error);
+}
+
     </script>
   </body>
 </html>
