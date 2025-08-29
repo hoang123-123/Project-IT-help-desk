@@ -890,6 +890,7 @@
       let approverChoices = null;
       let ticketHandlersInitialized = false;
       let currentTicketPage = 1;
+      let unitChoices;
 
       const ticketsPerPage = 10;
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
@@ -1978,14 +1979,35 @@
 
       function renderUnitsDropdown(units) {
         const dropdown = document.getElementById("unitsDropdown");
-        dropdown.innerHTML = '<option value="">-- Chọn đơn vị --</option>'; // reset
+        if (!dropdown) return;
 
-        units.forEach((u) => {
-          const opt = document.createElement("option");
-          opt.value = u.unitId || u.unitName;
-          opt.textContent = u.unitName;
-          dropdown.appendChild(opt);
-        });
+        // Nếu chưa khởi tạo Choices thì tạo mới
+        if (!unitChoices) {
+          unitChoices = new Choices(dropdown, {
+            removeItemButton: false, // ko cần nút xóa vì chọn 1 đơn vị
+            searchEnabled: true, // bật search
+            searchResultLimit: 10,
+            placeholderValue: "Chọn đơn vị",
+            noResultsText: "Không tìm thấy",
+            shouldSort: false,
+          });
+        } else {
+          // Nếu đã có thì clear options cũ
+          unitChoices.clearChoices();
+        }
+
+        // Thêm option mới
+        unitChoices.setChoices(
+          units.map((u) => ({
+            value: u.unitId || u.unitName,
+            label: u.unitName,
+            selected: false,
+            disabled: false,
+          })),
+          "value",
+          "label",
+          false
+        );
       }
 
       function onCategoryChange(category) {
@@ -2049,7 +2071,7 @@
   <div class="w-1/2">
     <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị</label>
     <select id="unitsDropdown" class="w-full px-4 py-2 border rounded-lg">
-      <option value="">-- Chọn đơn vị --</option>
+ 
     </select>
   </div>
   <div class="w-1/2">
@@ -2059,8 +2081,8 @@
   </div>
 </div>
   `;
-  console.log("units html: ", units);
-   renderUnitsDropdown(units);
+
+            renderUnitsDropdown(units);
             break;
 
           // ==== Điều chỉnh phiếu phiếu xuất, nhập kho =====
