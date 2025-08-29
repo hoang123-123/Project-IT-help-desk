@@ -664,7 +664,7 @@
                       Hủy
                     </button>
                     <button
-                      type="button"
+                      type="submit"
                       id="submitTicket"
                       class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
@@ -1421,23 +1421,44 @@
 
       // Form handlers
 
+      // function initializeFormHandlers() {
+      //   if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
+      //   ticketHandlersInitialized = true;
+
+      //   const submitTicket = document.getElementById("submitTicket");
+      //   const cancelTicket = document.getElementById("cancelTicket");
+      //   const newTicketForm = document.getElementById("newTicketForm");
+
+      //   submitTicket.addEventListener("click", function () {
+      //     createNewTicket();
+      //   });
+
+      //   cancelTicket.addEventListener("click", function () {
+      //     newTicketForm.reset();
+      //     document.querySelector('a[href="#tickets"]').click();
+      //   });
+      // }
+
       function initializeFormHandlers() {
-        if (ticketHandlersInitialized) return; // đã gắn rồi thì thoát
-        ticketHandlersInitialized = true;
+  if (ticketHandlersInitialized) return;
+  ticketHandlersInitialized = true;
 
-        const submitTicket = document.getElementById("submitTicket");
-        const cancelTicket = document.getElementById("cancelTicket");
-        const newTicketForm = document.getElementById("newTicketForm");
+  const submitTicket = document.getElementById("submitTicket");
+  const cancelTicket = document.getElementById("cancelTicket");
+  const newTicketForm = document.getElementById("newTicketForm");
 
-        submitTicket.addEventListener("click", function () {
-          createNewTicket();
-        });
+  newTicketForm.addEventListener("submit", function (e) {
+    e.preventDefault(); // chặn reload
+    if (!newTicketForm.reportValidity()) return; // check required
+    createNewTicket(); // ok thì chạy
+  });
 
-        cancelTicket.addEventListener("click", function () {
-          newTicketForm.reset();
-          document.querySelector('a[href="#tickets"]').click();
-        });
-      }
+  cancelTicket.addEventListener("click", function () {
+    newTicketForm.reset();
+    document.querySelector('a[href="#tickets"]').click();
+  });
+}
+
 
       // ============ Create ticket =====================
       async function createNewTicket() {
