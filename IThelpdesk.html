@@ -610,7 +610,7 @@
                       onchange="onCategoryChange(this.value)"
                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      <option value="">Chọn loại yêu cầu</option>
+                      <!-- <option value="">Chọn loại yêu cầu</option>
                       <option value="191920000">Điều chỉnh giá SOD</option>
                       <option value="191920001">Điều chỉnh VAT SOD</option>
                       <option value="283640001">Điều chỉnh VAT SO</option>
@@ -624,7 +624,7 @@
                       <option value="283640007">Điều chỉnh định lượng</option>
                       <option value="283640008">Hủy phiếu xuất kho</option>
                       <option value="283640009">
-                        Điều chỉnh phiếu xuất kho
+                        Điều chỉnh phiếu xuất kho -->
                       </option>
                     </select>
                   </div>
@@ -1069,7 +1069,6 @@
 
         const query = buildXseptionsQuery(email);
         tickets = await getAllXseptions(cachedToken, query, mappingListTickets);
-        console.log("data ticket: ", tickets);
         loadTickets(); // giờ loadTickets dùng tickets mới nhất
       }
 
@@ -1888,7 +1887,6 @@
 
       async function getAllXseptions(token, query, callback) {
         let url = DATAVERSE_URL + query;
-        console.log("url: ", url);
         let allData = [];
         let page = 1;
 
@@ -1921,7 +1919,6 @@
       }
 
       function mappingListTickets(allData) {
-        console.log("all data: ", allData);
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const email = currentUser?.idU;
 
@@ -1962,7 +1959,6 @@
         supportSystemsData.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        console.log("supportSystemsData: ", supportSystemsData);
         return supportSystemsData;
       }
 
@@ -2434,6 +2430,7 @@
       }
 
       function onDepartmentChange(deptName) {
+        console.log("depname: ", deptName);
         const categorySelect = document.getElementById("ticketCategory");
         categorySelect.innerHTML =
           '<option value="">Chọn loại yêu cầu</option>'; // reset
