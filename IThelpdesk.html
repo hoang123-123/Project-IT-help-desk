@@ -1552,7 +1552,7 @@
             "success"
           );
           document.querySelector('a[href="#tickets"]').click();
-          //await refreshData(); // render lại dữ liệu titkets
+          await refreshData(); // render lại dữ liệu titkets
           document.getElementById("new-ticket").classList.add("hidden");
         } catch (err) {
           console.error(err);
