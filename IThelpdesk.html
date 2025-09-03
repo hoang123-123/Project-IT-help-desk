@@ -531,11 +531,11 @@
                     >
                       Trạng thái
                     </th>
-                    <th
+                    <!-- <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Độ ưu tiên
-                    </th>
+                    </th> -->
                     <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
@@ -714,11 +714,11 @@
                     >
                       Loại
                     </th>
-                    <th
+                    <!-- <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Độ ưu tiên
-                    </th>
+                    </th> -->
                     <th
                       class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
@@ -1640,7 +1640,7 @@
                           ticket.category
                         )}</div>
                         <div><span class="font-medium">Người yêu cầu:</span> <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                          ${getUserNameByEmail(getUserNameByEmail)}
+                          ${getUserNameByEmail(ticket.createdBy)}
                         </span></div>
                         <div><span class="font-medium">Giá trị đề xuất:</span> ${
                           ticket.giaTriDeXuat
@@ -1738,11 +1738,10 @@
                           ticket.name
                         }</h4>
                         <div class="flex items-center space-x-4 text-sm text-gray-500">
-                      
-                            <span>Ngày tạo: </span>
-                            <span>${formatDate(ticket.createdAt)}</span>
                             <span>Người yêu cầu: </span>
                             <span>${userName}</span>
+                            <span>Ngày tạo: </span>
+                            <span>${formatDate(ticket.createdAt)}</span>
                         </div>
                     </div>
                     
