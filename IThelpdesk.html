@@ -1519,15 +1519,15 @@
               crdfd_nguoiduyet: approversText,
             });
             break;
-
-          // case 283640009: // chỉnh phiếu xuất kho
-          //   Object.assign(newTicket, {
-          //     crdfd_maonhangchitiet:
-          //       document.getElementById("maPhieuNhapXuat").value,
-          //     cr1bb_giatriexuat: document.getElementById("numberNhapXuatDon").value +"|"+ document.getElementById("numberNhapXuatKho").value,// đơn|kho
-          //     crdfd_nguoiduyet: approversText,
-          //   });
-          //   break;
+          case 191920000: // Điều chỉnh giá SOD
+          case 283640002: // Điều chỉnh giá BOD
+            Object.assign(newTicket, {
+              crdfd_maonhangchitiet:
+                document.getElementById("maDonHangSodBod").value,
+              cr1bb_giatriexuat: document.getElementById("priceSodBod").value,
+              crdfd_nguoiduyet: approversText,
+            });
+            break;
 
           default:
             console.warn(
@@ -2091,11 +2091,11 @@
             container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          <input type="text" id="orderCodePrice" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+          <input type="text" id="maDonHangSodBod" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng chi tiết...">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị điều chỉnh</label>
-          <input type="number" id="adjustPrice" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị mới">
+          <input type="number" id="priceSodBod" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị mới">
         </div>
       `;
             break;
@@ -2193,7 +2193,7 @@
             container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          <input type="text" id="orderCodeVat" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
+          <input type="text" id="orderCodeVat" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng...">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">VAT</label>
