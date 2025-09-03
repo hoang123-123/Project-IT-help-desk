@@ -1073,7 +1073,7 @@
         return (
           "/crdfd_suport_systems" +
           "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon,cr1bb_giatriexuat" +
-          `&$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai)` +
+          `&$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai,cr1bb_ghichu)` +
           `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`
         );
       }
@@ -1762,11 +1762,25 @@
                            </span>
                         </div>
                     </div>
-                    
-                    <div>
-                        <h5 class="font-medium text-gray-800 mb-2">Mô tả</h5>
-                        <p class="text-gray-600">${ticket.description}</p>
-                    </div>
+                  <div>
+  <h5 class="font-medium text-gray-800 mb-2">Mô tả</h5>
+  <p class="text-gray-600">${ticket.description}</p>
+
+  ${
+    ticket.notes
+      ? `<h5 class="font-medium text-gray-800 mt-4 mb-2">Ghi chú</h5>
+         <ul class="space-y-2 list-disc list-inside text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-200">
+           ${ticket.notes
+             .split("\n")
+             .map(
+               (line) =>
+                 `<li class="pl-1">${line}</li>`
+             )
+             .join("")}
+         </ul>`
+      : ""
+  }
+</div>
                 </div>
             `;
 
@@ -1970,50 +1984,122 @@
         return allData; // <-- quan trọng
       }
 
+      // function mappingListTickets(allData) {
+      //   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      //   const email = currentUser?.idU;
+      //   let notes ="";
+ 
+      //   supportSystemsData = allData
+      //     .filter((item) => {
+      //       // 1️⃣ Người yêu cầu luôn thấy
+      //       if (item.crdfd_nguoiyeucau === email) return true;
+
+      //       // 2️⃣ Nếu có approvals expand từ server
+      //       if (
+      //         item.crdfd_support_system_approval_Masuport_crdfd_suport_system
+      //       ) {
+      //         const pendingApproval =
+      //           item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
+      //             (a) =>
+      //               a.crdfd_nguoixacnhan === email &&
+      //               a.cr1bb_trang_thai !== 283640001 &&
+      //               a.cr1bb_trang_thai !== 283640002
+      //           );
+      //         return !!pendingApproval;
+      //       }
+
+      //       return false;
+      //     })
+      //     .map((item, index) => ({
+      //       id: item.crdfd_suport_systemid || "",
+      //       title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
+      //       description: item.crdfd_lydoieuchinh || "",
+      //       category: item.crdfd_loaiieuchinh || "other",
+      //       priority: "medium",
+      //       status: item.crdfd_trangthai || "Chưa xác định",
+      //       createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
+      //       createdAt: item.createdon || "Chưa xác định",
+      //       userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
+      //       name: item.crdfd_name || "",
+      //       giaTriDeXuat: item.cr1bb_giatriexuat || "Chưa xác định"
+      //     }));
+
+      //   supportSystemsData.sort(
+      //     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      //   );
+      //   return supportSystemsData;
+      // }
       function mappingListTickets(allData) {
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        const email = currentUser?.idU;
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const email = currentUser?.idU;
 
-        supportSystemsData = allData
-          .filter((item) => {
-            // 1️⃣ Người yêu cầu luôn thấy
-            if (item.crdfd_nguoiyeucau === email) return true;
+  supportSystemsData = allData
+    .filter((item) => {
+      // 1️⃣ Người yêu cầu luôn thấy
+      if (item.crdfd_nguoiyeucau === email) return true;
 
-            // 2️⃣ Nếu có approvals expand từ server
-            if (
-              item.crdfd_support_system_approval_Masuport_crdfd_suport_system
-            ) {
-              const pendingApproval =
-                item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
-                  (a) =>
-                    a.crdfd_nguoixacnhan === email &&
-                    a.cr1bb_trang_thai !== 283640001 &&
-                    a.cr1bb_trang_thai !== 283640002
-                );
-              return !!pendingApproval;
-            }
-
-            return false;
-          })
-          .map((item, index) => ({
-            id: item.crdfd_suport_systemid || "",
-            title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
-            description: item.crdfd_lydoieuchinh || "",
-            category: item.crdfd_loaiieuchinh || "other",
-            priority: "medium",
-            status: item.crdfd_trangthai || "Chưa xác định",
-            createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-            createdAt: item.createdon || "Chưa xác định",
-            userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
-            name: item.crdfd_name || "",
-            giaTriDeXuat: item.cr1bb_giatriexuat || "Chưa xác định"
-          }));
-
-        supportSystemsData.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        return supportSystemsData;
+      // 2️⃣ Nếu có approvals expand từ server
+      if (item.crdfd_support_system_approval_Masuport_crdfd_suport_system) {
+        const pendingApproval =
+          item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
+            (a) =>
+              a.crdfd_nguoixacnhan === email &&
+              a.cr1bb_trang_thai !== 283640001 &&
+              a.cr1bb_trang_thai !== 283640002
+          );
+        return !!pendingApproval;
       }
+
+      return false;
+    })
+    .map((item, index) => {
+      const approvals =
+        item.crdfd_support_system_approval_Masuport_crdfd_suport_system || [];
+      let notes = "";
+
+      if (item.crdfd_nguoiyeucau === email) {
+        // Người yêu cầu → gom tất cả note
+        notes = approvals
+          .filter((a) => a.cr1bb_ghichu)
+          .map((a) => {
+            const approver = approversData.find((u) => u.idU === a.crdfd_nguoixacnhan);
+            const approverName = approver ? approver.useName : a.crdfd_nguoixacnhan;
+            return `${approverName}: ${a.cr1bb_ghichu}`;
+          })
+          .join("\n");
+      } else {
+        // Approver → chỉ lấy note của mình
+        const myApproval = approvals.find(
+          (a) => a.crdfd_nguoixacnhan === email
+        );
+        if (myApproval?.cr1bb_ghichu) {
+          const approver = approversData.find((u) => u.idU === myApproval.crdfd_nguoixacnhan);
+          const approverName = approver ? approver.useName : myApproval.crdfd_nguoixacnhan;
+          notes = `${approverName}: ${myApproval.cr1bb_ghichu}`;
+        }
+      }
+
+      return {
+        id: item.crdfd_suport_systemid || "",
+        title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
+        description: item.crdfd_lydoieuchinh || "",
+        category: item.crdfd_loaiieuchinh || "other",
+        priority: "medium",
+        status: item.crdfd_trangthai || "Chưa xác định",
+        createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
+        createdAt: item.createdon || "Chưa xác định",
+        userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
+        name: item.crdfd_name || "",
+        giaTriDeXuat: item.cr1bb_giatriexuat || "Chưa xác định",
+        notes: notes, // 👈 notes đã kèm tên người
+      };
+    });
+
+  supportSystemsData.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  return supportSystemsData;
+}
 
       function mappingUser(allData) {
         approversData = allData.map((item, index) => ({
