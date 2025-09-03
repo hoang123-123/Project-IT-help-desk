@@ -1072,7 +1072,7 @@
       function buildXseptionsQuery(email) {
         return (
           "/crdfd_suport_systems" +
-          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon" +
+          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon,cr1bb_giatriexuat" +
           `&$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai)` +
           `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`
         );
@@ -1630,7 +1630,7 @@
         approvalTicketInfo.innerHTML = `
                 <div class="bg-gray-50 p-4 rounded-lg">
                     <h4 class="font-semibold text-gray-800 mb-2">${
-                      ticket.title
+                      ticket.name
                     }</h4>
                     <p class="text-sm text-gray-600 mb-2">${
                       ticket.description
@@ -1639,11 +1639,11 @@
                         <div><span class="font-medium">Loại:</span> ${getCategoryText(
                           ticket.category
                         )}</div>
-                        <div><span class="font-medium">Độ ưu tiên:</span> <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
-                          ticket.priority
-                        )}">${getPriorityText(ticket.priority)}</span></div>
-                        <div><span class="font-medium">Người tạo:</span> ${
-                          ticket.createdBy
+                        <div><span class="font-medium">Người yêu cầu:</span> <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                          ${getUserNameByEmail(getUserNameByEmail)}
+                        </span></div>
+                        <div><span class="font-medium">Giá trị đề xuất:</span> ${
+                          ticket.giaTriDeXuat
                         }</div>
                         <div><span class="font-medium">Ngày tạo:</span> ${formatDate(
                           ticket.createdAt
@@ -1726,7 +1726,7 @@
       function viewTicket(ticketId) {
         const ticket = tickets.find((t) => t.id === ticketId);
         if (!ticket) return;
-
+        const userName = getUserNameByEmail(ticket.createdBy);
         const ticketModal = document.getElementById("ticketModal");
         const ticketModalContent =
           document.getElementById("ticketModalContent");
@@ -1735,14 +1735,14 @@
                 <div class="space-y-6">
                     <div>
                         <h4 class="text-xl font-semibold text-gray-800 mb-2">${
-                          ticket.title
+                          ticket.name
                         }</h4>
                         <div class="flex items-center space-x-4 text-sm text-gray-500">
-                            <span>ID: ${ticket.id}</span>
-                            <span>•</span>
+                      
+                            <span>Ngày tạo: </span>
                             <span>${formatDate(ticket.createdAt)}</span>
-                            <span>•</span>
-                            <span>${ticket.createdBy}</span>
+                            <span>Người yêu cầu: </span>
+                            <span>${userName}</span>
                         </div>
                     </div>
                     
@@ -1755,19 +1755,19 @@
                                 ${getStatusText(ticket.status)}
                             </span>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <h5 class="font-medium text-gray-800 mb-2">Độ ưu tiên</h5>
-                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
-                              ticket.priority
-                            )}">
-                                ${getPriorityText(ticket.priority)}
-                            </span>
-                        </div>
+
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <h5 class="font-medium text-gray-800 mb-2">Loại</h5>
                             <span class="text-sm text-gray-600">${getCategoryText(
                               ticket.category
                             )}</span>
+                        </div>
+
+                           <div class="bg-gray-50 p-4 rounded-lg">
+                            <h5 class="font-medium text-gray-800 mb-2">Giá trị đề xuất</h5>
+                           <span class="text-sm text-gray-600">
+                              ${ticket.giaTriDeXuat}
+                           </span>
                         </div>
                     </div>
                     
@@ -2011,9 +2011,10 @@
             priority: "medium",
             status: item.crdfd_trangthai || "Chưa xác định",
             createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-            createdAt: item.createdon || "Không xác định date",
+            createdAt: item.createdon || "Chưa xác định",
             userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
             name: item.crdfd_name || "",
+            giaTriDeXuat: item.cr1bb_giatriexuat || "Chưa xác định"
           }));
 
         supportSystemsData.sort(
@@ -2605,6 +2606,12 @@
           });
         }
       }
+
+      // funciton get name user use email user
+      function getUserNameByEmail(email) {
+  const user = approversData.find(u => u.idU === email);
+  return user ? user.useName : email; // fallback: nếu ko có thì trả về email
+}
     </script>
   </body>
 </html>
