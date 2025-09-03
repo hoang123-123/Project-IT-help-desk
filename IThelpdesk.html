@@ -1310,13 +1310,7 @@
               ${getStatusText(ticket.status)}
             </span>
           </td>
-          <td class="px-6 py-4 whitespace-nowrap truncate">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityClass(
-              ticket.priority
-            )}">
-              ${getPriorityText(ticket.priority)}
-            </span>
-          </td>
+      
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(
             ticket.createdAt
           )}</td>
@@ -1726,7 +1720,6 @@
       function viewTicket(ticketId) {
         const ticket = tickets.find((t) => t.id === ticketId);
         if (!ticket) return;
-        const userName = getUserNameByEmail(ticket.createdBy);
         const ticketModal = document.getElementById("ticketModal");
         const ticketModalContent =
           document.getElementById("ticketModalContent");
@@ -1739,7 +1732,7 @@
                         }</h4>
                         <div class="flex items-center space-x-4 text-sm text-gray-500">
                             <span>Người yêu cầu: </span>
-                            <span>${userName}</span>
+                            <span>${getUserNameByEmail(ticket.createdBy)}</span>
                             <span>Ngày tạo: </span>
                             <span>${formatDate(ticket.createdAt)}</span>
                         </div>
