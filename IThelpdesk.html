@@ -922,14 +922,14 @@
           { value: "283640005", text: "Điều chỉnh phiếu nhập kho" },
         ],
         "Phòng Cung ứng": [
-          { value: "283640002", text: "Điều chỉnh giá BOD" },
-          { value: "283640003", text: "Điều chỉnh VAT BOD" },
+          //{ value: "283640002", text: "Điều chỉnh giá BOD" },
+          //{ value: "283640003", text: "Điều chỉnh VAT BOD" },
+          //{ value: "283640006", text: "Điều chỉnh VAT BO" },
         ],
         "Phòng Phát triển Kinh doanh": [
           { value: "191920000", text: "Điều chỉnh giá SOD" },
-          { value: "191920001", text: "Điều chỉnh VAT SOD" },
-          { value: "283640001", text: "Điều chỉnh VAT SO" },
-          { value: "283640006", text: "Điều chỉnh VAT BO" },
+          //{ value: "191920001", text: "Điều chỉnh VAT SOD" },
+          //{ value: "283640001", text: "Điều chỉnh VAT SO" },
         ],
         "Phòng Nhân sự": [],
         "Phòng Tài chính & Kế toán": [],
@@ -2099,32 +2099,17 @@
         </div>
       `;
             break;
-
-          // ==== Điều chỉnh số lượng ====
-          //     case 283640007:
-          //       container.innerHTML = `
-          //   <div>
-          //     <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          //     <input type="text" id="orderCodeQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng">
-          //   </div>
-          //   <div>
-          //     <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng mới</label>
-          //     <input type="number" id="adjustQty" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng mới">
-          //   </div>
-          // `;
-          //       break;
-
           // ==== Loại hủy ====
           case 283640004: // Hủy phiếu nhập kho
           case 283640008: // Hủy phiếu xuất kho
             container.innerHTML = `
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy</label>
-          <input type="text" id="IDPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy *</label>
+          <input type="text" id="IDPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy..." required>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng</label>
-          <input type="number" step="any" id="numberPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng cần hủy">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng *</label>
+          <input type="number" step="any" id="numberPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng cần hủy theo kho..." required>
         </div>
       `;
             break;
@@ -2166,7 +2151,7 @@
       <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
       <input type="text" id="maDonPhieuNhapXuat" 
         class="w-full px-4 py-2 border rounded-lg" 
-        placeholder="Nhập mã đơn hàng" required>
+        placeholder="Nhập mã đơn hàng chi tiết..." required>
     </div>
   </div>
    <div class="w-1/2">
@@ -2174,7 +2159,7 @@
       <label class="block text-sm font-medium text-gray-700 mb-2">Mã phiếu</label>
       <input type="text" id="maPhieuNhapXuat" 
         class="w-full px-4 py-2 border rounded-lg" 
-        placeholder="Nhập mã phiếu" required>
+        placeholder="Nhập mã phiếu..." required>
     </div>
     </div>
 </div>
