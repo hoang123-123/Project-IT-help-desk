@@ -2646,35 +2646,7 @@
         const index = Math.abs(hash) % colors.length;
         return colors[index];
       }
-      //      function validateApproverChoice() {
-      //   const approverSelect = document.getElementById("ticketApprover");
-      //   if (!approverSelect) return true;
-
-      //   const value = approverChoices.getValue(true);
-      //   if (!value || value.length === 0) {
-      //     approverSelect.setCustomValidity("Vui lòng chọn người duyệt");
-      //     approverSelect.reportValidity(); // hiện tooltip
-      //     return false;
-      //   } else {
-      //     approverSelect.setCustomValidity(""); // reset
-      //     return true;
-      //   }
-      // }
-
-      // function validateUnitChoice() {
-      //   const unitSelect = document.getElementById("unitsDropdown");
-      //   const value = unitChoices.getValue(true);
-
-      //   if (!value || value.length === 0) {
-      //     unitSelect.setCustomValidity("Vui lòng chọn đơn vị");
-      //     unitSelect.reportValidity();
-      //     return false;
-      //   } else {
-      //     unitSelect.setCustomValidity("");
-      //     return true;
-      //   }
-      // }
-
+   
       function onDepartmentChange(deptName) {
         console.log("depname: ", deptName);
         const categorySelect = document.getElementById("ticketCategory");
