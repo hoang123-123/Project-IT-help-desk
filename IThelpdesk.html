@@ -922,7 +922,7 @@
           { value: "283640005", text: "Điều chỉnh phiếu nhập kho" },
         ],
         "Phòng Cung ứng": [
-          //{ value: "283640002", text: "Điều chỉnh giá BOD" },
+          { value: "283640002", text: "Điều chỉnh giá BOD" },
           //{ value: "283640003", text: "Điều chỉnh VAT BOD" },
           //{ value: "283640006", text: "Điều chỉnh VAT BO" },
         ],
@@ -1495,7 +1495,7 @@
                 document.getElementById("IDPhieuHuy").value +
                 "|" +
                 document.getElementById("numberPhieuHuy").value,
-              crdfd_nguoiduyet: approversText,
+              crdfd_nguoiduyet: "Hệ thống"//approversText,
             });
             break;
 
@@ -1510,7 +1510,7 @@
                 document.getElementById("numberNhapXuatDon").value +
                 "|" +
                 document.getElementById("numberNhapXuatKho").value, // đơn|kho
-              crdfd_nguoiduyet: approversText,
+              crdfd_nguoiduyet: "Hệ thống"//approversText,
             });
             break;
           case 191920000: // Điều chỉnh giá SOD
@@ -1519,7 +1519,7 @@
               crdfd_maonhangchitiet:
                 document.getElementById("maDonHangSodBod").value,
               cr1bb_giatriexuat: document.getElementById("priceSodBod").value,
-              crdfd_nguoiduyet: approversText,
+              crdfd_nguoiduyet: "Hệ thống"//approversText,
             });
             break;
 
