@@ -240,6 +240,13 @@
             <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
             <span>Dashboard</span>
           </a>
+          <a
+            href="#guides"
+            class="nav-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
+          >
+            <i class="fas fa-book w-5 h-5 mr-3"></i>
+            <span>Quy trình nghiệp vụ</span>
+          </a>
         </div>
       </nav>
     </div>
@@ -563,6 +570,15 @@
             class="absolute bottom-4 right-4 flex"
           ></div>
         </div>
+
+        <!-- Quy trình nghiệp vụ -->
+        <div id="guides" class="page-content hidden p-6">
+          <h2 class="text-2xl font-bold mb-4">Quy trình nghiệp vụ</h2>
+          <div id="guideContent" class="prose max-w-none">
+            <!-- Nội dung sẽ render theo phòng ban -->
+          </div>
+        </div>
+
         <!-- New Ticket Modal -->
         <div
           id="new-ticket"
@@ -2741,6 +2757,44 @@
         const user = approversData.find((u) => u.idU === email);
         return user ? user.useName : email; // fallback: nếu ko có thì trả về email
       }
+
+      function loadGuides() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const phongban = currentUser?.phongban || "Khác";
+
+        const guidesByDepartment = {
+          "Kho vận": `
+        <h3>Kho vận - Quy trình xử lý</h3>
+        <p>1. Kiểm tra phiếu xuất nhập kho.</p>
+        <p>2. Thực hiện điều chỉnh khi có yêu cầu.</p>
+        <p>3. Báo cáo cho trưởng bộ phận.</p>
+      `,
+          "Phòng Cung ứng": `
+        <h3>Phòng Cung ứng - Hướng dẫn</h3>
+        <p>1. Kiểm tra giá BOD/VAT.</p>
+        <p>2. Điều chỉnh khi có yêu cầu từ Ban Giám đốc.</p>
+        <p>3. Lưu hồ sơ vào hệ thống.</p>
+      `,
+          "Hệ thống": `
+        <h3>Tài liệu Hệ thống</h3>
+        <p>Đây là hướng dẫn dành riêng cho Admin hoặc phòng Hệ thống.</p>
+        <ul>
+          <li>Quản lý user</li>
+          <li>Phân quyền</li>
+          <li>Giám sát quy trình</li>
+        </ul>
+      `,
+        };
+
+        document.getElementById("guideContent").innerHTML =
+          guidesByDepartment[phongban] ||
+          `<p>Hiện chưa có tài liệu cho phòng ban <strong>${phongban}</strong>.</p>`;
+      }
+
+      // Load khi vào page
+      window.addEventListener("hashchange", () => {
+        if (location.hash === "#guides") loadGuides();
+      });
     </script>
   </body>
 </html>
