@@ -200,62 +200,44 @@
 
 
 
-/* Áp dụng cho toàn bộ modal new-ticket */
-#new-ticket * {
-  box-sizing: border-box;
-  max-width: 100%;
+/* Modal container chiếm tối đa 95% màn hình, không vượt */
+#new-ticket .modal-container {
+  width: 95vw;
+  height: 95vh;
+  max-width: 1200px;  /* giới hạn max cho PC */
+  max-height: 800px;  /* giới hạn max cho PC */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Input, select, textarea luôn full width */
-#new-ticket input,
-#new-ticket select,
-#new-ticket textarea {
-  width: 100%;
-  font-size: clamp(12px, 1.2vw, 16px); /* nhỏ nhất 12px, auto scale, lớn nhất 16px */
-  padding: clamp(6px, 1vw, 12px);
-  border-radius: 0.5rem;
+/* Header luôn cố định trên */
+#new-ticket .modal-header {
+  flex: 0 0 auto;
 }
 
-/* Label scale mượt */
-#new-ticket label {
-  font-size: clamp(11px, 1vw, 14px);
-  margin-bottom: clamp(3px, 0.5vw, 6px);
-  display: block;
-  font-weight: 500;
+/* Body chiếm phần còn lại, co giãn theo màn hình */
+#new-ticket .modal-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 cột cho PC */
+  gap: 1rem;
+  overflow: hidden; /* 🚫 không tạo thanh cuộn */
 }
 
-/* Textarea co giãn */
-#new-ticket textarea {
-  resize: vertical;
-  min-height: clamp(60px, 10vh, 150px);
-}
-
-/* Header + Footer */
-#new-ticket h3 {
-  font-size: clamp(14px, 2vw, 20px);
-}
-#new-ticket button {
-  font-size: clamp(12px, 1.5vw, 16px);
-  padding: clamp(6px, 1vw, 12px) clamp(10px, 2vw, 18px);
-  border-radius: 0.5rem;
-}
-
-/* Modal container co giãn */
-#new-ticket .max-w-\[90vw\],
-#new-ticket .max-w-2xl,
-#new-ticket .max-w-3xl,
-#new-ticket .max-w-4xl {
-  width: 100%;
-  max-width: min(90vw, 900px); /* luôn fit màn hình, không quá 900px */
-}
-
-/* Grid: 2 cột chỉ khi màn hình rộng */
-@media (min-width: 1024px) {
-  #new-ticket .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(12px, 2vw, 24px);
+@media (max-width: 1024px) {
+  #new-ticket .modal-body {
+    grid-template-columns: 1fr; /* Laptop nhỏ → 1 cột */
   }
 }
+
+@media (max-width: 600px) {
+  #new-ticket .modal-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0; /* Full màn trên mobile */
+  }
+}
+
 
     </style>
   </head>
