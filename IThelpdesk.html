@@ -199,7 +199,8 @@
       }
 
 
-      /* Tùy chỉnh thêm cho responsive */
+
+/* Tùy chỉnh thêm cho responsive */
 @media (max-width: 475px) {
   .space-y-reverse > :not([hidden]) ~ :not([hidden]) {
     margin-top: 0.5rem;
@@ -216,12 +217,17 @@
 
 /* Đảm bảo modal không vượt quá chiều cao màn hình */
 @media (max-height: 600px) {
-  #new-ticket .max-h-\[98vh\] {
+  #new-ticket .max-h-\[95vh\] {
     max-height: 90vh;
   }
   
   #ticketDescription {
-    min-height: 60px;
+    min-height: 50px;
+  }
+  
+  #new-ticket .space-y-3 > * + *,
+  #new-ticket .space-y-4 > * + * {
+    margin-top: 0.75rem;
   }
 }
 
@@ -231,6 +237,7 @@
     max-width: 80rem;
   }
 }
+
     </style>
   </head>
   <body class="bg-gray-50">
@@ -613,7 +620,7 @@
           </div>
         </div>
 
-        <!-- New Ticket Modal -->
+       <!-- New Ticket Modal -->
 <div
   id="new-ticket"
   class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-2 sm:p-4"
@@ -735,6 +742,8 @@
     </div>
   </div>
 </div>
+
+
 
 
 
