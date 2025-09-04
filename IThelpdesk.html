@@ -1997,8 +1997,8 @@
   const email = currentUser?.idU;
 
   let filteredData = [];
-
-  if (email === "admin") {
+  console.log("Current user email:", email);
+  if (email == "admin") {
     // 🔹 Admin → thấy tất cả records
     filteredData = allData;
   } else {
