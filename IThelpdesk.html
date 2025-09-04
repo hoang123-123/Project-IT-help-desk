@@ -1517,6 +1517,18 @@
             });
             break;
 
+          case 191920001: // VAT SOD
+          case 283640001: // VAT SO
+          case 283640003: // VAT BOD
+          case 283640006: // VAT BO
+            Object.assign(newTicket, {
+              crdfd_maonhangchitiet:
+                document.getElementById("maDonHangSodBod").value,
+              cr1bb_giatriexuat: document.getElementById("vatOption").value,
+              crdfd_nguoiduyet: "Hệ thống"//approversText,
+            });
+            break;
+
           default:
             console.warn(
               "❌ Case không hợp lệ:",
@@ -2266,7 +2278,7 @@
             container.innerHTML = `
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          <input type="text" id="orderCodeVat" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng...">
+          <input type="text" id="maDonHangSodBod" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng...">
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">VAT</label>
