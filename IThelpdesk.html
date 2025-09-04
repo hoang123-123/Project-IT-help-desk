@@ -2507,7 +2507,7 @@
 
           // 7.1 Check trong danh sách Admin
           found = AdminUser.find(
-            (u) => u.username === username && u.password === password
+            (u) => u.idU === username && u.password === password
           );
 
           // 7.2 Nếu không phải admin → check trong approversData
