@@ -197,6 +197,40 @@
           background: white !important;
         }
       }
+
+
+      /* Tùy chỉnh thêm cho responsive */
+@media (max-width: 475px) {
+  .space-y-reverse > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+}
+
+/* Custom breakpoint cho màn hình rất nhỏ */
+@media (max-width: 375px) {
+  #new-ticket .max-w-xs {
+    max-width: calc(100vw - 1rem);
+  }
+}
+
+/* Đảm bảo modal không vượt quá chiều cao màn hình */
+@media (max-height: 600px) {
+  #new-ticket .max-h-\[98vh\] {
+    max-height: 90vh;
+  }
+  
+  #ticketDescription {
+    min-height: 60px;
+  }
+}
+
+/* Cho màn hình siêu rộng */
+@media (min-width: 1536px) {
+  #new-ticket .xl\:max-w-6xl {
+    max-width: 80rem;
+  }
+}
     </style>
   </head>
   <body class="bg-gray-50">
@@ -580,32 +614,31 @@
         </div>
 
         <!-- New Ticket Modal -->
-        <!-- New Ticket Modal -->
 <div
   id="new-ticket"
-  class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4"
+  class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-2 sm:p-4"
 >
-  <div class="w-full max-w-2xl lg:max-w-4xl mx-auto">
+  <div class="w-full max-w-xs xs:max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto max-h-[98vh] sm:max-h-[95vh] overflow-y-auto">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200">
       <!-- Header -->
       <div
-        class="p-4 md:p-6 border-b border-gray-200 flex justify-between items-center"
+        class="p-3 sm:p-4 md:p-6 border-b border-gray-200 flex justify-between items-center"
       >
-        <h3 class="text-lg md:text-xl font-semibold text-gray-800">
+        <h3 class="text-base sm:text-lg md:text-xl font-semibold text-gray-800">
           Tạo Ticket mới
         </h3>
         <!-- nút đóng -->
         <button
           id="closeNewTicket"
-          class="text-gray-400 hover:text-gray-600"
+          class="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times text-sm sm:text-base"></i>
         </button>
       </div>
 
       <!-- Body -->
-      <div class="p-4 md:p-6">
-        <form id="newTicketForm" class="space-y-6">
+      <div class="p-3 sm:p-4 md:p-6">
+        <form id="newTicketForm" class="space-y-4 sm:space-y-6">
           <!-- Chọn Phòng ban -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2"
@@ -614,7 +647,7 @@
             <select
               id="ticketDepartment"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Chọn phòng ban"
             ></select>
           </div>
@@ -628,12 +661,12 @@
               id="ticketCategory"
               required
               onchange="onCategoryChange(this.value)"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             ></select>
           </div>
 
           <!-- Thông tin chung -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label
                 class="block text-sm font-medium text-gray-700 mb-2"
@@ -644,7 +677,7 @@
                 name="ticketApprover"
                 multiple
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               ></select>
             </div>
             <div>
@@ -656,7 +689,7 @@
                 type="text"
                 id="ticketAdjustmentInfo"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Nhập thông tin chi tiết"
               />
             </div>
@@ -672,27 +705,27 @@
             >
             <textarea
               id="ticketDescription"
-              rows="4"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              rows="3"
+              class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none sm:resize-y"
               placeholder="Mô tả chi tiết vấn đề..."
             ></textarea>
           </div>
 
           <!-- Buttons -->
           <div
-            class="flex items-center justify-end space-x-4 pt-6 border-t border-gray-200"
+            class="flex flex-col-reverse sm:flex-row items-center justify-end space-y-reverse space-y-2 sm:space-y-0 sm:space-x-4 pt-4 sm:pt-6 border-t border-gray-200"
           >
             <button
               type="button"
               id="cancelTicket"
-              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="w-full sm:w-auto px-4 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Hủy
             </button>
             <button
               type="button"
               id="submitTicket"
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="w-full sm:w-auto px-4 sm:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mb-2 sm:mb-0"
             >
               Tạo Ticket
             </button>
@@ -702,6 +735,7 @@
     </div>
   </div>
 </div>
+
 
 
         <!-- Approvals Section -->
