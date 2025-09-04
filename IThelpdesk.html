@@ -1998,9 +1998,11 @@
 
   let filteredData = [];
   console.log("Current user email:", email);
+  console.log("All data count:", allData.length);
   if (email == "admin") {
     // 🔹 Admin → thấy tất cả records
     filteredData = allData;
+    console.log("Admin user - all records visible");
   } else {
     // 🔹 User thường → chỉ thấy ticket liên quan
     filteredData = allData.filter((item) => {
