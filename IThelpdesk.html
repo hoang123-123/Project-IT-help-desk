@@ -1072,7 +1072,7 @@
       function buildXseptionsQuery(email) {
         return (
           "/crdfd_suport_systems" +
-          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon,cr1bb_giatriexuat" +
+          "?$select=crdfd_suport_systemid,crdfd_name,crdfd_nguoiyeucau,crdfd_loaiieuchinh,crdfd_trangthai,crdfd_lydoieuchinh,createdon,cr1bb_giatriexuat,cr1bb_thongtinyeucau" +
           `&$expand=crdfd_support_system_approval_Masuport_crdfd_suport_system($select=crdfd_nguoixacnhan,cr1bb_trang_thai,cr1bb_ghichu)` +
           `&$filter=statecode eq 0 and (contains(crdfd_nguoiduyet,'${email}') or crdfd_nguoiyeucau eq '${email}')`
         );
@@ -2076,7 +2076,7 @@
       return {
         id: item.crdfd_suport_systemid || "",
         title: item.crdfd_lydoieuchinh || "Không có tiêu đề",
-        description: item.crdfd_lydoieuchinh || "",
+        description: item.cr1bb_thongtinyeucau || "Không có mô tả",
         category: item.crdfd_loaiieuchinh || "other",
         priority: "medium",
         status: item.crdfd_trangthai || "Chưa xác định",
