@@ -854,7 +854,7 @@
                       id="ticketDescription"
                       rows="3"
                       class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-                      placeholder="Mô tả chi tiết vấn đề..."
+                      placeholder="Mô tả chi tiết vấn đề... required"
                     ></textarea>
                   </div>
                 </form>
@@ -4202,13 +4202,15 @@
           case 191920000: // Điều chỉnh giá SOD
           case 283640002: // Điều chỉnh giá BOD
             container.innerHTML = `
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          <input type="text" id="maDonHangSodBod" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng chi tiết...">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị điều chỉnh</label>
-          <input type="number" id="priceSodBod" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị mới">
+        <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6">
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã đơn hàng</label>
+            <input type="text" id="maDonHangSodBod" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập mã đơn hàng chi tiết..." required>
+          </div>
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Giá trị điều chỉnh</label>
+            <input type="number" id="priceSodBod" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập giá trị mới" required>
+          </div>
         </div>
       `;
             break;
@@ -4216,17 +4218,19 @@
           case 283640004: // Hủy phiếu nhập kho
           case 283640008: // Hủy phiếu xuất kho
             container.innerHTML = `
-         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng *</label>
-          <input type="text" id="IDMaDonHang" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng..." required>
+        <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6">
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã đơn hàng *</label>
+            <input type="text" id="IDMaDonHang" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập mã đơn hàng..." required>
+          </div>
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã cần hủy *</label>
+            <input type="text" id="IDPhieuHuy" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập mã cần hủy..." required>
+          </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy *</label>
-          <input type="text" id="IDPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy..." required>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng *</label>
-          <input type="number" step="any" id="numberPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập số lượng cần hủy theo kho..." required>
+          <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng *</label>
+          <input type="number" step="any" id="numberPhieuHuy" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập số lượng cần hủy theo kho..." required>
         </div>
       `;
             break;
@@ -4235,20 +4239,20 @@
           case 283640007:
             container.innerHTML = `
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">Sản phẩm *</label>
-      <input type="text" id="productCode" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã sản phẩm" required>
+      <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Sản phẩm *</label>
+      <input type="text" id="productCode" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập mã sản phẩm" required>
     </div>
     
-<div class="flex gap-4 mt-4">
-  <div class="w-1/2">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Đơn vị *</label>
-    <select id="unitsDropdown" name="unitsDropdown" class="w-full px-4 py-2 border rounded-lg" required>
+<div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
+  <div>
+    <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Đơn vị *</label>
+    <select id="unitsDropdown" name="unitsDropdown" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" required>
  
     </select>
   </div>
-  <div class="w-1/2">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Giá trị *</label>
-    <input type="number" id="dieuchinhdinhluong" step="0.01" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập giá trị điều chỉnh" required>
+  <div>
+    <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Giá trị *</label>
+    <input type="number" id="dieuchinhdinhluong" step="0.01" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập giá trị điều chỉnh" required>
 
   </div>
 </div>
@@ -4260,44 +4264,37 @@
           case 283640005: // điều chỉnh phiếu nhập kho
           case 283640009: // điều chỉnh phiếu xuất kho
             container.innerHTML = `
-          
-    
-    <div class="flex gap-4 mt-4">
-  <div class="w-1/2">
-    <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-      <input type="text" id="maDonPhieuNhapXuat" 
-        class="w-full px-4 py-2 border rounded-lg" 
-        placeholder="Nhập mã đơn hàng chi tiết..." required>
+    <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
+      <div>
+        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã đơn hàng</label>
+        <input type="text" id="maDonPhieuNhapXuat" 
+          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
+          placeholder="Nhập mã đơn hàng chi tiết..." required>
+      </div>
+      <div>
+        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã phiếu</label>
+        <input type="text" id="maPhieuNhapXuat" 
+          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
+          placeholder="Nhập mã phiếu..." required>
+      </div>
     </div>
-  </div>
-   <div class="w-1/2">
-       <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">Mã phiếu</label>
-      <input type="text" id="maPhieuNhapXuat" 
-        class="w-full px-4 py-2 border rounded-lg" 
-        placeholder="Nhập mã phiếu..." required>
-    </div>
-    </div>
-</div>
 
-
- <div class="flex gap-4 mt-4">
-  <div class="w-1/2">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng theo đơn</label>
-    <input type="number" id="numberNhapXuatDon" 
-      class="w-full px-4 py-2 border rounded-lg" 
-      placeholder="Nhập số lượng"
-      min="1" step="any" required>
-  </div>
-  <div class="w-1/2">
-    <label class="block text-sm font-medium text-gray-700 mb-2">Số lượng theo kho</label>
-    <input type="number" id="numberNhapXuatKho" 
-      class="w-full px-4 py-2 border rounded-lg" 
-      placeholder="Nhập số lượng"
-      min="1" step="any" required>
-  </div>
-</div>
+    <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
+      <div>
+        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo đơn</label>
+        <input type="number" id="numberNhapXuatDon" 
+          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
+          placeholder="Nhập số lượng"
+          min="1" step="any" required>
+      </div>
+      <div>
+        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo kho</label>
+        <input type="number" id="numberNhapXuatKho" 
+          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
+          placeholder="Nhập số lượng"
+          min="1" step="any" required>
+      </div>
+    </div>
     `;
 
             break;
@@ -4308,20 +4305,22 @@
           case 283640003: // VAT BOD
           case 283640006: // VAT BO
             container.innerHTML = `
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng</label>
-          <input type="text" id="maDonHangSodBod" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng...">
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">VAT</label>
-          <select id="vatOption" class="w-full px-4 py-2 border rounded-lg">
-            <option value="Có VAT">Có VAT</option>
-            <option value="Không VAT">Không VAT</option>
-            <option value="0%">0%</option>
-            <option value="5%">5%</option>
-            <option value="8%">8%</option>
-            <option value="10%">10%</option>
-          </select>
+        <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6">
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã đơn hàng</label>
+            <input type="text" id="maDonHangSodBod" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập mã đơn hàng..." required>
+          </div>
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">VAT</label>
+            <select id="vatOption" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" required>
+              <option value="Có VAT">Có VAT</option>
+              <option value="Không VAT">Không VAT</option>
+              <option value="0%">0%</option>
+              <option value="5%">5%</option>
+              <option value="8%">8%</option>
+              <option value="10%">10%</option>
+            </select>
+          </div>
         </div>
       `;
             break;
@@ -4329,8 +4328,8 @@
           default:
             container.innerHTML = `
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Thông tin thêm</label>
-          <input type="text" id="extraInfo" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập thông tin...">
+          <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Thông tin thêm</label>
+          <input type="text" id="extraInfo" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập thông tin..." required>
         </div>
       `;
         }
