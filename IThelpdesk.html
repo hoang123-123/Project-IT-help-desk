@@ -526,118 +526,13 @@
         <!-- Dashboard Section -->
         <div id="dashboard" class="page-content">
           <!-- Stats Cards -->
-          <div
-            class="responsive-grid responsive-grid-sm-2 responsive-grid-lg-4 gap-3 lg:gap-6 mb-6 lg:mb-8"
-          >
-            <div
-              class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover"
-            >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs lg:text-sm font-medium text-gray-600">
-                    Tổng Tickets
-                  </p>
-                  <p class="text-xl lg:text-2xl font-bold text-gray-900">
-                    1,234
-                  </p>
-                </div>
-                <div
-                  class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-100 rounded-lg flex items-center justify-center"
-                >
-                  <i
-                    class="fas fa-ticket-alt text-blue-600 text-sm lg:text-base"
-                  ></i>
-                </div>
-              </div>
-              <div class="mt-3 lg:mt-4 flex items-center text-xs lg:text-sm">
-                <span class="text-green-600 flex items-center">
-                  <i class="fas fa-arrow-up mr-1"></i>
-                  12%
-                </span>
-                <span class="text-gray-500 ml-2">so với tháng trước</span>
-              </div>
-            </div>
+          <div id="dashboardStats" class="responsive-grid responsive-grid-sm-2 responsive-grid-lg-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
+            <!-- Stats sẽ được render động bằng JavaScript -->
+          </div>
 
-            <div
-              class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover"
-            >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs lg:text-sm font-medium text-gray-600">
-                    Đang chờ
-                  </p>
-                  <p class="text-xl lg:text-2xl font-bold text-gray-900">45</p>
-                </div>
-                <div
-                  class="w-10 h-10 lg:w-12 lg:h-12 bg-yellow-100 rounded-lg flex items-center justify-center"
-                >
-                  <i
-                    class="fas fa-clock text-yellow-600 text-sm lg:text-base"
-                  ></i>
-                </div>
-              </div>
-              <div class="mt-3 lg:mt-4 flex items-center text-xs lg:text-sm">
-                <span class="text-red-600 flex items-center">
-                  <i class="fas fa-arrow-up mr-1"></i>
-                  8%
-                </span>
-                <span class="text-gray-500 ml-2">so với tuần trước</span>
-              </div>
-            </div>
-
-            <div
-              class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover"
-            >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs lg:text-sm font-medium text-gray-600">
-                    Đang xử lý
-                  </p>
-                  <p class="text-xl lg:text-2xl font-bold text-gray-900">23</p>
-                </div>
-                <div
-                  class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-100 rounded-lg flex items-center justify-center"
-                >
-                  <i class="fas fa-cogs text-blue-600 text-sm lg:text-base"></i>
-                </div>
-              </div>
-              <div class="mt-3 lg:mt-4 flex items-center text-xs lg:text-sm">
-                <span class="text-green-600 flex items-center">
-                  <i class="fas fa-arrow-down mr-1"></i>
-                  5%
-                </span>
-                <span class="text-gray-500 ml-2">so với tuần trước</span>
-              </div>
-            </div>
-
-            <div
-              class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover"
-            >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs lg:text-sm font-medium text-gray-600">
-                    Hoàn thành
-                  </p>
-                  <p class="text-xl lg:text-2xl font-bold text-gray-900">
-                    1,166
-                  </p>
-                </div>
-                <div
-                  class="w-10 h-10 lg:w-12 lg:h-12 bg-green-100 rounded-lg flex items-center justify-center"
-                >
-                  <i
-                    class="fas fa-check-circle text-green-600 text-sm lg:text-base"
-                  ></i>
-                </div>
-              </div>
-              <div class="mt-3 lg:mt-4 flex items-center text-xs lg:text-sm">
-                <span class="text-green-600 flex items-center">
-                  <i class="fas fa-arrow-up mr-1"></i>
-                  15%
-                </span>
-                <span class="text-gray-500 ml-2">so với tháng trước</span>
-              </div>
-            </div>
+          <!-- Charts Section -->
+          <div id="chartsSection" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 lg:mb-8">
+            <!-- Biểu đồ sẽ được render ở đây -->
           </div>
 
           <!-- Recent Activities -->
@@ -647,15 +542,15 @@
                 <h3 class="text-base lg:text-lg font-semibold text-gray-800">
                   Hoạt động gần đây
                 </h3>
-                <a
-                  href="#tickets"
-                  class="text-blue-600 hover:text-blue-700 text-xs lg:text-sm font-medium"
-                  >Xem tất cả</a
+                <button
+                  id="showAllActivities"
+                  class="text-blue-600 hover:text-blue-700 text-xs lg:text-sm font-medium cursor-pointer"
+                  >Xem tất cả</button
                 >
               </div>
             </div>
             <div class="p-4 lg:p-6">
-              <div id="recentActivities" class="space-y-3 lg:space-y-4">
+              <div id="recentActivities" class="space-y-3 lg:space-y-4 max-h-96 overflow-y-auto">
                 <!-- Recent activities will be populated here -->
               </div>
             </div>
@@ -679,6 +574,7 @@
     <!-- Header -->
     <div class="p-4 lg:p-6 border-b border-gray-200">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
+        <!-- Tiêu đề cho mobile -->
         <div class="sm:hidden">
           <h3 class="text-base lg:text-lg font-semibold text-gray-800">
             Quản lý Tickets
@@ -686,6 +582,13 @@
           <div id="searchResultsMobile" class="text-sm text-gray-600 mt-1 hidden">
             <!-- Kết quả tìm kiếm sẽ hiển thị ở đây trên mobile -->
           </div>
+        </div>
+        
+        <!-- Tiêu đề cho desktop -->
+        <div class="hidden sm:block">
+          <h3 class="text-lg lg:text-xl font-semibold text-gray-800">
+            Quản lý Tickets
+          </h3>
         </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
           
@@ -1462,61 +1365,471 @@
 
       // Dashboard functions
       function loadDashboard() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+        
+        if (isAdmin) {
+          loadAdminDashboard();
+        } else {
+          loadUserDashboard();
+        }
+        
+        loadDashboardCharts();
         loadRecentActivities();
+        
+        // Gắn event handler cho nút "Xem tất cả" chỉ một lần
+        initializeShowAllActivitiesHandler();
       }
-
-      function loadRecentActivities() {
+      
+      function loadAdminDashboard() {
+        const stats = calculateAdminStats();
+        renderDashboardStats(stats, true);
+      }
+      
+      function loadUserDashboard() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const userEmail = currentUser?.idU;
+        const stats = calculateUserStats(userEmail);
+        renderDashboardStats(stats, false);
+      }
+      
+      function calculateAdminStats() {
+        const total = tickets.length;
+        const pending = tickets.filter(t => t.status === 191920002).length;
+        const approved = tickets.filter(t => t.status === 191920000).length;
+        const rejected = tickets.filter(t => t.status === 191920001).length;
+        const inProgress = tickets.filter(t => t.status === "in-progress").length;
+        const completed = tickets.filter(t => t.status === "completed").length;
+        
+        // Tính toán xu hướng (giả lập - có thể cải thiện với dữ liệu thực tế)
+        const thisMonth = new Date().getMonth();
+        const thisMonthTickets = tickets.filter(t => {
+          const ticketMonth = new Date(t.createdAt).getMonth();
+          return ticketMonth === thisMonth;
+        }).length;
+        
+        const lastMonthTickets = tickets.filter(t => {
+          const ticketMonth = new Date(t.createdAt).getMonth();
+          return ticketMonth === thisMonth - 1;
+        }).length;
+        
+        const trend = lastMonthTickets > 0 ? 
+          Math.round(((thisMonthTickets - lastMonthTickets) / lastMonthTickets) * 100) : 0;
+        
+        return {
+          total: { value: total, trend: trend, label: "Tổng Tickets" },
+          pending: { value: pending, trend: Math.round(Math.random() * 20 - 10), label: "Chờ phê duyệt" },
+          approved: { value: approved, trend: Math.round(Math.random() * 15), label: "Đã phê duyệt" },
+          rejected: { value: rejected, trend: Math.round(Math.random() * 10 - 5), label: "Từ chối" }
+        };
+      }
+      
+      function calculateUserStats(userEmail) {
+        const userTickets = tickets.filter(t => t.createdBy === userEmail);
+        const total = userTickets.length;
+        const pending = userTickets.filter(t => t.status === 191920002).length;
+        const approved = userTickets.filter(t => t.status === 191920000).length;
+        const rejected = userTickets.filter(t => t.status === 191920001).length;
+        
+        // Tickets cần phê duyệt (user là approver)
+        const needsApproval = tickets.filter(t => {
+          if (t.status !== 191920002) return false;
+          // Kiểm tra nếu user này có trong danh sách approver
+          return t.userTickets && t.userTickets.includes(userEmail);
+        }).length;
+        
+        return {
+          total: { value: total, trend: 0, label: "Tickets của tôi" },
+          pending: { value: pending, trend: 0, label: "Đang chờ duyệt" },
+          approved: { value: approved, trend: 0, label: "Đã được duyệt" },
+          needsApproval: { value: needsApproval, trend: 0, label: "Cần phê duyệt" }
+        };
+      }
+      
+      function renderDashboardStats(stats, isAdmin) {
+        const statsContainer = document.getElementById("dashboardStats");
+        
+        const statsArray = isAdmin ? 
+          [stats.total, stats.pending, stats.approved, stats.rejected] :
+          [stats.total, stats.pending, stats.approved, stats.needsApproval];
+        
+        const colors = [
+          { bg: "bg-blue-100", text: "text-blue-600", icon: "fa-ticket-alt" },
+          { bg: "bg-yellow-100", text: "text-yellow-600", icon: "fa-clock" },
+          { bg: "bg-green-100", text: "text-green-600", icon: "fa-check-circle" },
+          { bg: "bg-red-100", text: "text-red-600", icon: isAdmin ? "fa-times-circle" : "fa-user-check" }
+        ];
+        
+        statsContainer.innerHTML = statsArray.map((stat, index) => {
+          const color = colors[index];
+          const trendColor = stat.trend >= 0 ? "text-green-600" : "text-red-600";
+          const trendIcon = stat.trend >= 0 ? "fa-arrow-up" : "fa-arrow-down";
+          
+          return `
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs lg:text-sm font-medium text-gray-600">
+                    ${stat.label}
+                  </p>
+                  <p class="text-xl lg:text-2xl font-bold text-gray-900">
+                    ${stat.value.toLocaleString()}
+                  </p>
+                </div>
+                <div class="w-10 h-10 lg:w-12 lg:h-12 ${color.bg} rounded-lg flex items-center justify-center">
+                  <i class="fas ${color.icon} ${color.text} text-sm lg:text-base"></i>
+                </div>
+              </div>
+              ${stat.trend !== 0 ? `
+                <div class="mt-3 lg:mt-4 flex items-center text-xs lg:text-sm">
+                  <span class="${trendColor} flex items-center">
+                    <i class="fas ${trendIcon} mr-1"></i>
+                    ${Math.abs(stat.trend)}%
+                  </span>
+                  <span class="text-gray-500 ml-2">so với tháng trước</span>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+       }
+       
+       function loadDashboardCharts() {
+         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+         const isAdmin = currentUser?.idU === "admin";
+         
+         if (isAdmin) {
+           renderAdminCharts();
+         } else {
+           renderUserCharts();
+         }
+       }
+       
+       function renderAdminCharts() {
+         const chartsSection = document.getElementById("chartsSection");
+         
+         chartsSection.innerHTML = `
+           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Phân bố trạng thái Tickets</h4>
+             <div style="height: 300px; position: relative;">
+               <canvas id="statusChart"></canvas>
+             </div>
+           </div>
+           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Tickets theo thời gian</h4>
+             <div style="height: 300px; position: relative;">
+               <canvas id="timeChart"></canvas>
+             </div>
+           </div>
+         `;
+         
+         setTimeout(() => {
+           createStatusChart();
+           createTimeChart();
+         }, 100);
+       }
+       
+       function renderUserCharts() {
+         const chartsSection = document.getElementById("chartsSection");
+         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+         const userEmail = currentUser?.idU;
+         
+         chartsSection.innerHTML = `
+           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Tickets của tôi</h4>
+             <div style="height: 300px; position: relative;">
+               <canvas id="userStatusChart"></canvas>
+             </div>
+           </div>
+           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Hoạt động của tôi</h4>
+             <div style="height: 300px; position: relative;">
+               <canvas id="userActivityChart"></canvas>
+             </div>
+           </div>
+         `;
+         
+         setTimeout(() => {
+           createUserStatusChart(userEmail);
+           createUserActivityChart(userEmail);
+         }, 100);
+       }
+       
+       function createStatusChart() {
+         const ctx = document.getElementById('statusChart');
+         if (!ctx) return;
+         
+         const pending = tickets.filter(t => t.status === 191920002).length;
+         const approved = tickets.filter(t => t.status === 191920000).length;
+         const rejected = tickets.filter(t => t.status === 191920001).length;
+         
+         new Chart(ctx, {
+           type: 'doughnut',
+           data: {
+             labels: ['Chờ phê duyệt', 'Đã phê duyệt', 'Từ chối'],
+             datasets: [{
+               data: [pending, approved, rejected],
+               backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
+               borderWidth: 2,
+               borderColor: '#ffffff'
+             }]
+           },
+           options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+               legend: {
+                 position: 'bottom',
+                 labels: {
+                   padding: 20,
+                   usePointStyle: true
+                 }
+               }
+             }
+           }
+         });
+       }
+       
+       function createTimeChart() {
+         const ctx = document.getElementById('timeChart');
+         if (!ctx) return;
+         
+         // Tạo dữ liệu cho 7 ngày gần nhất
+         const last7Days = [];
+         const ticketCounts = [];
+         
+         for (let i = 6; i >= 0; i--) {
+           const date = new Date();
+           date.setDate(date.getDate() - i);
+           const dateStr = date.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' });
+           last7Days.push(dateStr);
+           
+           const count = tickets.filter(ticket => {
+             const ticketDate = new Date(ticket.createdAt);
+             return ticketDate.toDateString() === date.toDateString();
+           }).length;
+           
+           ticketCounts.push(count);
+         }
+         
+         new Chart(ctx, {
+           type: 'line',
+           data: {
+             labels: last7Days,
+             datasets: [{
+               label: 'Tickets mới',
+               data: ticketCounts,
+               borderColor: '#3b82f6',
+               backgroundColor: 'rgba(59, 130, 246, 0.1)',
+               borderWidth: 2,
+               fill: true,
+               tension: 0.4
+             }]
+           },
+           options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+               legend: {
+                 display: false
+               }
+             },
+             scales: {
+               y: {
+                 beginAtZero: true,
+                 ticks: {
+                   stepSize: 1
+                 }
+               }
+             }
+           }
+         });
+       }
+       
+       function createUserStatusChart(userEmail) {
+         const ctx = document.getElementById('userStatusChart');
+         if (!ctx) return;
+         
+         const userTickets = tickets.filter(t => t.createdBy === userEmail);
+         const pending = userTickets.filter(t => t.status === 191920002).length;
+         const approved = userTickets.filter(t => t.status === 191920000).length;
+         const rejected = userTickets.filter(t => t.status === 191920001).length;
+         
+         new Chart(ctx, {
+           type: 'bar',
+           data: {
+             labels: ['Chờ duyệt', 'Đã duyệt', 'Từ chối'],
+             datasets: [{
+               label: 'Số lượng',
+               data: [pending, approved, rejected],
+               backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
+               borderRadius: 8,
+               borderSkipped: false
+             }]
+           },
+           options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+               legend: {
+                 display: false
+               }
+             },
+             scales: {
+               y: {
+                 beginAtZero: true,
+                 ticks: {
+                   stepSize: 1
+                 }
+               }
+             }
+           }
+         });
+       }
+       
+       function createUserActivityChart(userEmail) {
+         const ctx = document.getElementById('userActivityChart');
+         if (!ctx) return;
+         
+         const needsApproval = tickets.filter(t => 
+           t.status === 191920002 && t.userTickets && t.userTickets.includes(userEmail)
+         ).length;
+         
+         const myTickets = tickets.filter(t => t.createdBy === userEmail).length;
+         
+         new Chart(ctx, {
+           type: 'doughnut',
+           data: {
+             labels: ['Tickets của tôi', 'Cần phê duyệt'],
+             datasets: [{
+               data: [myTickets, needsApproval],
+               backgroundColor: ['#3b82f6', '#f59e0b'],
+               borderWidth: 2,
+               borderColor: '#ffffff'
+             }]
+           },
+           options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+               legend: {
+                 position: 'bottom',
+                 labels: {
+                   padding: 20,
+                   usePointStyle: true
+                 }
+               }
+             }
+           }
+         });
+       }
+ 
+       let allActivities = []; // Biến global để lưu tất cả hoạt động
+       let showingAllActivities = false; // Trạng thái hiển thị
+       let showAllActivitiesHandlerInitialized = false; // Flag để tránh gắn handler nhiều lần
+       
+       function initializeShowAllActivitiesHandler() {
+         if (showAllActivitiesHandlerInitialized) return;
+         
+         const showAllActivitiesBtn = document.getElementById("showAllActivities");
+         if (showAllActivitiesBtn) {
+           showAllActivitiesBtn.addEventListener("click", function() {
+             loadRecentActivities(!showingAllActivities);
+           });
+           showAllActivitiesHandlerInitialized = true;
+         }
+       }
+       
+       function loadRecentActivities(showAll = false) {
         const recentActivities = document.getElementById("recentActivities");
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+        const userEmail = currentUser?.idU;
+
+        // Lọc tickets theo quyền
+        let relevantTickets = [];
+        if (isAdmin) {
+          relevantTickets = tickets; // Admin thấy tất cả
+        } else {
+          // User thường chỉ thấy tickets liên quan đến mình
+          relevantTickets = tickets.filter(ticket => 
+            ticket.createdBy === userEmail || 
+            (ticket.userTickets && ticket.userTickets.includes(userEmail))
+          );
+        }
 
         // Tạo danh sách hoạt động từ tickets
         const activities = [];
 
-        tickets.forEach((ticket) => {
+        relevantTickets.forEach((ticket) => {
           // Hoạt động tạo ticket
           activities.push({
             type: "created",
             ticket: ticket,
-            time: ticket.createdAt,
-            description: `Ticket mới được tạo: ${ticket.title}`,
+            time: new Date(ticket.createdAt).getTime(),
+            description: isAdmin ? 
+              `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${ticket.title}` :
+              ticket.createdBy === userEmail ? 
+                `Bạn đã tạo ticket: ${ticket.title}` :
+                `Ticket mới cần phê duyệt: ${ticket.title}`,
           });
 
           // Hoạt động phê duyệt/từ chối
-          if (ticket.status === "approved") {
+          if (ticket.status === 191920000) {
             activities.push({
               type: "approved",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
-              description: `Ticket ${ticket.id} đã được phê duyệt`,
+              description: isAdmin ? 
+                `Ticket ${ticket.name} đã được phê duyệt` :
+                ticket.createdBy === userEmail ?
+                  `Ticket của bạn đã được phê duyệt: ${ticket.title}` :
+                  `Đã phê duyệt ticket: ${ticket.title}`,
             });
-          } else if (ticket.status === "rejected") {
+          } else if (ticket.status === 191920001) {
             activities.push({
               type: "rejected",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
-              description: `Ticket ${ticket.id} đã bị từ chối`,
-            });
-          } else if (ticket.status === "completed") {
-            activities.push({
-              type: "completed",
-              ticket: ticket,
-              time: new Date(ticket.createdAt).getTime() + 7200000, // +2 giờ
-              description: `Ticket ${ticket.id} đã được đóng`,
+              description: isAdmin ? 
+                `Ticket ${ticket.name} đã bị từ chối` :
+                ticket.createdBy === userEmail ?
+                  `Ticket của bạn đã bị từ chối: ${ticket.title}` :
+                  `Đã từ chối ticket: ${ticket.title}`,
             });
           }
         });
 
         // Sắp xếp theo thời gian (mới nhất trước)
         activities.sort((a, b) => b.time - a.time);
+        allActivities = activities; // Lưu tất cả hoạt động
+        
+        // Quyết định số lượng hiển thị
+        const recentActivitiesList = showAll ? activities : activities.slice(0, 10);
+        showingAllActivities = showAll;
+        
+        // Cập nhật text nút
+        const showAllBtn = document.getElementById("showAllActivities");
+        if (showAllBtn) {
+          showAllBtn.textContent = showAll ? "Thu gọn" : "Xem tất cả";
+        }
 
-        // Lấy 15 hoạt động gần nhất
-        const recentActivitiesList = activities.slice(0, 15);
+        if (recentActivitiesList.length === 0) {
+          recentActivities.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-history text-3xl mb-2 block"></i>
+              <p>Chưa có hoạt động nào</p>
+            </div>
+          `;
+          return;
+        }
 
         recentActivities.innerHTML = recentActivitiesList
           .map(
             (activity) => `
-                <div class="flex items-center space-x-3 p-1 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="viewTicket('${activity.ticket.id}')">
                     <div class="flex-shrink-0">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center ${getActivityIconClass(
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center ${getActivityIconClass(
                           activity.type
                         )}">
                             <i class="fas ${getActivityIcon(
@@ -1526,22 +1839,20 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between">
-                            <p class="text-sm text-gray-900 truncate">${
+                            <p class="text-sm text-gray-900 truncate font-medium">${
                               activity.description
                             }</p>
-                            <span class="text-xs text-gray-500 ml-2">${formatTimeAgo(
+                            <span class="text-xs text-gray-500 ml-2 flex-shrink-0">${formatTimeAgo(
                               activity.time
                             )}</span>
                         </div>
                         <div class="flex items-center space-x-2 mt-1">
-                            <span class="text-xs text-gray-500">${
-                              activity.ticket.createdBy
-                            }</span>
+                            <span class="text-xs text-gray-500">${getCategoryText(activity.ticket.category)}</span>
                             <span class="text-xs text-gray-400">•</span>
-                            <span class="inline-flex px-1.5 py-0.5 text-xs font-medium rounded ${getPriorityClass(
-                              activity.ticket.priority
+                            <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${getStatusClass(
+                              activity.ticket.status
                             )}">
-                                ${getPriorityText(activity.ticket.priority)}
+                                ${getStatusText(activity.ticket.status)}
                             </span>
                         </div>
                     </div>
