@@ -487,36 +487,7 @@
           </div>
 
           <div class="flex items-center space-x-2 lg:space-x-4">
-            <!-- Notifications -->
-            <div class="relative">
-              <button
-                id="notificationsBtn"
-                class="relative p-1.5 lg:p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <i class="fas fa-bell text-sm lg:text-base"></i>
-                <span
-                  id="notificationBadge"
-                  class="absolute -top-1 -right-1 w-4 h-4 lg:w-5 lg:h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden"
-                  >3</span
-                >
-              </button>
-              <div
-                id="notificationsDropdown"
-                class="absolute right-0 mt-2 w-72 lg:w-80 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50"
-              >
-                <div class="p-3 lg:p-4 border-b border-gray-200">
-                  <h3 class="font-semibold text-gray-800 text-responsive-sm">
-                    Thông báo
-                  </h3>
-                </div>
-                <div
-                  id="notificationsList"
-                  class="max-h-48 lg:max-h-64 overflow-y-auto"
-                >
-                  <!-- Notifications will be populated here -->
-                </div>
-              </div>
-            </div>
+
 
             <!-- User Menu -->
             <div class="relative">
@@ -1489,8 +1460,7 @@
         // Reset bộ lọc và áp dụng lại
         applyFilters();
         
-        // Cập nhật thông báo
-        updateNotifications();
+
       }
 
       function getCurrentUserEmail() {
@@ -1539,11 +1509,11 @@
           initializeFormHandlers();
           initializeModals();
           initializeSearchAndFilter(); // Khởi tạo tìm kiếm và lọc
-          initializeNotifications(); // Khởi tạo notifications
+
           loadTickets();
           loadApprovals();
           loadDashboard();
-          startNotificationPolling(); // Bắt đầu auto-refresh notifications
+
           initApproverChoices();
           loadDepartments();
         } catch (err) {
@@ -3505,7 +3475,6 @@
           await refreshData();
           loadApprovals();
           loadDashboard();
-          updateNotifications();
         } catch (err) {
           showNotification("Phê duyệt thất bại: " + err.message, "error");
         }
@@ -3539,7 +3508,6 @@
           await refreshData();
           loadApprovals();
           loadDashboard();
-          updateNotifications();
         } catch (err) {
           showNotification("Từ chối thất bại: " + err.message, "error");
         }
@@ -3633,18 +3601,19 @@
             ? "bg-red-500 text-white"
             : "bg-blue-500 text-white"
         }`;
+
         notification.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <i class="fas ${
-                      type === "success"
-                        ? "fa-check-circle"
-                        : type === "error"
-                        ? "fa-exclamation-circle"
-                        : "fa-info-circle"
-                    }"></i>
-                    <span>${message}</span>
-                </div>
-            `;
+      <div class="flex items-center space-x-2">
+        <i class="fas ${
+          type === "success"
+            ? "fa-check-circle"
+            : type === "error"
+            ? "fa-exclamation-circle"
+            : "fa-info-circle"
+        }"></i>
+        <span>${message}</span>
+      </div>
+    `;
 
         document.body.appendChild(notification);
 
@@ -3658,227 +3627,7 @@
         }, 3000);
       }
 
-      // Notification functions
-      // Notification system with auto-refresh
-      let notificationInterval = null;
-      
-      function updateNotifications() {
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        const notificationBadge = document.getElementById("notificationBadge");
-        const notificationsList = document.getElementById("notificationsList");
-        
-        // Admin không hiển thị thông báo
-        if (!currentUser || currentUser.idU === "admin") {
-          if (notificationBadge) {
-            notificationBadge.classList.add("hidden");
-          }
-          if (notificationsList) {
-            notificationsList.innerHTML = `
-              <div class="p-4 text-center text-gray-500">
-                <i class="fas fa-bell-slash text-2xl mb-2 block"></i>
-                <p class="text-sm">Không có thông báo</p>
-              </div>
-            `;
-          }
-          return;
-        }
-        
-        const userEmail = currentUser.idU;
-        const notifications = getNotificationsForUser(userEmail);
-        
-        // Cập nhật badge
-        if (notificationBadge) {
-          if (notifications.length > 0) {
-            notificationBadge.textContent = notifications.length;
-            notificationBadge.classList.remove("hidden");
-          } else {
-            notificationBadge.classList.add("hidden");
-          }
-        }
-        
-        // Cập nhật dropdown
-        if (notificationsList) {
-          if (notifications.length === 0) {
-            notificationsList.innerHTML = `
-              <div class="p-4 text-center text-gray-500">
-                <i class="fas fa-check-circle text-2xl mb-2 block text-green-500"></i>
-                <p class="text-sm">Không có thông báo mới</p>
-              </div>
-            `;
-          } else {
-            notificationsList.innerHTML = notifications.map(notification => `
-              <div class="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors" onclick="handleNotificationClick('${notification.ticketId}', '${notification.type}')">
-                <div class="flex items-start space-x-3">
-                  <div class="flex-shrink-0">
-                    <div class="w-8 h-8 ${getNotificationIconBg(notification.type)} rounded-full flex items-center justify-center">
-                      <i class="fas ${getNotificationIcon(notification.type)} text-white text-xs"></i>
-                    </div>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">
-                      ${notification.title}
-                    </p>
-                    <p class="text-xs text-gray-500 mt-1">
-                      ${notification.message}
-                    </p>
-                    <p class="text-xs text-gray-400 mt-1">
-                      ${formatTimeAgo(notification.time)}
-                    </p>
-                  </div>
-                  <div class="flex-shrink-0">
-                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full ${getNotificationStatusClass(notification.type)}">
-                      ${getNotificationStatusText(notification.type)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            `).join('');
-          }
-        }
-      }
-      
-      function getNotificationsForUser(userEmail) {
-        const notifications = [];
-        
-        tickets.forEach(ticket => {
-          // Thông báo cho người tạo ticket
-          if (ticket.createdBy === userEmail) {
-            if (ticket.status === 191920000) { // Đã phê duyệt
-              notifications.push({
-                id: `approved_${ticket.id}`,
-                ticketId: ticket.id,
-                type: 'approved',
-                title: 'Ticket đã được phê duyệt',
-                message: `${ticket.title || ticket.name}`,
-                time: new Date(ticket.createdAt).getTime() + 3600000 // +1h giả lập thời gian duyệt
-              });
-            } else if (ticket.status === 191920001) { // Bị từ chối
-              notifications.push({
-                id: `rejected_${ticket.id}`,
-                ticketId: ticket.id,
-                type: 'rejected',
-                title: 'Ticket đã bị từ chối',
-                message: `${ticket.title || ticket.name}`,
-                time: new Date(ticket.createdAt).getTime() + 3600000
-              });
-            }
-          }
-          
-          // Thông báo cho người duyệt
-          if (ticket.status === 191920002 && 
-              ticket.userTickets && 
-              ticket.userTickets !== 'Chưa xác định' && 
-              ticket.userTickets !== 'Hệ thống' &&
-              ticket.userTickets.includes(userEmail)) {
-            notifications.push({
-              id: `pending_${ticket.id}`,
-              ticketId: ticket.id,
-              type: 'pending_approval',
-              title: 'Yêu cầu cần phê duyệt',
-              message: `${ticket.title || ticket.name} - ${getUserNameByEmail(ticket.createdBy)}`,
-              time: new Date(ticket.createdAt).getTime()
-            });
-          }
-        });
-        
-        // Sắp xếp theo thời gian mới nhất
-        return notifications.sort((a, b) => b.time - a.time).slice(0, 10);
-      }
-      
-      function getNotificationIcon(type) {
-        switch (type) {
-          case 'approved': return 'fa-check';
-          case 'rejected': return 'fa-times';
-          case 'pending_approval': return 'fa-clock';
-          default: return 'fa-bell';
-        }
-      }
-      
-      function getNotificationIconBg(type) {
-        switch (type) {
-          case 'approved': return 'bg-green-500';
-          case 'rejected': return 'bg-red-500';
-          case 'pending_approval': return 'bg-yellow-500';
-          default: return 'bg-blue-500';
-        }
-      }
-      
-      function getNotificationStatusClass(type) {
-        switch (type) {
-          case 'approved': return 'bg-green-100 text-green-800';
-          case 'rejected': return 'bg-red-100 text-red-800';
-          case 'pending_approval': return 'bg-yellow-100 text-yellow-800';
-          default: return 'bg-blue-100 text-blue-800';
-        }
-      }
-      
-      function getNotificationStatusText(type) {
-        switch (type) {
-          case 'approved': return 'Đã duyệt';
-          case 'rejected': return 'Từ chối';
-          case 'pending_approval': return 'Chờ duyệt';
-          default: return 'Mới';
-        }
-      }
-      
-      function handleNotificationClick(ticketId, type) {
-        if (type === 'pending_approval') {
-          openApprovalModal(ticketId);
-        } else {
-          viewTicket(ticketId);
-        }
-        
-        // Đóng dropdown
-        const dropdown = document.getElementById('notificationsDropdown');
-        if (dropdown) {
-          dropdown.classList.add('hidden');
-        }
-      }
-      
-      function startNotificationPolling() {
-        // Dừng interval cũ nếu có
-        if (notificationInterval) {
-          clearInterval(notificationInterval);
-        }
-        
-        // Cập nhật ngay lập tức
-        updateNotifications();
-        
-        // Cập nhật mỗi phút
-        notificationInterval = setInterval(() => {
-          refreshData().then(() => {
-            updateNotifications();
-          }).catch(err => {
-            console.error('Error refreshing notifications:', err);
-          });
-        }, 60000); // 60 giây
-      }
-      
-      function stopNotificationPolling() {
-        if (notificationInterval) {
-          clearInterval(notificationInterval);
-          notificationInterval = null;
-        }
-      }
-      
-      function initializeNotifications() {
-        const notificationsBtn = document.getElementById("notificationsBtn");
-        const notificationsDropdown = document.getElementById("notificationsDropdown");
-        
-        if (notificationsBtn && notificationsDropdown) {
-          notificationsBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            notificationsDropdown.classList.toggle("hidden");
-          });
-          
-          // Ẩn dropdown khi click ra ngoài
-          document.addEventListener("click", (e) => {
-            if (!notificationsBtn.contains(e.target) && !notificationsDropdown.contains(e.target)) {
-              notificationsDropdown.classList.add("hidden");
-            }
-          });
-        }
-      }
+
 
       // Utility functions
       function getStatusClass(status) {
@@ -4627,12 +4376,7 @@
         cachedToken = null;
         tokenExpiry = null;
         
-        // Reset notifications
-        stopNotificationPolling();
-        const notificationBadge = document.getElementById("notificationBadge");
-        if (notificationBadge) {
-          notificationBadge.classList.add("hidden");
-        }
+
         
         // Reset dashboard stats
         const dashboardStats = document.getElementById("dashboardStats");
