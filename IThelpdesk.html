@@ -1316,6 +1316,12 @@
           item.addEventListener("click", function (e) {
             e.preventDefault();
 
+            // Đóng sidebar trên mobile khi click vào menu item
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar) {
+              sidebar.classList.add("-translate-x-full");
+            }
+
             navItems.forEach((nav) =>
               nav.classList.remove("active", "bg-blue-50", "text-blue-600")
             );
