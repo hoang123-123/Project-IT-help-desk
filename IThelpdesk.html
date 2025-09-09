@@ -679,9 +679,14 @@
     <!-- Header -->
     <div class="p-4 lg:p-6 border-b border-gray-200">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
-        <h3 class="text-base lg:text-lg font-semibold text-gray-800 sm:hidden">
-          Quản lý Tickets
-        </h3>
+        <div class="sm:hidden">
+          <h3 class="text-base lg:text-lg font-semibold text-gray-800">
+            Quản lý Tickets
+          </h3>
+          <div id="searchResultsMobile" class="text-sm text-gray-600 mt-1 hidden">
+            <!-- Kết quả tìm kiếm sẽ hiển thị ở đây trên mobile -->
+          </div>
+        </div>
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
           
           <!-- Ô tìm kiếm -->
@@ -690,9 +695,16 @@
               type="text"
               id="searchTickets"
               placeholder="Tìm kiếm tickets..."
-              class="w-full sm:w-48 lg:w-64 pl-8 lg:pl-10 pr-3 lg:pr-4 py-2 text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full sm:w-48 lg:w-64 pl-8 lg:pl-10 pr-8 lg:pr-10 py-2 text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <i class="fas fa-search absolute left-2.5 lg:left-3 top-2.5 lg:top-3 text-gray-400 text-sm"></i>
+            <button
+              id="clearSearch"
+              class="absolute right-2.5 lg:right-3 top-2.5 lg:top-3 text-gray-400 hover:text-gray-600 text-sm hidden"
+              title="Xóa tìm kiếm"
+            >
+              <i class="fas fa-times"></i>
+            </button>
           </div>
 
           <!-- Bộ lọc trạng thái -->
@@ -722,30 +734,42 @@
     </div>
 
     <!-- Table + Scroll -->
-    <div class="flex-1 overflow-y-auto overflow-x-auto">
-      <table class="w-full whitespace-nowrap">
-        <thead class="bg-gray-50 sticky top-0 z-10">
-          <tr>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Tiêu đề</th>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Loại</th>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Người tạo</th>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày tạo</th>
-            <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
-          </tr>
-        </thead>
-        <tbody id="ticketsTable" class="bg-white divide-y divide-gray-200">
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="p-4 border-t border-gray-200">
-      <div id="ticketsPagination" class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
-        <button class="px-3 py-1 border rounded text-blue-600">Previous</button>
-        <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
-        <button class="px-3 py-1 border rounded text-blue-600">Next</button>
+    <div class="flex-1 flex flex-col min-h-0">
+      <div class="flex-1 overflow-y-auto overflow-x-auto min-h-[300px]">
+        <table class="w-full whitespace-nowrap">
+          <thead class="bg-gray-50 sticky top-0 z-10">
+            <tr>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Tiêu đề</th>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Loại</th>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Người tạo</th>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày tạo</th>
+              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="ticketsTable" class="bg-white divide-y divide-gray-200">
+            <!-- Placeholder rows để đảm bảo chiều cao tối thiểu -->
+            <tr class="h-12"><td colspan="7" class="text-center text-gray-500 py-8">Đang tải dữ liệu...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination - Luôn ở vị trí cố định -->
+      <div class="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <!-- Thông tin trang -->
+          <div class="text-sm text-gray-600 order-2 sm:order-1">
+            <span id="paginationInfo">Hiển thị 1-10 của 0 kết quả</span>
+          </div>
+          
+          <!-- Điều khiển phân trang -->
+          <div id="ticketsPagination" class="flex flex-wrap items-center justify-center gap-1 order-1 sm:order-2">
+            <button class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed" disabled>Previous</button>
+            <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
+            <button class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed" disabled>Next</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1007,9 +1031,17 @@
           class="bg-white rounded-xl shadow-xl w-full max-w-sm sm:max-w-lg lg:max-w-2xl"
         >
           <div class="p-4 lg:p-6 border-b border-gray-200">
-            <h3 class="text-base lg:text-lg font-semibold text-gray-800">
-              Phê duyệt Ticket
-            </h3>
+            <div class="flex items-center justify-between">
+              <h3 class="text-base lg:text-lg font-semibold text-gray-800">
+                Phê duyệt Ticket
+              </h3>
+              <button
+                id="closeApprovalModal"
+                class="text-gray-500 hover:text-gray-700 p-1"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
           </div>
           <div class="p-4 lg:p-6">
             <div id="approvalTicketInfo" class="mb-4 lg:mb-6">
@@ -1030,12 +1062,6 @@
             <div
               class="flex flex-col sm:flex-row items-center justify-end space-y-2 sm:space-y-0 sm:space-x-4"
             >
-              <button
-                id="cancelApproval"
-                class="w-full sm:w-auto px-4 lg:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-xs lg:text-sm"
-              >
-                Hủy
-              </button>
               <button
                 id="rejectTicket"
                 class="w-full sm:w-auto px-4 lg:px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-xs lg:text-sm"
@@ -1137,6 +1163,11 @@
       let unitChoices;
       //const ticketsPerPage = 10;
       let ticketsPerPage = getTicketsPerPage();
+      
+      // Biến cho tính năng tìm kiếm và lọc
+      let filteredTickets = [];
+      let currentSearchTerm = "";
+      let currentStatusFilter = "";
       const DATAVERSE_URL = "https://wecare-ii.crm5.dynamics.com/api/data/v9.0";
 
       const AdminUser = [
@@ -1198,7 +1229,7 @@
       window.addEventListener("resize", () => {
         ticketsPerPage = getTicketsPerPage();
         console.log("Cập nhật ticketsPerPage:", ticketsPerPage);
-        renderTickets(); // nếu bạn có hàm render lại
+        loadTickets(); // nếu bạn có hàm render lại
       });
 
       document.addEventListener("DOMContentLoaded", () => {
@@ -1311,7 +1342,9 @@
 
         const query = buildXseptionsQuery(email);
         tickets = await getAllXseptions(cachedToken, query, mappingListTickets);
-        loadTickets(); // giờ loadTickets dùng tickets mới nhất
+        
+        // Reset bộ lọc và áp dụng lại
+        applyFilters();
       }
 
       function getCurrentUserEmail() {
@@ -1355,9 +1388,11 @@
         try {
           //console.log("Done, tổng số record:", data.length);
           tickets = [...supportSystemsData];
+          filteredTickets = [...tickets]; // Khởi tạo danh sách đã lọc
           initializeNavigation();
           initializeFormHandlers();
           initializeModals();
+          initializeSearchAndFilter(); // Khởi tạo tìm kiếm và lọc
           loadTickets();
           loadApprovals();
           loadDashboard();
@@ -1546,102 +1581,322 @@
         }
       }
 
+      // Search and Filter functions
+      function initializeSearchAndFilter() {
+        const searchInput = document.getElementById("searchTickets");
+        const statusFilter = document.getElementById("statusFilter");
+        const clearSearchBtn = document.getElementById("clearSearch");
+
+        if (searchInput) {
+          searchInput.addEventListener("input", handleSearch);
+        }
+
+        if (statusFilter) {
+          statusFilter.addEventListener("change", handleStatusFilter);
+        }
+
+        if (clearSearchBtn) {
+          clearSearchBtn.addEventListener("click", clearAllFilters);
+        }
+      }
+
+      function handleSearch(event) {
+        currentSearchTerm = event.target.value.toLowerCase().trim();
+        
+        // Hiển thị/ẩn nút xóa tìm kiếm
+        const clearSearchBtn = document.getElementById("clearSearch");
+        if (clearSearchBtn) {
+          if (currentSearchTerm) {
+            clearSearchBtn.classList.remove("hidden");
+          } else {
+            clearSearchBtn.classList.add("hidden");
+          }
+        }
+        
+        applyFilters();
+      }
+
+      function handleStatusFilter(event) {
+        currentStatusFilter = event.target.value;
+        applyFilters();
+      }
+
+      function clearAllFilters() {
+        // Reset các input
+        const searchInput = document.getElementById("searchTickets");
+        const statusFilter = document.getElementById("statusFilter");
+        const clearSearchBtn = document.getElementById("clearSearch");
+        
+        if (searchInput) {
+          searchInput.value = "";
+        }
+        
+        if (statusFilter) {
+          statusFilter.value = "";
+        }
+        
+        if (clearSearchBtn) {
+          clearSearchBtn.classList.add("hidden");
+        }
+        
+        // Reset biến
+        currentSearchTerm = "";
+        currentStatusFilter = "";
+        
+        // Áp dụng lại bộ lọc (sẽ hiển thị tất cả)
+        applyFilters();
+      }
+
+      function applyFilters() {
+        filteredTickets = tickets.filter(ticket => {
+          // Lọc theo từ khóa tìm kiếm
+          const matchesSearch = !currentSearchTerm || 
+            ticket.name.toLowerCase().includes(currentSearchTerm) ||
+            ticket.title.toLowerCase().includes(currentSearchTerm) ||
+            getCategoryText(ticket.category).toLowerCase().includes(currentSearchTerm) ||
+            getUserNameByEmail(ticket.createdBy).toLowerCase().includes(currentSearchTerm) ||
+            getStatusText(ticket.status).toLowerCase().includes(currentSearchTerm);
+
+          // Lọc theo trạng thái
+          const matchesStatus = !currentStatusFilter || 
+            getStatusFilterValue(ticket.status) === currentStatusFilter;
+
+          return matchesSearch && matchesStatus;
+        });
+
+        // Cập nhật thông báo kết quả tìm kiếm trên mobile
+        updateSearchResultsDisplay();
+
+        // Reset về trang đầu và load lại
+        currentTicketPage = 1;
+        loadTickets(1);
+      }
+
+      function updateSearchResultsDisplay() {
+        const searchResultsMobile = document.getElementById("searchResultsMobile");
+        
+        if (searchResultsMobile) {
+          if (currentSearchTerm || currentStatusFilter) {
+            const resultText = `Tìm thấy ${filteredTickets.length} kết quả`;
+            const filterInfo = [];
+            
+            if (currentSearchTerm) {
+              filterInfo.push(`"${currentSearchTerm}"`);
+            }
+            
+            if (currentStatusFilter) {
+              const statusText = getStatusTextFromFilter(currentStatusFilter);
+              filterInfo.push(`trạng thái: ${statusText}`);
+            }
+            
+            searchResultsMobile.textContent = `${resultText}${filterInfo.length > 0 ? ` cho ${filterInfo.join(", ")}` : ""}`;
+            searchResultsMobile.classList.remove("hidden");
+          } else {
+            searchResultsMobile.classList.add("hidden");
+          }
+        }
+      }
+
+      function getStatusTextFromFilter(filterValue) {
+        switch (filterValue) {
+          case "pending":
+            return "Chờ phê duyệt";
+          case "approved":
+            return "Đã phê duyệt";
+          case "rejected":
+            return "Từ chối";
+          case "in-progress":
+            return "Đang xử lý";
+          case "completed":
+            return "Hoàn thành";
+          default:
+            return "";
+        }
+      }
+
+      function getStatusFilterValue(status) {
+        switch (status) {
+          case 191920002:
+            return "pending";
+          case 191920000:
+            return "approved";
+          case 191920001:
+            return "rejected";
+          case "in-progress":
+            return "in-progress";
+          case "completed":
+            return "completed";
+          default:
+            return "";
+        }
+      }
+
       // Tickets management
 
       function loadTickets(page = 1) {
         currentTicketPage = page;
         const ticketsTable = document.getElementById("ticketsTable");
-        const paginationContainer =
-          document.getElementById("ticketsPagination");
+        const paginationContainer = document.getElementById("ticketsPagination");
+        const paginationInfo = document.getElementById("paginationInfo");
 
-        const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+        // Sử dụng filteredTickets thay vì tickets gốc
+        const ticketsToShow = filteredTickets.length > 0 || currentSearchTerm || currentStatusFilter ? filteredTickets : tickets;
+        const totalPages = Math.ceil(ticketsToShow.length / ticketsPerPage);
         const start = (page - 1) * ticketsPerPage;
-        const end = start + ticketsPerPage;
-        const ticketsToRender = tickets.slice(start, end);
+        const end = Math.min(start + ticketsPerPage, ticketsToShow.length);
+        const ticketsToRender = ticketsToShow.slice(start, end);
 
-        // Render bảng tickets
-        ticketsTable.innerHTML = ticketsToRender
-          .map(
-            (ticket) => `
-        <tr class="hover:bg-gray-50">
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${
-            ticket.name
-          }</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 truncate">${
-            ticket.title
-          }</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getCategoryText(
-            ticket.category
-          )}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getUserNameByEmail(
-            ticket.createdBy
-          )}</td>
-          <td class="px-6 py-4 whitespace-nowrap truncate">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(
-              ticket.status
-            )}">
-              ${getStatusText(ticket.status)}
-            </span>
-          </td>
-      
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(
-            ticket.createdAt
-          )}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium truncate">
-            <button onclick="viewTicket('${
-              ticket.id
-            }')" class="text-blue-600 hover:text-blue-900 mr-3">Xem</button>
-            ${
-              ticket.status === 191920002
-                ? `<button onclick="openApprovalModal('${ticket.id}')" class="text-green-600 hover:text-green-900">Phê duyệt</button>`
-                : ""
-            }
-          </td>
-        </tr>
-      `
-          )
-          .join("");
-
-        // Render phân trang
-        let paginationHTML = "";
-
-        // Nút Previous
-        paginationHTML += `
-    <button ${page === 1 ? "disabled" : ""} onclick="loadTickets(${page - 1})"
-      class="px-3 py-1 mx-1 border rounded ${
-        page === 1 ? "text-gray-400" : "text-blue-600 hover:bg-blue-100"
-      }">
-      Previous
-    </button>
-  `;
-
-        // Các số trang
-        for (let i = 1; i <= totalPages; i++) {
-          paginationHTML += `
-      <button onclick="loadTickets(${i})"
-        class="px-3 py-1 mx-1 border rounded ${
-          i === page
-            ? "bg-blue-600 text-white"
-            : "text-blue-600 hover:bg-blue-100"
-        }">
-        ${i}
-      </button>
-    `;
+        // Cập nhật thông tin pagination
+        if (ticketsToShow.length === 0) {
+          if (currentSearchTerm || currentStatusFilter) {
+            paginationInfo.textContent = "Không tìm thấy kết quả phù hợp";
+          } else {
+            paginationInfo.textContent = "Không có dữ liệu";
+          }
+        } else {
+          const totalText = (currentSearchTerm || currentStatusFilter) ? 
+            `${ticketsToShow.length} kết quả tìm thấy` : 
+            `${ticketsToShow.length} kết quả`;
+          paginationInfo.textContent = `Hiển thị ${start + 1}-${end} của ${totalText}`;
         }
 
-        // Nút Next
-        paginationHTML += `
-    <button ${page === totalPages ? "disabled" : ""} onclick="loadTickets(${
-          page + 1
-        })"
-      class="px-3 py-1 mx-1 border rounded ${
-        page === totalPages
-          ? "text-gray-400"
-          : "text-blue-600 hover:bg-blue-100"
-      }">
-      Next
-    </button>
-  `;
+        // Render bảng tickets
+        if (ticketsToRender.length === 0) {
+          ticketsTable.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-center text-gray-500 py-8">
+                <i class="fas fa-inbox text-3xl mb-2 block"></i>
+                Không có tickets nào
+              </td>
+            </tr>
+          `;
+        } else {
+          ticketsTable.innerHTML = ticketsToRender
+            .map(
+              (ticket) => `
+          <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="handleTicketRowClick('${ticket.id}', ${ticket.status})">
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${
+              ticket.name
+            }</td>
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm text-gray-900 truncate">${
+              ticket.title
+            }</td>
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getCategoryText(
+              ticket.category
+            )}</td>
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm text-gray-500 truncate">${getUserNameByEmail(
+              ticket.createdBy
+            )}</td>
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap truncate">
+              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusClass(
+                ticket.status
+              )}">
+                ${getStatusText(ticket.status)}
+              </span>
+            </td>
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm text-gray-500 truncate">${formatDate(
+              ticket.createdAt
+            )}</td>
+            <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm font-medium truncate">
+              <div class="flex items-center space-x-2">
+                <i class="fas fa-eye text-blue-600"></i>
+                ${
+                  ticket.status === 191920002
+                    ? `<i class="fas fa-check-circle text-green-600"></i>`
+                    : `<i class="fas fa-info-circle text-gray-400"></i>`
+                }
+              </div>
+            </td>
+          </tr>
+        `
+            )
+            .join("");
+        }
+
+        // Render phân trang với thiết kế mới
+        let paginationHTML = "";
+
+        if (totalPages > 1) {
+          // Nút Previous
+          paginationHTML += `
+            <button ${page === 1 ? "disabled" : ""} onclick="loadTickets(${page - 1})"
+              class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-white">
+              <i class="fas fa-chevron-left mr-1"></i>Previous
+            </button>
+          `;
+
+          // Logic hiển thị số trang thông minh
+          const maxVisiblePages = 5;
+          let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+          let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+          
+          if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+          }
+
+          // Hiển thị trang đầu và dấu ...
+          if (startPage > 1) {
+            paginationHTML += `
+              <button onclick="loadTickets(1)"
+                class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50">
+                1
+              </button>
+            `;
+            if (startPage > 2) {
+              paginationHTML += `<span class="px-2 text-gray-500">...</span>`;
+            }
+          }
+
+          // Các số trang
+          for (let i = startPage; i <= endPage; i++) {
+            paginationHTML += `
+              <button onclick="loadTickets(${i})"
+                class="px-3 py-1 border rounded ${
+                  i === page
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "text-blue-600 hover:bg-blue-50"
+                }">
+                ${i}
+              </button>
+            `;
+          }
+
+          // Hiển thị dấu ... và trang cuối
+          if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+              paginationHTML += `<span class="px-2 text-gray-500">...</span>`;
+            }
+            paginationHTML += `
+              <button onclick="loadTickets(${totalPages})"
+                class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50">
+                ${totalPages}
+              </button>
+            `;
+          }
+
+          // Nút Next
+          paginationHTML += `
+            <button ${page === totalPages ? "disabled" : ""} onclick="loadTickets(${
+              page + 1
+            })"
+              class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-white">
+              Next<i class="fas fa-chevron-right ml-1"></i>
+            </button>
+          `;
+        } else {
+          // Nếu chỉ có 1 trang, hiển thị pagination đơn giản
+          paginationHTML = `
+            <button disabled class="px-3 py-1 border rounded text-gray-400 cursor-not-allowed">
+              <i class="fas fa-chevron-left mr-1"></i>Previous
+            </button>
+            <button class="px-3 py-1 border rounded bg-blue-600 text-white border-blue-600">
+              1
+            </button>
+            <button disabled class="px-3 py-1 border rounded text-gray-400 cursor-not-allowed">
+              Next<i class="fas fa-chevron-right ml-1"></i>
+            </button>
+          `;
+        }
 
         paginationContainer.innerHTML = paginationHTML;
       }
@@ -1864,12 +2119,12 @@
         const ticketModal = document.getElementById("ticketModal");
         const closeTicketModal = document.getElementById("closeTicketModal");
         const approvalModal = document.getElementById("approvalModal");
-        const cancelApproval = document.getElementById("cancelApproval");
+        const closeApprovalModal = document.getElementById("closeApprovalModal");
 
         closeTicketModal.addEventListener("click", () =>
           ticketModal.classList.add("hidden")
         );
-        cancelApproval.addEventListener("click", () =>
+        closeApprovalModal.addEventListener("click", () =>
           approvalModal.classList.add("hidden")
         );
 
@@ -2011,6 +2266,17 @@
           loadDashboard();
         } catch (err) {
           showNotification("Từ chối thất bại: " + err.message, "error");
+        }
+      }
+
+      // Hàm xử lý click vào hàng ticket
+      function handleTicketRowClick(ticketId, status) {
+        // Nếu trạng thái là chờ phê duyệt (191920002), mở popup approval
+        if (status === 191920002) {
+          openApprovalModal(ticketId);
+        } else {
+          // Các trạng thái khác, mở popup xem chi tiết
+          viewTicket(ticketId);
         }
       }
 
@@ -2371,90 +2637,6 @@
 
         return supportSystemsData;
       }
-
-      // function mappingListTickets(allData) {
-      //   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-      //   const email = currentUser?.idU;
-
-      //   supportSystemsData = allData
-      //     .filter((item) => {
-      //       // 1️⃣ Người yêu cầu luôn thấy
-      //       if (item.crdfd_nguoiyeucau === email) return true;
-
-      //       // 2️⃣ Nếu có approvals expand từ server
-      //       if (
-      //         item.crdfd_support_system_approval_Masuport_crdfd_suport_system
-      //       ) {
-      //         const pendingApproval =
-      //           item.crdfd_support_system_approval_Masuport_crdfd_suport_system.find(
-      //             (a) =>
-      //               a.crdfd_nguoixacnhan === email &&
-      //               a.cr1bb_trang_thai !== 283640001 &&
-      //               a.cr1bb_trang_thai !== 283640002
-      //           );
-      //         return !!pendingApproval;
-      //       }
-
-      //       return false;
-      //     })
-      //     .map((item, index) => {
-      //       const approvals =
-      //         item.crdfd_support_system_approval_Masuport_crdfd_suport_system ||
-      //         [];
-      //       let notes = "";
-
-      //       if (item.crdfd_nguoiyeucau === email) {
-      //         // Người yêu cầu → gom tất cả note
-      //         notes = approvals
-      //           .filter((a) => a.cr1bb_ghichu)
-      //           .map((a) => {
-      //             const approver = approversData.find(
-      //               (u) => u.idU === a.crdfd_nguoixacnhan
-      //             );
-      //             const approverName = approver
-      //               ? approver.useName
-      //               : a.crdfd_nguoixacnhan;
-      //             return `${approverName}: ${a.cr1bb_ghichu}`;
-      //           })
-      //           .join("\n");
-      //       } else {
-      //         // Approver → chỉ lấy note của mình
-      //         const myApproval = approvals.find(
-      //           (a) => a.crdfd_nguoixacnhan === email
-      //         );
-      //         if (myApproval?.cr1bb_ghichu) {
-      //           const approver = approversData.find(
-      //             (u) => u.idU === myApproval.crdfd_nguoixacnhan
-      //           );
-      //           const approverName = approver
-      //             ? approver.useName
-      //             : myApproval.crdfd_nguoixacnhan;
-      //           notes = `${approverName}: ${myApproval.cr1bb_ghichu}`;
-      //         }
-      //       }
-
-      //       return {
-      //         id: item.crdfd_suport_systemid || "",
-      //         title: item.cr1bb_thongtinyeucau || "Không có tiêu đề",
-      //         description: item.crdfd_lydoieuchinh || "Không có mô tả",
-      //         category: item.crdfd_loaiieuchinh || "other",
-      //         priority: "medium",
-      //         status: item.crdfd_trangthai || "Chưa xác định",
-      //         createdBy: item.crdfd_nguoiyeucau || "Ẩn danh",
-      //         createdAt: item.createdon || "Chưa xác định",
-      //         userTickets: item.crdfd_nguoiduyet || "Chưa xác định",
-      //         name: item.crdfd_name || "",
-      //         giaTriDeXuat: item.cr1bb_giatriexuat || "Chưa xác định",
-      //         notes: notes, // 👈 notes đã kèm tên người
-      //       };
-      //     });
-
-      //   supportSystemsData.sort(
-      //     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      //   );
-      //   return supportSystemsData;
-      // }
-
       function mappingUser(allData) {
         approversData = allData.map((item, index) => ({
           idU: item.cr1bb_emailcal || "Không xác định",
