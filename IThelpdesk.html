@@ -2279,11 +2279,28 @@
         submitTicket.addEventListener("click", function (e) {
           e.preventDefault(); // Ngăn form submit mặc định
 
-          // Kiểm tra validation HTML5 trước
+          // Kiểm tra validation riêng cho trường người duyệt (Choices.js)
+          const selectedApprovers = approverChoices ? approverChoices.getValue(true) : [];
+          if (!selectedApprovers || selectedApprovers.length === 0) {
+            showNotification("Vui lòng chọn ít nhất một người duyệt!", "error");
+            // Focus vào trường người duyệt
+            const approverContainer = document.querySelector(".choices[data-type='select-multiple']");
+            if (approverContainer) {
+              approverContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              approverContainer.classList.add('border-red-500');
+              setTimeout(() => {
+                approverContainer.classList.remove('border-red-500');
+              }, 3000);
+            }
+            return;
+          }
+
+          // Kiểm tra validation HTML5 cho các trường khác
           if (!newTicketForm.checkValidity()) {
             newTicketForm.reportValidity();
             return;
           }
+          
           // Nếu tất cả đều hợp lệ thì tạo ticket
           createNewTicket();
         });
