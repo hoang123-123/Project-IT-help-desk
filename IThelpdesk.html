@@ -1368,6 +1368,9 @@
         
         // Reset bộ lọc và áp dụng lại
         applyFilters();
+        
+        // Cập nhật thông báo
+        updateNotifications();
       }
 
       function getCurrentUserEmail() {
@@ -1416,9 +1419,11 @@
           initializeFormHandlers();
           initializeModals();
           initializeSearchAndFilter(); // Khởi tạo tìm kiếm và lọc
+          initializeNotifications(); // Khởi tạo notifications
           loadTickets();
           loadApprovals();
           loadDashboard();
+          updateNotifications(); // Cập nhật thông báo
           initApproverChoices();
           loadDepartments();
         } catch (err) {
@@ -2767,6 +2772,7 @@
           await refreshData();
           loadApprovals();
           loadDashboard();
+          updateNotifications();
         } catch (err) {
           showNotification("Phê duyệt thất bại: " + err.message, "error");
         }
@@ -2800,6 +2806,7 @@
           await refreshData();
           loadApprovals();
           loadDashboard();
+          updateNotifications();
         } catch (err) {
           showNotification("Từ chối thất bại: " + err.message, "error");
         }
@@ -2916,6 +2923,138 @@
           notification.classList.add("translate-x-full");
           setTimeout(() => document.body.removeChild(notification), 300);
         }, 3000);
+      }
+
+      // Notification functions
+      function updateNotifications() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const notificationBadge = document.getElementById("notificationBadge");
+        const notificationsList = document.getElementById("notificationsList");
+        
+        console.log("🔔 updateNotifications called");
+        console.log("Current user:", currentUser);
+        console.log("Total tickets:", tickets.length);
+        
+        // Admin không hiển thị thông báo
+        if (!currentUser || currentUser.idU === "admin") {
+          console.log("❌ Admin or no user - hiding notifications");
+          if (notificationBadge) {
+            notificationBadge.classList.add("hidden");
+          }
+          if (notificationsList) {
+            notificationsList.innerHTML = `
+              <div class="p-4 text-center text-gray-500">
+                <i class="fas fa-bell-slash text-2xl mb-2 block"></i>
+                <p class="text-sm">Không có thông báo</p>
+              </div>
+            `;
+          }
+          return;
+        }
+        
+        const userEmail = currentUser.idU;
+        console.log("👤 User email:", userEmail);
+        
+        // Debug: Log tất cả tickets để kiểm tra cấu trúc dữ liệu
+        console.log("📋 All tickets:", tickets);
+        
+        // Tìm tickets chờ phê duyệt mà user này là người duyệt
+          const pendingApprovals = tickets.filter(ticket => {
+            console.log(`🎫 Checking ticket ${ticket.id}:`, {
+              status: ticket.status,
+              statusType: typeof ticket.status,
+              userTickets: ticket.userTickets,
+              userTicketsType: typeof ticket.userTickets,
+              userEmail: userEmail,
+              includes: ticket.userTickets && ticket.userTickets.includes(userEmail),
+              fullTicket: ticket
+            });
+            
+            if (ticket.status !== 191920002) return false; // Chỉ lấy tickets chờ phê duyệt
+            
+            // Kiểm tra trong trường userTickets (đã được map từ crdfd_nguoiduyet)
+            if (ticket.userTickets && 
+                ticket.userTickets !== 'Chưa xác định' && 
+                ticket.userTickets !== 'Hệ thống' &&
+                ticket.userTickets.includes(userEmail)) {
+              return true;
+            }
+            
+            // Tạm thời hiển thị tất cả tickets chờ phê duyệt để test
+            console.log(`⚠️ Ticket ${ticket.id} chờ phê duyệt nhưng userTickets = '${ticket.userTickets}'`);
+            return true; // Tạm thời return true để test
+          });
+         
+         console.log("✅ Pending approvals found:", pendingApprovals.length, pendingApprovals);
+        
+        // Cập nhật badge
+        if (notificationBadge) {
+          if (pendingApprovals.length > 0) {
+            notificationBadge.textContent = pendingApprovals.length;
+            notificationBadge.classList.remove("hidden");
+          } else {
+            notificationBadge.classList.add("hidden");
+          }
+        }
+        
+        // Cập nhật dropdown
+        if (notificationsList) {
+          if (pendingApprovals.length === 0) {
+            notificationsList.innerHTML = `
+              <div class="p-4 text-center text-gray-500">
+                <i class="fas fa-check-circle text-2xl mb-2 block text-green-500"></i>
+                <p class="text-sm">Không có ticket nào cần phê duyệt</p>
+              </div>
+            `;
+          } else {
+            notificationsList.innerHTML = pendingApprovals.map(ticket => `
+              <div class="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors" onclick="openApprovalModal('${ticket.id}')">
+                <div class="flex items-start space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                      <i class="fas fa-clock text-yellow-600 text-xs"></i>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">
+                      ${ticket.title || ticket.name}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">
+                      ${getCategoryText(ticket.category)} • ${getUserNameByEmail(ticket.createdBy)}
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">
+                      ${formatTimeAgo(new Date(ticket.createdAt).getTime())}
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                      Chờ duyệt
+                    </span>
+                  </div>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      }
+      
+      function initializeNotifications() {
+        const notificationsBtn = document.getElementById("notificationsBtn");
+        const notificationsDropdown = document.getElementById("notificationsDropdown");
+        
+        if (notificationsBtn && notificationsDropdown) {
+          notificationsBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            notificationsDropdown.classList.toggle("hidden");
+          });
+          
+          // Ẩn dropdown khi click ra ngoài
+          document.addEventListener("click", (e) => {
+            if (!notificationsBtn.contains(e.target) && !notificationsDropdown.contains(e.target)) {
+              notificationsDropdown.classList.add("hidden");
+            }
+          });
+        }
       }
 
       // Utility functions
@@ -3661,6 +3800,12 @@
         // Reset token cache
         cachedToken = null;
         tokenExpiry = null;
+        
+        // Reset notifications
+        const notificationBadge = document.getElementById("notificationBadge");
+        if (notificationBadge) {
+          notificationBadge.classList.add("hidden");
+        }
         
         // Reset dashboard stats
         const dashboardStats = document.getElementById("dashboardStats");
