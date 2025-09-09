@@ -358,6 +358,51 @@
           margin: 1.5rem;
         }
       }
+
+      /* Login Modal Animation */
+      .login-modal-animate {
+        animation: modalSlideIn 0.3s ease-out forwards;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95) translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      @keyframes modalSlideOut {
+        from {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: scale(0.95) translateY(-20px);
+        }
+      }
+
+      /* Glass morphism effect */
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Input focus glow effect */
+      .input-glow:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.1);
+      }
+
+      /* Button hover glow */
+      .btn-glow:hover {
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+      }
     </style>
   </head>
   <body class="bg-gray-50">
@@ -986,68 +1031,110 @@
     <!-- Modal Login -->
     <div
       id="loginModal"
-      class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
+      class="fixed inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20 backdrop-blur-sm hidden z-50"
     >
-      <div class="flex items-center justify-center min-h-screen p-2 lg:p-4">
+      <div class="flex items-center justify-center min-h-screen p-4">
         <div
-          class="bg-white rounded-xl shadow-xl w-full max-w-sm sm:max-w-md p-4 lg:p-6 relative"
+          class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-md p-8 relative border border-white/20 transform transition-all duration-300 scale-95 opacity-0 login-modal-animate"
         >
+          <!-- Close Button -->
           <button
             id="closeLoginModal"
-            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-lg lg:text-xl"
+            class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 hover:bg-gray-200/80 text-gray-500 hover:text-gray-700 transition-all duration-200 hover:scale-110"
           >
-            &times;
+            <i class="fas fa-times text-sm"></i>
           </button>
-          <h3
-            class="text-base lg:text-lg font-semibold text-gray-800 mb-3 lg:mb-4"
-          >
-            Đăng nhập
-          </h3>
-          <form id="loginForm" class="space-y-3 lg:space-y-4">
-            <div>
-              <label
-                class="block text-xs lg:text-sm font-medium text-gray-700 mb-1"
-                >Tài khoản</label
-              >
-              <input
-                type="text"
-                id="username"
-                required
-                class="w-full px-3 lg:px-4 py-2 text-xs lg:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Nhập tài khoản"
-              />
+
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <i class="fas fa-user-shield text-white text-2xl"></i>
             </div>
-            <div>
-              <label
-                class="block text-xs lg:text-sm font-medium text-gray-700 mb-1"
-                >Mật khẩu</label
-              >
-              <input
-                type="password"
-                id="password"
-                required
-                class="w-full px-3 lg:px-4 py-2 text-xs lg:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Nhập mật khẩu"
-              />
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Chào mừng trở lại</h3>
+            <p class="text-gray-600 text-sm">Đăng nhập để tiếp tục sử dụng hệ thống</p>
+          </div>
+
+          <!-- Form -->
+          <form id="loginForm" class="space-y-6">
+            <!-- Username Field -->
+            <div class="relative">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Tài khoản</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-user text-gray-400 text-sm"></i>
+                </div>
+                <input
+                  type="text"
+                  id="username"
+                  required
+                  class="w-full pl-10 pr-4 py-3 text-sm bg-gray-50/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 placeholder-gray-400"
+                  placeholder="Nhập tài khoản của bạn"
+                />
+              </div>
             </div>
-            <div
-              class="flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0 sm:space-x-4"
-            >
+
+            <!-- Password Field -->
+            <div class="relative">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-lock text-gray-400 text-sm"></i>
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  class="w-full pl-10 pr-12 py-3 text-sm bg-gray-50/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 placeholder-gray-400"
+                  placeholder="Nhập mật khẩu của bạn"
+                />
+                <button
+                  type="button"
+                  id="togglePassword"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                >
+                  <i class="fas fa-eye text-sm"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="flex items-center justify-between">
+              <label class="flex items-center">
+                <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
+                <span class="ml-2 text-sm text-gray-600">Ghi nhớ đăng nhập</span>
+              </label>
+              <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">Quên mật khẩu?</a>
+            </div>
+
+            <!-- Buttons -->
+            <div class="space-y-3">
+              <button
+                type="submit"
+                class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
+              >
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Đăng nhập
+              </button>
               <button
                 type="button"
                 id="cancelLogin"
-                class="w-full sm:w-auto px-3 lg:px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 text-xs lg:text-sm"
+                class="w-full py-3 px-4 bg-gray-100/80 text-gray-700 font-medium rounded-xl hover:bg-gray-200/80 focus:ring-4 focus:ring-gray-500/20 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                Hủy
-              </button>
-              <button
-                type="submit"
-                class="w-full sm:w-auto px-4 lg:px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs lg:text-sm"
-              >
-                Đăng nhập
+                <i class="fas fa-times mr-2"></i>
+                Hủy bỏ
               </button>
             </div>
           </form>
+
+          <!-- Footer -->
+          <div class="mt-8 pt-6 border-t border-gray-200/50 text-center">
+            <p class="text-xs text-gray-500">
+              Bằng việc đăng nhập, bạn đồng ý với 
+              <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Điều khoản sử dụng</a>
+              và 
+              <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Chính sách bảo mật</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1172,6 +1259,18 @@
 
         if (btnCreateTicket) {
           btnCreateTicket.addEventListener("click", () => {
+            // Kiểm tra user đã đăng nhập chưa
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+            if (!currentUser) {
+              showNotification("Vui lòng đăng nhập để tạo ticket!", "error");
+              // Mở modal đăng nhập
+              const loginModal = document.getElementById("loginModal");
+              if (loginModal) {
+                loginModal.classList.remove("hidden");
+              }
+              return;
+            }
+            
             newTicketModal.classList.remove("hidden");
           });
         }
@@ -1196,8 +1295,17 @@
         });
 
       // ========== Function ================
+      
+      // Biến cache token
+      let cachedToken = null;
+      let tokenExpiry = null;
 
       async function getToken() {
+        // Kiểm tra token còn hạn không (trừ đi 5 phút để đảm bảo an toàn)
+        if (cachedToken && tokenExpiry && new Date().getTime() < tokenExpiry - 300000) {
+          return cachedToken;
+        }
+        
         const url =
           "https://de210e4bcd22e60591ca8e841aad4b.8e.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Se56wn31gs_1-0gv4sPfYdy25OuhYBuVd4-xykYe8AM";
 
@@ -1213,11 +1321,23 @@
           }
 
           const data = await response.json();
-          cachedToken = data.access_token; // 👈 lấy trực tiếp
-          if (!cachedToken) {
+          
+          // Xử lý format response mới
+          let accessToken;
+          if (data.body && data.body.access_token) {
+            // Format mới: { statusCode: "200", body: { access_token: "...", expires_in: 3599 } }
+            accessToken = data.body.access_token;
+            const expiresIn = data.body.expires_in || 3600; // mặc định 1 giờ
+            tokenExpiry = new Date().getTime() + (expiresIn * 1000);
+          } else if (data.access_token) {
+            // Format cũ: { access_token: "..." }
+            accessToken = data.access_token;
+            tokenExpiry = new Date().getTime() + (3600 * 1000); // mặc định 1 giờ
+          } else {
             throw new Error("Không tìm thấy access_token trong response");
           }
-
+          
+          cachedToken = accessToken;
           return cachedToken;
         } catch (err) {
           console.error("Error getToken:", err);
@@ -1375,6 +1495,39 @@
       // Dashboard functions
       function loadDashboard() {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        
+        // Kiểm tra user đã đăng nhập chưa
+        if (!currentUser) {
+          const dashboardStats = document.getElementById("dashboardStats");
+          const chartsSection = document.getElementById("chartsSection");
+          const recentActivities = document.getElementById("recentActivities");
+          
+          if (dashboardStats) {
+            dashboardStats.innerHTML = `
+              <div class="col-span-full bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+                <i class="fas fa-sign-in-alt text-4xl text-gray-400 mb-4 block"></i>
+                <h3 class="text-lg font-semibold text-gray-600 mb-2">Vui lòng đăng nhập</h3>
+                <p class="text-gray-500">Đăng nhập để xem thống kê dashboard</p>
+              </div>
+            `;
+          }
+          
+          if (chartsSection) {
+            chartsSection.innerHTML = "";
+          }
+          
+          if (recentActivities) {
+            recentActivities.innerHTML = `
+              <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-sign-in-alt text-3xl mb-2 block"></i>
+                <p>Vui lòng đăng nhập để xem hoạt động</p>
+              </div>
+            `;
+          }
+          
+          return;
+        }
+        
         const isAdmin = currentUser?.idU === "admin";
         
         if (isAdmin) {
@@ -2054,6 +2207,35 @@
       // Tickets management
 
       function loadTickets(page = 1) {
+        // Kiểm tra user đã đăng nhập chưa
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser) {
+          const ticketsTable = document.getElementById("ticketsTable");
+          const paginationContainer = document.getElementById("ticketsPagination");
+          const paginationInfo = document.getElementById("paginationInfo");
+          
+          if (ticketsTable) {
+            ticketsTable.innerHTML = `
+              <tr>
+                <td colspan="7" class="text-center text-gray-500 py-8">
+                  <i class="fas fa-sign-in-alt text-3xl mb-2 block"></i>
+                  Vui lòng đăng nhập để xem dữ liệu
+                </td>
+              </tr>
+            `;
+          }
+          
+          if (paginationInfo) {
+            paginationInfo.textContent = "Chưa đăng nhập";
+          }
+          
+          if (paginationContainer) {
+            paginationContainer.innerHTML = "";
+          }
+          
+          return;
+        }
+        
         currentTicketPage = page;
         const ticketsTable = document.getElementById("ticketsTable");
         const paginationContainer = document.getElementById("ticketsPagination");
@@ -2223,6 +2405,23 @@
 
       // Approvals management
       function loadApprovals() {
+        // Kiểm tra user đã đăng nhập chưa
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser) {
+          const approvalsTable = document.getElementById("approvalsTable");
+          if (approvalsTable) {
+            approvalsTable.innerHTML = `
+              <tr>
+                <td colspan="6" class="text-center text-gray-500 py-8">
+                  <i class="fas fa-sign-in-alt text-3xl mb-2 block"></i>
+                  Vui lòng đăng nhập để xem dữ liệu
+                </td>
+              </tr>
+            `;
+          }
+          return;
+        }
+        
         const approvalsTable = document.getElementById("approvalsTable");
         const pendingTickets = tickets.filter((t) => t.status === 191920002);
 
@@ -3371,13 +3570,63 @@
         // 9. Nút đóng/hủy modal login
         // ================================
         if (closeLoginBtn)
-          closeLoginBtn.addEventListener("click", () =>
-            loginModal.classList.add("hidden")
-          );
+          closeLoginBtn.addEventListener("click", () => {
+            const modalContent = loginModal.querySelector('.login-modal-animate');
+            modalContent.style.animation = 'modalSlideOut 0.3s ease-in forwards';
+            setTimeout(() => {
+              loginModal.classList.add("hidden");
+              modalContent.style.animation = '';
+            }, 300);
+          });
         if (cancelLoginBtn)
-          cancelLoginBtn.addEventListener("click", () =>
-            loginModal.classList.add("hidden")
-          );
+          cancelLoginBtn.addEventListener("click", () => {
+            const modalContent = loginModal.querySelector('.login-modal-animate');
+            modalContent.style.animation = 'modalSlideOut 0.3s ease-in forwards';
+            setTimeout(() => {
+              loginModal.classList.add("hidden");
+              modalContent.style.animation = '';
+            }, 300);
+          });
+
+        // ================================
+        // 10. Toggle password visibility
+        // ================================
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        if (togglePasswordBtn) {
+          togglePasswordBtn.addEventListener('click', () => {
+            const passwordField = document.getElementById('password');
+            const icon = togglePasswordBtn.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+              passwordField.type = 'text';
+              icon.classList.remove('fa-eye');
+              icon.classList.add('fa-eye-slash');
+            } else {
+              passwordField.type = 'password';
+              icon.classList.remove('fa-eye-slash');
+              icon.classList.add('fa-eye');
+            }
+          });
+        }
+
+        // ================================
+        // 11. Enhanced modal animation
+        // ================================
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              const modal = mutation.target;
+              if (!modal.classList.contains('hidden')) {
+                // Modal được mở
+                const modalContent = modal.querySelector('.login-modal-animate');
+                if (modalContent) {
+                  modalContent.style.animation = 'modalSlideIn 0.3s ease-out forwards';
+                }
+              }
+            }
+          });
+        });
+        observer.observe(loginModal, { attributes: true });
       }
 
       function clearUI() {
@@ -3402,8 +3651,46 @@
 
         // Reset biến dữ liệu trong JS
         tickets = [];
-        //approversData = [];
+        filteredTickets = [];
+        supportSystemsData = [];
         ordersDetailData = [];
+        currentSearchTerm = "";
+        currentStatusFilter = "";
+        currentTicketPage = 1;
+        
+        // Reset token cache
+        cachedToken = null;
+        tokenExpiry = null;
+        
+        // Reset dashboard stats
+        const dashboardStats = document.getElementById("dashboardStats");
+        if (dashboardStats) dashboardStats.innerHTML = "";
+        
+        // Reset charts section
+        const chartsSection = document.getElementById("chartsSection");
+        if (chartsSection) chartsSection.innerHTML = "";
+        
+        // Reset recent activities
+        const recentActivities = document.getElementById("recentActivities");
+        if (recentActivities) recentActivities.innerHTML = "";
+        
+        // Reset search input
+        const searchInput = document.getElementById("searchTickets");
+        if (searchInput) {
+          searchInput.value = "";
+        }
+        
+        // Reset status filter
+        const statusFilter = document.getElementById("statusFilter");
+        if (statusFilter) {
+          statusFilter.value = "";
+        }
+        
+        // Hide clear search button
+        const clearSearchBtn = document.getElementById("clearSearch");
+        if (clearSearchBtn) {
+          clearSearchBtn.classList.add("hidden");
+        }
       }
 
       async function updateTicketStatus(ticketId, newStatus, currentUserEmail) {
