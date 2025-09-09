@@ -1142,6 +1142,126 @@
     <script>
       // ======== Setting =============
 
+      let token = null; // Token để xác thực API
+      
+      // Dashboard filtering functions
+      function filterDashboard(filterType, filterLabel, cardElement) {
+        // Toggle filter nếu click vào card đã active
+        if (window.currentDashboardFilter === filterType) {
+          clearDashboardFilter();
+          return;
+        }
+        
+        // Set filter mới
+        window.currentDashboardFilter = filterType;
+        
+        // Update visual state của cards
+        updateStatsCardsVisualState(cardElement);
+        
+        // Filter charts và activities
+        filterChartsAndActivities(filterType);
+        
+        // Show filter indicator
+        showFilterIndicator(filterLabel);
+      }
+      
+      function clearDashboardFilter() {
+        window.currentDashboardFilter = null;
+        
+        // Reset visual state của tất cả cards
+        document.querySelectorAll('[data-filter]').forEach(card => {
+          card.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+        });
+        
+        // Reload charts và activities với dữ liệu đầy đủ
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+        
+        if (isAdmin) {
+          createStatusChart();
+          createTimeChart();
+          createAdminCategoryChart();
+        } else {
+          createUserStatusChart(currentUser.idU);
+          createUserActivityChart(currentUser.idU);
+        }
+        
+        loadRecentActivities();
+        hideFilterIndicator();
+      }
+      
+      function updateStatsCardsVisualState(activeCard) {
+        // Reset tất cả cards
+        document.querySelectorAll('[data-filter]').forEach(card => {
+          card.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+        });
+        
+        // Highlight card được chọn
+        if (activeCard) {
+          activeCard.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+        }
+      }
+      
+      function filterChartsAndActivities(filterType) {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+        
+        // Filter tickets theo status
+        let filteredTickets = [];
+        switch (filterType) {
+          case 'pending':
+            filteredTickets = tickets.filter(t => t.status === 191920002);
+            break;
+          case 'approved':
+            filteredTickets = tickets.filter(t => t.status === 191920000);
+            break;
+          case 'rejected':
+            filteredTickets = tickets.filter(t => t.status === 191920001);
+            break;
+          default:
+            filteredTickets = tickets;
+        }
+        
+        // Update charts với dữ liệu đã filter
+        if (isAdmin) {
+          createFilteredAdminCharts(filteredTickets, filterType);
+        } else {
+          createFilteredUserCharts(filteredTickets, filterType, currentUser.idU);
+        }
+        
+        // Update activities với dữ liệu đã filter
+        loadFilteredRecentActivities(filteredTickets);
+      }
+      
+      function showFilterIndicator(filterLabel) {
+        // Tạo hoặc update filter indicator
+        let indicator = document.getElementById('filterIndicator');
+        if (!indicator) {
+          indicator = document.createElement('div');
+          indicator.id = 'filterIndicator';
+          indicator.className = 'mb-4 p-3 bg-blue-100 border border-blue-200 rounded-lg flex items-center justify-between';
+          
+          const chartsSection = document.getElementById('chartsSection');
+          chartsSection.parentNode.insertBefore(indicator, chartsSection);
+        }
+        
+        indicator.innerHTML = `
+          <div class="flex items-center">
+            <i class="fas fa-filter text-blue-600 mr-2"></i>
+            <span class="text-sm font-medium text-blue-800">Đang lọc: ${filterLabel}</span>
+          </div>
+          <button onclick="clearDashboardFilter()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <i class="fas fa-times mr-1"></i>Xóa bộ lọc
+          </button>
+        `;
+      }
+      
+      function hideFilterIndicator() {
+        const indicator = document.getElementById('filterIndicator');
+        if (indicator) {
+          indicator.remove();
+        }
+      }
       let tickets = [];
       let supportSystemsData = [];
       let ordersDetailData = [];
@@ -1423,7 +1543,7 @@
           loadTickets();
           loadApprovals();
           loadDashboard();
-          updateNotifications(); // Cập nhật thông báo
+          startNotificationPolling(); // Bắt đầu auto-refresh notifications
           initApproverChoices();
           loadDepartments();
         } catch (err) {
@@ -1609,7 +1729,7 @@
           total: { value: total, trend: 0, label: "Tickets của tôi" },
           pending: { value: pending, trend: 0, label: "Đang chờ duyệt" },
           approved: { value: approved, trend: 0, label: "Đã được duyệt" },
-          needsApproval: { value: needsApproval, trend: 0, label: "Cần phê duyệt" }
+          rejected: { value: rejected, trend: 0, label: "Từ chối" }
         };
       }
       
@@ -1618,22 +1738,34 @@
         
         const statsArray = isAdmin ? 
           [stats.total, stats.pending, stats.approved, stats.rejected] :
-          [stats.total, stats.pending, stats.approved, stats.needsApproval];
+          [stats.total, stats.pending, stats.approved, stats.rejected];
         
         const colors = [
           { bg: "bg-blue-100", text: "text-blue-600", icon: "fa-ticket-alt" },
           { bg: "bg-yellow-100", text: "text-yellow-600", icon: "fa-clock" },
           { bg: "bg-green-100", text: "text-green-600", icon: "fa-check-circle" },
-          { bg: "bg-red-100", text: "text-red-600", icon: isAdmin ? "fa-times-circle" : "fa-user-check" }
+          { bg: "bg-red-100", text: "text-red-600", icon: "fa-times-circle" }
         ];
+        
+        // Biến global để lưu filter hiện tại
+        window.currentDashboardFilter = null;
         
         statsContainer.innerHTML = statsArray.map((stat, index) => {
           const color = colors[index];
           const trendColor = stat.trend >= 0 ? "text-green-600" : "text-red-600";
           const trendIcon = stat.trend >= 0 ? "fa-arrow-up" : "fa-arrow-down";
           
+          // Xác định filter value cho từng stat
+          let filterValue = null;
+          if (stat.label.includes('Chờ') || stat.label.includes('chờ')) filterValue = 'pending';
+          else if (stat.label.includes('Đã') || stat.label.includes('được')) filterValue = 'approved';
+          else if (stat.label.includes('Từ chối')) filterValue = 'rejected';
+          else if (stat.label.includes('Tổng')) filterValue = null; // Tổng tickets không filter
+          
           return `
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover cursor-pointer transition-all duration-200 hover:shadow-lg" 
+                 onclick="filterDashboard('${filterValue}', '${stat.label}', this)" 
+                 data-filter="${filterValue}">
               <div class="flex items-center justify-between">
                 <div>
                   <p class="text-xs lg:text-sm font-medium text-gray-600">
@@ -1656,6 +1788,9 @@
                   <span class="text-gray-500 ml-2">so với tháng trước</span>
                 </div>
               ` : ''}
+              <div class="mt-2 text-xs text-blue-600 opacity-0 transition-opacity duration-200 hover:opacity-100">
+                <i class="fas fa-filter mr-1"></i>Click để lọc dữ liệu
+              </div>
             </div>
           `;
         }).join('');
@@ -1676,16 +1811,24 @@
          const chartsSection = document.getElementById("chartsSection");
          
          chartsSection.innerHTML = `
-           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Phân bố trạng thái Tickets</h4>
-             <div style="height: 300px; position: relative;">
-               <canvas id="statusChart"></canvas>
+           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 col-span-full">
+             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+               <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Phân bố trạng thái Tickets</h4>
+               <div style="height: 300px; position: relative;">
+                 <canvas id="statusChart"></canvas>
+               </div>
              </div>
-           </div>
-           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Tickets theo thời gian</h4>
-             <div style="height: 300px; position: relative;">
-               <canvas id="timeChart"></canvas>
+             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
+               <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Tickets theo thời gian</h4>
+               <div style="height: 300px; position: relative;">
+                 <canvas id="timeChart"></canvas>
+               </div>
+             </div>
+             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 lg:col-span-2">
+               <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Phân tích loại yêu cầu phổ biến</h4>
+               <div style="height: 300px; position: relative;">
+                 <canvas id="adminCategoryChart"></canvas>
+               </div>
              </div>
            </div>
          `;
@@ -1693,6 +1836,7 @@
          setTimeout(() => {
            createStatusChart();
            createTimeChart();
+           createAdminCategoryChart();
          }, 100);
        }
        
@@ -1709,7 +1853,7 @@
              </div>
            </div>
            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
-             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Hoạt động của tôi</h4>
+             <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Phân tích loại yêu cầu</h4>
              <div style="height: 300px; position: relative;">
                <canvas id="userActivityChart"></canvas>
              </div>
@@ -1722,15 +1866,25 @@
          }, 100);
        }
        
+       // Biến lưu trữ các chart instances
+       let chartInstances = {};
+       
        function createStatusChart() {
          const ctx = document.getElementById('statusChart');
          if (!ctx) return;
+         
+         // Destroy chart cũ nếu tồn tại
+         if (chartInstances.statusChart) {
+           chartInstances.statusChart.destroy();
+         }
          
          const pending = tickets.filter(t => t.status === 191920002).length;
          const approved = tickets.filter(t => t.status === 191920000).length;
          const rejected = tickets.filter(t => t.status === 191920001).length;
          
-         new Chart(ctx, {
+         const total = pending + approved + rejected;
+         
+         chartInstances.statusChart = new Chart(ctx, {
            type: 'doughnut',
            data: {
              labels: ['Chờ phê duyệt', 'Đã phê duyệt', 'Từ chối'],
@@ -1751,9 +1905,43 @@
                    padding: 20,
                    usePointStyle: true
                  }
+               },
+               tooltip: {
+                 enabled: false
                }
              }
-           }
+           },
+           plugins: [{
+             afterDraw: function(chart) {
+               const ctx = chart.ctx;
+               const data = chart.data;
+               const datasets = data.datasets[0];
+               
+               // Vẽ phần trăm ở giữa từng phần của chart
+                   chart.data.labels.forEach((label, index) => {
+                     const meta = chart.getDatasetMeta(0);
+                     const arc = meta.data[index];
+                     const value = datasets.data[index];
+                     const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                     
+                     // Chỉ hiển thị phần trăm nếu giá trị > 0
+                     if (value > 0) {
+                       // Tính toán vị trí giữa arc
+                       const angle = (arc.startAngle + arc.endAngle) / 2;
+                       const radius = (arc.innerRadius + arc.outerRadius) / 2;
+                       const x = arc.x + Math.cos(angle) * radius;
+                       const y = arc.y + Math.sin(angle) * radius;
+                       
+                       // Vẽ phần trăm
+                       ctx.fillStyle = '#ffffff';
+                       ctx.font = 'bold 14px Arial';
+                       ctx.textAlign = 'center';
+                       ctx.textBaseline = 'middle';
+                       ctx.fillText(`${percentage}%`, x, y);
+                     }
+                   });
+             }
+           }]
          });
        }
        
@@ -1761,15 +1949,20 @@
          const ctx = document.getElementById('timeChart');
          if (!ctx) return;
          
-         // Tạo dữ liệu cho 7 ngày gần nhất
-         const last7Days = [];
+         // Destroy chart cũ nếu tồn tại
+         if (chartInstances.timeChart) {
+           chartInstances.timeChart.destroy();
+         }
+         
+         // Tạo dữ liệu cho 30 ngày gần nhất
+         const last30Days = [];
          const ticketCounts = [];
          
-         for (let i = 6; i >= 0; i--) {
+         for (let i = 29; i >= 0; i--) {
            const date = new Date();
            date.setDate(date.getDate() - i);
-           const dateStr = date.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' });
-           last7Days.push(dateStr);
+           const dateStr = date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' });
+           last30Days.push(dateStr);
            
            const count = tickets.filter(ticket => {
              const ticketDate = new Date(ticket.createdAt);
@@ -1779,10 +1972,10 @@
            ticketCounts.push(count);
          }
          
-         new Chart(ctx, {
+         chartInstances.timeChart = new Chart(ctx, {
            type: 'line',
            data: {
-             labels: last7Days,
+             labels: last30Days,
              datasets: [{
                label: 'Tickets mới',
                data: ticketCounts,
@@ -1807,22 +2000,516 @@
                  ticks: {
                    stepSize: 1
                  }
+               },
+               x: {
+                 ticks: {
+                   maxTicksLimit: 10,
+                   maxRotation: 45
+                 }
                }
              }
            }
          });
        }
        
+       function createAdminCategoryChart() {
+         const ctx = document.getElementById('adminCategoryChart');
+         if (!ctx) return;
+         
+         // Destroy chart cũ nếu tồn tại
+         if (chartInstances.adminCategoryChart) {
+           chartInstances.adminCategoryChart.destroy();
+         }
+         
+         // Đếm số lượng theo từng category cho toàn hệ thống
+         const categoryCount = {};
+         const categoryColors = {
+           283640007: '#3b82f6', // Điều chỉnh định lượng
+           283640004: '#ef4444', // Hủy phiếu nhập kho
+           283640008: '#f59e0b', // Hủy phiếu xuất kho
+           283640005: '#10b981', // Điều chỉnh phiếu nhập kho
+           283640009: '#8b5cf6', // Điều chỉnh phiếu xuất kho
+           191920000: '#06b6d4', // Điều chỉnh giá SOD
+           283640002: '#84cc16', // Điều chỉnh giá BOD
+           191920001: '#f97316', // VAT SOD
+           283640001: '#ec4899', // VAT SO
+           283640003: '#6366f1', // VAT BOD
+           283640006: '#14b8a6'  // VAT BO
+         };
+         
+         tickets.forEach(ticket => {
+           const category = ticket.category;
+           if (categoryCount[category]) {
+             categoryCount[category]++;
+           } else {
+             categoryCount[category] = 1;
+           }
+         });
+         
+         // Sắp xếp theo số lượng giảm dần và lấy top 8
+         const sortedCategories = Object.entries(categoryCount)
+           .sort(([,a], [,b]) => b - a)
+           .slice(0, 8);
+         
+         const labels = [];
+         const data = [];
+         const backgroundColor = [];
+         
+         sortedCategories.forEach(([category, count]) => {
+           labels.push(getCategoryText(parseInt(category)));
+           data.push(count);
+           backgroundColor.push(categoryColors[category] || '#6b7280');
+         });
+         
+         chartInstances.adminCategoryChart = new Chart(ctx, {
+           type: 'bar',
+           data: {
+             labels: labels,
+             datasets: [{
+               label: 'Số lượng tickets',
+               data: data,
+               backgroundColor: backgroundColor,
+               borderRadius: 8,
+               borderSkipped: false
+             }]
+           },
+           options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+               legend: {
+                 display: false
+               }
+             },
+             scales: {
+               y: {
+                 beginAtZero: true,
+                 ticks: {
+                   stepSize: 1
+                 }
+               },
+               x: {
+                 ticks: {
+                   maxRotation: 45,
+                   minRotation: 0
+                 }
+               }
+             }
+           }
+         });
+       }
+       
+       // Filtered chart functions
+       function createFilteredAdminCharts(filteredTickets, filterType) {
+         // Update status chart với dữ liệu đã filter
+         const ctx1 = document.getElementById('statusChart');
+         if (ctx1 && chartInstances.statusChart) {
+           chartInstances.statusChart.destroy();
+           
+           const pending = filteredTickets.filter(t => t.status === 191920002).length;
+           const approved = filteredTickets.filter(t => t.status === 191920000).length;
+           const rejected = filteredTickets.filter(t => t.status === 191920001).length;
+           const total = pending + approved + rejected;
+           
+           chartInstances.statusChart = new Chart(ctx1, {
+             type: 'doughnut',
+             data: {
+               labels: ['Chờ phê duyệt', 'Đã phê duyệt', 'Từ chối'],
+               datasets: [{
+                 data: [pending, approved, rejected],
+                 backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
+                 borderWidth: 2,
+                 borderColor: '#ffffff'
+               }]
+             },
+             options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: {
+                 legend: {
+                   position: 'bottom',
+                   labels: {
+                     padding: 20,
+                     usePointStyle: true
+                   }
+                 },
+                 title: {
+                   display: true,
+                   text: `Filtered: ${getFilterLabel(filterType)}`,
+                   color: '#3b82f6'
+                 },
+                 tooltip: {
+                   enabled: false
+                 }
+               }
+             },
+             plugins: [{
+               afterDraw: function(chart) {
+                 const ctx = chart.ctx;
+                 const data = chart.data;
+                 const datasets = data.datasets[0];
+                 
+                 // Vẽ phần trăm ở giữa từng phần của chart
+                 chart.data.labels.forEach((label, index) => {
+                   const meta = chart.getDatasetMeta(0);
+                   const arc = meta.data[index];
+                   const value = datasets.data[index];
+                   const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                   
+                   // Chỉ hiển thị phần trăm nếu giá trị > 0
+                   if (value > 0) {
+                     // Tính toán vị trí giữa arc
+                     const angle = (arc.startAngle + arc.endAngle) / 2;
+                     const radius = (arc.innerRadius + arc.outerRadius) / 2;
+                     const x = arc.x + Math.cos(angle) * radius;
+                     const y = arc.y + Math.sin(angle) * radius;
+                     
+                     // Vẽ phần trăm
+                     ctx.fillStyle = '#ffffff';
+                     ctx.font = 'bold 14px Arial';
+                     ctx.textAlign = 'center';
+                     ctx.textBaseline = 'middle';
+                     ctx.fillText(`${percentage}%`, x, y);
+                   }
+                 });
+               }
+             }]
+           });
+         }
+         
+         // Update time chart với dữ liệu đã filter
+         const ctx2 = document.getElementById('timeChart');
+         if (ctx2 && chartInstances.timeChart) {
+           chartInstances.timeChart.destroy();
+           
+           const last30Days = [];
+            const ticketCounts = [];
+            
+            for (let i = 29; i >= 0; i--) {
+              const date = new Date();
+              date.setDate(date.getDate() - i);
+              const dateStr = date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' });
+              last30Days.push(dateStr);
+             
+             const count = filteredTickets.filter(ticket => {
+               const ticketDate = new Date(ticket.createdAt);
+               return ticketDate.toDateString() === date.toDateString();
+             }).length;
+             
+             ticketCounts.push(count);
+           }
+           
+           chartInstances.timeChart = new Chart(ctx2, {
+              type: 'line',
+              data: {
+                labels: last30Days,
+                datasets: [{
+                  label: 'Tickets mới',
+                  data: ticketCounts,
+                  borderColor: '#3b82f6',
+                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  borderWidth: 2,
+                  fill: true,
+                  tension: 0.4
+                }]
+              },
+             options: {
+                 responsive: true,
+                 maintainAspectRatio: false,
+                 plugins: {
+                   legend: { display: false },
+                   title: {
+                     display: true,
+                     text: `Filtered: ${getFilterLabel(filterType)}`,
+                     color: '#3b82f6'
+                   }
+                 },
+                 scales: {
+                   y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                   x: {
+                     ticks: {
+                       maxTicksLimit: 10,
+                       maxRotation: 45
+                     }
+                   }
+                 }
+               }
+           });
+         }
+         
+         // Update category chart với dữ liệu đã filter
+         const ctx3 = document.getElementById('adminCategoryChart');
+         if (ctx3 && chartInstances.adminCategoryChart) {
+           chartInstances.adminCategoryChart.destroy();
+           
+           const categoryCount = {};
+           const categoryColors = {
+             283640007: '#3b82f6', 283640004: '#ef4444', 283640008: '#f59e0b',
+             283640005: '#10b981', 283640009: '#8b5cf6', 191920000: '#06b6d4',
+             283640002: '#84cc16', 191920001: '#f97316', 283640001: '#ec4899',
+             283640003: '#6366f1', 283640006: '#14b8a6'
+           };
+           
+           filteredTickets.forEach(ticket => {
+             const category = ticket.category;
+             categoryCount[category] = (categoryCount[category] || 0) + 1;
+           });
+           
+           const sortedCategories = Object.entries(categoryCount)
+             .sort(([,a], [,b]) => b - a)
+             .slice(0, 8);
+           
+           const labels = sortedCategories.map(([category]) => getCategoryText(parseInt(category)));
+           const data = sortedCategories.map(([,count]) => count);
+           const backgroundColor = sortedCategories.map(([category]) => categoryColors[category] || '#6b7280');
+           
+           chartInstances.adminCategoryChart = new Chart(ctx3, {
+             type: 'bar',
+             data: {
+               labels: labels,
+               datasets: [{
+                 label: 'Số lượng tickets',
+                 data: data,
+                 backgroundColor: backgroundColor,
+                 borderRadius: 8,
+                 borderSkipped: false
+               }]
+             },
+             options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: {
+                 legend: { display: false },
+                 title: {
+                   display: true,
+                   text: `Filtered: ${getFilterLabel(filterType)}`,
+                   color: '#3b82f6'
+                 }
+               },
+               scales: {
+                 y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                 x: { ticks: { maxRotation: 45, minRotation: 0 } }
+               }
+             }
+           });
+         }
+       }
+       
+       function createFilteredUserCharts(filteredTickets, filterType, userEmail) {
+         // Filter tickets của user
+         const userFilteredTickets = filteredTickets.filter(t => t.createdBy === userEmail);
+         
+         // Update user status chart
+         const ctx1 = document.getElementById('userStatusChart');
+         if (ctx1 && chartInstances.userStatusChart) {
+           chartInstances.userStatusChart.destroy();
+           
+           const pending = userFilteredTickets.filter(t => t.status === 191920002).length;
+           const approved = userFilteredTickets.filter(t => t.status === 191920000).length;
+           const rejected = userFilteredTickets.filter(t => t.status === 191920001).length;
+           
+           chartInstances.userStatusChart = new Chart(ctx1, {
+             type: 'bar',
+             data: {
+               labels: ['Chờ duyệt', 'Đã duyệt', 'Từ chối'],
+               datasets: [{
+                 label: 'Số lượng',
+                 data: [pending, approved, rejected],
+                 backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
+                 borderRadius: 8,
+                 borderSkipped: false
+               }]
+             },
+             options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: {
+                 legend: { display: false },
+                 title: {
+                   display: true,
+                   text: `Filtered: ${getFilterLabel(filterType)}`,
+                   color: '#3b82f6'
+                 }
+               },
+               scales: {
+                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
+               }
+             }
+           });
+         }
+         
+         // Update user activity chart (category analysis)
+         const ctx2 = document.getElementById('userActivityChart');
+         if (ctx2 && chartInstances.userActivityChart) {
+           chartInstances.userActivityChart.destroy();
+           
+           const categoryCount = {};
+           const categoryColors = {
+             283640007: '#3b82f6', 283640004: '#ef4444', 283640008: '#f59e0b',
+             283640005: '#10b981', 283640009: '#8b5cf6', 191920000: '#06b6d4',
+             283640002: '#84cc16', 191920001: '#f97316', 283640001: '#ec4899',
+             283640003: '#6366f1', 283640006: '#14b8a6'
+           };
+           
+           userFilteredTickets.forEach(ticket => {
+             const category = ticket.category;
+             categoryCount[category] = (categoryCount[category] || 0) + 1;
+           });
+           
+           const labels = Object.keys(categoryCount).map(cat => getCategoryText(parseInt(cat)));
+           const data = Object.values(categoryCount);
+           const backgroundColor = Object.keys(categoryCount).map(cat => categoryColors[cat] || '#6b7280');
+           
+           chartInstances.userActivityChart = new Chart(ctx2, {
+             type: 'doughnut',
+             data: {
+               labels: labels,
+               datasets: [{
+                 data: data,
+                 backgroundColor: backgroundColor,
+                 borderWidth: 2,
+                 borderColor: '#ffffff'
+               }]
+             },
+             options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               plugins: {
+                 legend: {
+                   position: 'bottom',
+                   labels: { padding: 20, usePointStyle: true }
+                 },
+                 title: {
+                   display: true,
+                   text: `Filtered: ${getFilterLabel(filterType)}`,
+                   color: '#3b82f6'
+                 }
+               }
+             }
+           });
+         }
+       }
+       
+       function loadFilteredRecentActivities(filteredTickets) {
+         const recentActivities = document.getElementById("recentActivities");
+         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+         const isAdmin = currentUser?.idU === "admin";
+         const userEmail = currentUser?.idU;
+         
+         // Lọc tickets theo quyền và filter
+         let relevantTickets = [];
+         if (isAdmin) {
+           relevantTickets = filteredTickets;
+         } else {
+           relevantTickets = filteredTickets.filter(ticket => 
+             ticket.createdBy === userEmail || 
+             (ticket.userTickets && ticket.userTickets.includes(userEmail))
+           );
+         }
+         
+         // Tạo activities từ filtered tickets
+         const activities = [];
+         relevantTickets.forEach((ticket) => {
+           let activity;
+           if (ticket.status === 191920000) {
+             activity = {
+               type: "approved",
+               ticket: ticket,
+               time: new Date(ticket.createdAt).getTime() + 3600000,
+               description: isAdmin ? 
+                 `Ticket ${ticket.name} đã được phê duyệt` :
+                 ticket.createdBy === userEmail ?
+                   `Ticket của bạn đã được phê duyệt: ${ticket.title}` :
+                   `Đã phê duyệt ticket: ${ticket.title}`,
+             };
+           } else if (ticket.status === 191920001) {
+             activity = {
+               type: "rejected",
+               ticket: ticket,
+               time: new Date(ticket.createdAt).getTime() + 3600000,
+               description: isAdmin ? 
+                 `Ticket ${ticket.name} đã bị từ chối` :
+                 ticket.createdBy === userEmail ?
+                   `Ticket của bạn đã bị từ chối: ${ticket.title}` :
+                   `Đã từ chối ticket: ${ticket.title}`,
+             };
+           } else {
+             activity = {
+               type: "created",
+               ticket: ticket,
+               time: new Date(ticket.createdAt).getTime(),
+               description: isAdmin ? 
+                 `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${ticket.title}` :
+                 ticket.createdBy === userEmail ? 
+                   `Bạn đã tạo ticket: ${ticket.title}` :
+                   `Ticket mới cần phê duyệt: ${ticket.title}`,
+             };
+           }
+           activities.push(activity);
+         });
+         
+         activities.sort((a, b) => b.time - a.time);
+         const recentActivitiesList = activities.slice(0, 10);
+         
+         if (recentActivitiesList.length === 0) {
+           recentActivities.innerHTML = `
+             <div class="text-center py-8 text-gray-500">
+               <i class="fas fa-filter text-3xl mb-2 block"></i>
+               <p>Không có hoạt động nào với bộ lọc này</p>
+             </div>
+           `;
+           return;
+         }
+         
+         recentActivities.innerHTML = recentActivitiesList
+           .map(activity => `
+             <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="viewTicket('${activity.ticket.id}')">
+               <div class="flex-shrink-0">
+                 <div class="w-8 h-8 rounded-full flex items-center justify-center ${getActivityIconClass(activity.type)}">
+                   <i class="fas ${getActivityIcon(activity.type)} text-white text-xs"></i>
+                 </div>
+               </div>
+               <div class="flex-1 min-w-0">
+                 <div class="flex items-center justify-between">
+                   <p class="text-sm text-gray-900 truncate font-medium">${activity.description}</p>
+                   <span class="text-xs text-gray-500 ml-2 flex-shrink-0">${formatTimeAgo(activity.time)}</span>
+                 </div>
+                 <div class="flex items-center space-x-2 mt-1">
+                   <span class="text-xs text-gray-500">${getCategoryText(activity.ticket.category)}</span>
+                   <span class="text-xs text-gray-400">•</span>
+                   <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${getStatusClass(activity.ticket.status)}">
+                     ${getStatusText(activity.ticket.status)}
+                   </span>
+                 </div>
+               </div>
+             </div>
+           `).join("");
+       }
+       
+       function getFilterLabel(filterType) {
+         switch (filterType) {
+           case 'pending': return 'Chờ phê duyệt';
+           case 'approved': return 'Đã phê duyệt';
+           case 'rejected': return 'Từ chối';
+           default: return 'Tất cả';
+         }
+       }
+       
        function createUserStatusChart(userEmail) {
          const ctx = document.getElementById('userStatusChart');
          if (!ctx) return;
+         
+         // Destroy chart cũ nếu tồn tại
+         if (chartInstances.userStatusChart) {
+           chartInstances.userStatusChart.destroy();
+         }
          
          const userTickets = tickets.filter(t => t.createdBy === userEmail);
          const pending = userTickets.filter(t => t.status === 191920002).length;
          const approved = userTickets.filter(t => t.status === 191920000).length;
          const rejected = userTickets.filter(t => t.status === 191920001).length;
          
-         new Chart(ctx, {
+         chartInstances.userStatusChart = new Chart(ctx, {
            type: 'bar',
            data: {
              labels: ['Chờ duyệt', 'Đã duyệt', 'Từ chối'],
@@ -1858,19 +2545,57 @@
          const ctx = document.getElementById('userActivityChart');
          if (!ctx) return;
          
-         const needsApproval = tickets.filter(t => 
-           t.status === 191920002 && t.userTickets && t.userTickets.includes(userEmail)
-         ).length;
+         // Destroy chart cũ nếu tồn tại
+         if (chartInstances.userActivityChart) {
+           chartInstances.userActivityChart.destroy();
+         }
          
-         const myTickets = tickets.filter(t => t.createdBy === userEmail).length;
+         // Lấy tickets của user
+         const userTickets = tickets.filter(t => t.createdBy === userEmail);
          
-         new Chart(ctx, {
+         // Đếm số lượng theo từng category
+         const categoryCount = {};
+         const categoryColors = {
+           283640007: '#3b82f6', // Điều chỉnh định lượng
+           283640004: '#ef4444', // Hủy phiếu nhập kho
+           283640008: '#f59e0b', // Hủy phiếu xuất kho
+           283640005: '#10b981', // Điều chỉnh phiếu nhập kho
+           283640009: '#8b5cf6', // Điều chỉnh phiếu xuất kho
+           191920000: '#06b6d4', // Điều chỉnh giá SOD
+           283640002: '#84cc16', // Điều chỉnh giá BOD
+           191920001: '#f97316', // VAT SOD
+           283640001: '#ec4899', // VAT SO
+           283640003: '#6366f1', // VAT BOD
+           283640006: '#14b8a6'  // VAT BO
+         };
+         
+         userTickets.forEach(ticket => {
+           const category = ticket.category;
+           if (categoryCount[category]) {
+             categoryCount[category]++;
+           } else {
+             categoryCount[category] = 1;
+           }
+         });
+         
+         // Chuyển đổi thành arrays cho Chart.js
+         const labels = [];
+         const data = [];
+         const backgroundColor = [];
+         
+         Object.entries(categoryCount).forEach(([category, count]) => {
+           labels.push(getCategoryText(parseInt(category)));
+           data.push(count);
+           backgroundColor.push(categoryColors[category] || '#6b7280');
+         });
+         
+         chartInstances.userActivityChart = new Chart(ctx, {
            type: 'doughnut',
            data: {
-             labels: ['Tickets của tôi', 'Cần phê duyệt'],
+             labels: labels,
              datasets: [{
-               data: [myTickets, needsApproval],
-               backgroundColor: ['#3b82f6', '#f59e0b'],
+               data: data,
+               backgroundColor: backgroundColor,
                borderWidth: 2,
                borderColor: '#ffffff'
              }]
@@ -1929,21 +2654,12 @@
         const activities = [];
 
         relevantTickets.forEach((ticket) => {
-          // Hoạt động tạo ticket
-          activities.push({
-            type: "created",
-            ticket: ticket,
-            time: new Date(ticket.createdAt).getTime(),
-            description: isAdmin ? 
-              `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${ticket.title}` :
-              ticket.createdBy === userEmail ? 
-                `Bạn đã tạo ticket: ${ticket.title}` :
-                `Ticket mới cần phê duyệt: ${ticket.title}`,
-          });
-
-          // Hoạt động phê duyệt/từ chối
+          // Chỉ hiển thị activity quan trọng nhất cho mỗi ticket
+          let activity;
+          
           if (ticket.status === 191920000) {
-            activities.push({
+            // Ticket đã được phê duyệt - ưu tiên hiển thị trạng thái này
+            activity = {
               type: "approved",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
@@ -1952,9 +2668,10 @@
                 ticket.createdBy === userEmail ?
                   `Ticket của bạn đã được phê duyệt: ${ticket.title}` :
                   `Đã phê duyệt ticket: ${ticket.title}`,
-            });
+            };
           } else if (ticket.status === 191920001) {
-            activities.push({
+            // Ticket bị từ chối - ưu tiên hiển thị trạng thái này
+            activity = {
               type: "rejected",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
@@ -1963,8 +2680,22 @@
                 ticket.createdBy === userEmail ?
                   `Ticket của bạn đã bị từ chối: ${ticket.title}` :
                   `Đã từ chối ticket: ${ticket.title}`,
-            });
+            };
+          } else {
+            // Ticket chưa được xử lý - hiển thị hoạt động tạo
+            activity = {
+              type: "created",
+              ticket: ticket,
+              time: new Date(ticket.createdAt).getTime(),
+              description: isAdmin ? 
+                `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${ticket.title}` :
+                ticket.createdBy === userEmail ? 
+                  `Bạn đã tạo ticket: ${ticket.title}` :
+                  `Ticket mới cần phê duyệt: ${ticket.title}`,
+            };
           }
+          
+          activities.push(activity);
         });
 
         // Sắp xếp theo thời gian (mới nhất trước)
@@ -2555,10 +3286,12 @@
           case 283640008: // hủy phiếu xuất kho
             Object.assign(newTicket, {
               crdfd_maonhangchitiet:
-                document.getElementById("IDPhieuHuy").value +
+                document.getElementById("IDMaDonHang").value +
                 "|" +
-                document.getElementById("numberPhieuHuy").value,
+                document.getElementById("IDPhieuHuy").value,
               crdfd_nguoiduyet: "Hệ thống", //approversText,
+              cr1bb_giatriexuat:
+                document.getElementById("numberPhieuHuy").value
             });
             break;
 
@@ -2926,18 +3659,16 @@
       }
 
       // Notification functions
+      // Notification system with auto-refresh
+      let notificationInterval = null;
+      
       function updateNotifications() {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const notificationBadge = document.getElementById("notificationBadge");
         const notificationsList = document.getElementById("notificationsList");
         
-        console.log("🔔 updateNotifications called");
-        console.log("Current user:", currentUser);
-        console.log("Total tickets:", tickets.length);
-        
         // Admin không hiển thị thông báo
         if (!currentUser || currentUser.idU === "admin") {
-          console.log("❌ Admin or no user - hiding notifications");
           if (notificationBadge) {
             notificationBadge.classList.add("hidden");
           }
@@ -2953,44 +3684,12 @@
         }
         
         const userEmail = currentUser.idU;
-        console.log("👤 User email:", userEmail);
-        
-        // Debug: Log tất cả tickets để kiểm tra cấu trúc dữ liệu
-        console.log("📋 All tickets:", tickets);
-        
-        // Tìm tickets chờ phê duyệt mà user này là người duyệt
-          const pendingApprovals = tickets.filter(ticket => {
-            console.log(`🎫 Checking ticket ${ticket.id}:`, {
-              status: ticket.status,
-              statusType: typeof ticket.status,
-              userTickets: ticket.userTickets,
-              userTicketsType: typeof ticket.userTickets,
-              userEmail: userEmail,
-              includes: ticket.userTickets && ticket.userTickets.includes(userEmail),
-              fullTicket: ticket
-            });
-            
-            if (ticket.status !== 191920002) return false; // Chỉ lấy tickets chờ phê duyệt
-            
-            // Kiểm tra trong trường userTickets (đã được map từ crdfd_nguoiduyet)
-            if (ticket.userTickets && 
-                ticket.userTickets !== 'Chưa xác định' && 
-                ticket.userTickets !== 'Hệ thống' &&
-                ticket.userTickets.includes(userEmail)) {
-              return true;
-            }
-            
-            // Tạm thời hiển thị tất cả tickets chờ phê duyệt để test
-            console.log(`⚠️ Ticket ${ticket.id} chờ phê duyệt nhưng userTickets = '${ticket.userTickets}'`);
-            return true; // Tạm thời return true để test
-          });
-         
-         console.log("✅ Pending approvals found:", pendingApprovals.length, pendingApprovals);
+        const notifications = getNotificationsForUser(userEmail);
         
         // Cập nhật badge
         if (notificationBadge) {
-          if (pendingApprovals.length > 0) {
-            notificationBadge.textContent = pendingApprovals.length;
+          if (notifications.length > 0) {
+            notificationBadge.textContent = notifications.length;
             notificationBadge.classList.remove("hidden");
           } else {
             notificationBadge.classList.add("hidden");
@@ -2999,42 +3698,166 @@
         
         // Cập nhật dropdown
         if (notificationsList) {
-          if (pendingApprovals.length === 0) {
+          if (notifications.length === 0) {
             notificationsList.innerHTML = `
               <div class="p-4 text-center text-gray-500">
                 <i class="fas fa-check-circle text-2xl mb-2 block text-green-500"></i>
-                <p class="text-sm">Không có ticket nào cần phê duyệt</p>
+                <p class="text-sm">Không có thông báo mới</p>
               </div>
             `;
           } else {
-            notificationsList.innerHTML = pendingApprovals.map(ticket => `
-              <div class="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors" onclick="openApprovalModal('${ticket.id}')">
+            notificationsList.innerHTML = notifications.map(notification => `
+              <div class="p-3 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition-colors" onclick="handleNotificationClick('${notification.ticketId}', '${notification.type}')">
                 <div class="flex items-start space-x-3">
                   <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                      <i class="fas fa-clock text-yellow-600 text-xs"></i>
+                    <div class="w-8 h-8 ${getNotificationIconBg(notification.type)} rounded-full flex items-center justify-center">
+                      <i class="fas ${getNotificationIcon(notification.type)} text-white text-xs"></i>
                     </div>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-gray-900 truncate">
-                      ${ticket.title || ticket.name}
+                      ${notification.title}
                     </p>
                     <p class="text-xs text-gray-500 mt-1">
-                      ${getCategoryText(ticket.category)} • ${getUserNameByEmail(ticket.createdBy)}
+                      ${notification.message}
                     </p>
                     <p class="text-xs text-gray-400 mt-1">
-                      ${formatTimeAgo(new Date(ticket.createdAt).getTime())}
+                      ${formatTimeAgo(notification.time)}
                     </p>
                   </div>
                   <div class="flex-shrink-0">
-                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
-                      Chờ duyệt
+                    <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full ${getNotificationStatusClass(notification.type)}">
+                      ${getNotificationStatusText(notification.type)}
                     </span>
                   </div>
                 </div>
               </div>
             `).join('');
           }
+        }
+      }
+      
+      function getNotificationsForUser(userEmail) {
+        const notifications = [];
+        
+        tickets.forEach(ticket => {
+          // Thông báo cho người tạo ticket
+          if (ticket.createdBy === userEmail) {
+            if (ticket.status === 191920000) { // Đã phê duyệt
+              notifications.push({
+                id: `approved_${ticket.id}`,
+                ticketId: ticket.id,
+                type: 'approved',
+                title: 'Ticket đã được phê duyệt',
+                message: `${ticket.title || ticket.name}`,
+                time: new Date(ticket.createdAt).getTime() + 3600000 // +1h giả lập thời gian duyệt
+              });
+            } else if (ticket.status === 191920001) { // Bị từ chối
+              notifications.push({
+                id: `rejected_${ticket.id}`,
+                ticketId: ticket.id,
+                type: 'rejected',
+                title: 'Ticket đã bị từ chối',
+                message: `${ticket.title || ticket.name}`,
+                time: new Date(ticket.createdAt).getTime() + 3600000
+              });
+            }
+          }
+          
+          // Thông báo cho người duyệt
+          if (ticket.status === 191920002 && 
+              ticket.userTickets && 
+              ticket.userTickets !== 'Chưa xác định' && 
+              ticket.userTickets !== 'Hệ thống' &&
+              ticket.userTickets.includes(userEmail)) {
+            notifications.push({
+              id: `pending_${ticket.id}`,
+              ticketId: ticket.id,
+              type: 'pending_approval',
+              title: 'Yêu cầu cần phê duyệt',
+              message: `${ticket.title || ticket.name} - ${getUserNameByEmail(ticket.createdBy)}`,
+              time: new Date(ticket.createdAt).getTime()
+            });
+          }
+        });
+        
+        // Sắp xếp theo thời gian mới nhất
+        return notifications.sort((a, b) => b.time - a.time).slice(0, 10);
+      }
+      
+      function getNotificationIcon(type) {
+        switch (type) {
+          case 'approved': return 'fa-check';
+          case 'rejected': return 'fa-times';
+          case 'pending_approval': return 'fa-clock';
+          default: return 'fa-bell';
+        }
+      }
+      
+      function getNotificationIconBg(type) {
+        switch (type) {
+          case 'approved': return 'bg-green-500';
+          case 'rejected': return 'bg-red-500';
+          case 'pending_approval': return 'bg-yellow-500';
+          default: return 'bg-blue-500';
+        }
+      }
+      
+      function getNotificationStatusClass(type) {
+        switch (type) {
+          case 'approved': return 'bg-green-100 text-green-800';
+          case 'rejected': return 'bg-red-100 text-red-800';
+          case 'pending_approval': return 'bg-yellow-100 text-yellow-800';
+          default: return 'bg-blue-100 text-blue-800';
+        }
+      }
+      
+      function getNotificationStatusText(type) {
+        switch (type) {
+          case 'approved': return 'Đã duyệt';
+          case 'rejected': return 'Từ chối';
+          case 'pending_approval': return 'Chờ duyệt';
+          default: return 'Mới';
+        }
+      }
+      
+      function handleNotificationClick(ticketId, type) {
+        if (type === 'pending_approval') {
+          openApprovalModal(ticketId);
+        } else {
+          viewTicket(ticketId);
+        }
+        
+        // Đóng dropdown
+        const dropdown = document.getElementById('notificationsDropdown');
+        if (dropdown) {
+          dropdown.classList.add('hidden');
+        }
+      }
+      
+      function startNotificationPolling() {
+        // Dừng interval cũ nếu có
+        if (notificationInterval) {
+          clearInterval(notificationInterval);
+        }
+        
+        // Cập nhật ngay lập tức
+        updateNotifications();
+        
+        // Cập nhật mỗi phút
+        notificationInterval = setInterval(() => {
+          refreshData().then(() => {
+            updateNotifications();
+          }).catch(err => {
+            console.error('Error refreshing notifications:', err);
+          });
+        }, 60000); // 60 giây
+      }
+      
+      function stopNotificationPolling() {
+        if (notificationInterval) {
+          clearInterval(notificationInterval);
+          notificationInterval = null;
         }
       }
       
@@ -3393,6 +4216,10 @@
           case 283640004: // Hủy phiếu nhập kho
           case 283640008: // Hủy phiếu xuất kho
             container.innerHTML = `
+         <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Mã đơn hàng *</label>
+          <input type="text" id="IDMaDonHang" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã đơn hàng..." required>
+        </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">Mã cần hủy *</label>
           <input type="text" id="IDPhieuHuy" class="w-full px-4 py-2 border rounded-lg" placeholder="Nhập mã cần hủy..." required>
@@ -3802,6 +4629,7 @@
         tokenExpiry = null;
         
         // Reset notifications
+        stopNotificationPolling();
         const notificationBadge = document.getElementById("notificationBadge");
         if (notificationBadge) {
           notificationBadge.classList.add("hidden");
