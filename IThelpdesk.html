@@ -1346,6 +1346,9 @@
                 case "approvals":
                   loadApprovals();
                   break;
+                case "guides":
+                  loadGuides();
+                  break;
               }
             }
           });
@@ -3518,35 +3521,240 @@
 
       function loadGuides() {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
         const phongban = currentUser?.phongban || "Khác";
 
         const guidesByDepartment = {
           "Kho vận": `
-        <h3>Kho vận - Quy trình xử lý</h3>
-        <p>1. Kiểm tra phiếu xuất nhập kho.</p>
-        <p>2. Thực hiện điều chỉnh khi có yêu cầu.</p>
-        <p>3. Báo cáo cho trưởng bộ phận.</p>
-      `,
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-warehouse text-blue-600 mr-3"></i>
+                Kho vận - Hướng dẫn tạo Ticket
+              </h3>
+              
+              <div class="space-y-6">
+                <div class="border-l-4 border-yellow-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">1. Hủy phiếu xuất kho</h4>
+                  <p class="text-gray-600 mb-2">Khi cần hủy phiếu xuất kho đã tạo:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Hủy phiếu xuất kho"</li>
+                    <li>Nhập ID phiếu cần hủy</li>
+                    <li>Nhập số phiếu xuất kho</li>
+                    <li>Mô tả lý do hủy phiếu</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-red-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">2. Hủy phiếu nhập kho</h4>
+                  <p class="text-gray-600 mb-2">Khi cần hủy phiếu nhập kho đã tạo:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Hủy phiếu nhập kho"</li>
+                    <li>Nhập ID phiếu cần hủy</li>
+                    <li>Nhập số phiếu nhập kho</li>
+                    <li>Mô tả lý do hủy phiếu</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-green-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">3. Điều chỉnh định lượng</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh định lượng sản phẩm:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh định lượng"</li>
+                    <li>Nhập mã sản phẩm</li>
+                    <li>Chọn đơn vị tính</li>
+                    <li>Nhập giá trị định lượng mới</li>
+                    <li>Mô tả lý do điều chỉnh</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-purple-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">4. Điều chỉnh phiếu xuất/nhập kho</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh thông tin phiếu:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh phiếu xuất kho" hoặc "Điều chỉnh phiếu nhập kho"</li>
+                    <li>Nhập mã đơn hàng</li>
+                    <li>Nhập mã phiếu xuất/nhập</li>
+                    <li>Nhập số lượng đơn hàng mới</li>
+                    <li>Nhập số lượng kho mới</li>
+                    <li>Mô tả chi tiết điều chỉnh</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `,
+          
           "Phòng Cung ứng": `
-        <h3>Phòng Cung ứng - Hướng dẫn</h3>
-        <p>1. Kiểm tra giá BOD/VAT.</p>
-        <p>2. Điều chỉnh khi có yêu cầu từ Ban Giám đốc.</p>
-        <p>3. Lưu hồ sơ vào hệ thống.</p>
-      `,
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-truck text-green-600 mr-3"></i>
+                Phòng Cung ứng - Hướng dẫn tạo Ticket
+              </h3>
+              
+              <div class="space-y-6">
+                <div class="border-l-4 border-blue-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">1. Điều chỉnh giá BOD</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh giá trong đơn hàng mua (BOD):</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh giá BOD"</li>
+                    <li>Nhập mã đơn hàng BOD</li>
+                    <li>Nhập giá trị điều chỉnh mới</li>
+                    <li>Mô tả lý do thay đổi giá</li>
+                    <li>Đính kèm tài liệu liên quan (nếu có)</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-orange-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">2. Điều chỉnh VAT BOD</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh VAT cho đơn hàng mua:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh VAT BOD"</li>
+                    <li>Nhập mã đơn hàng BOD</li>
+                    <li>Chọn tùy chọn VAT (Có VAT/Không VAT)</li>
+                    <li>Mô tả lý do thay đổi VAT</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-teal-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">3. Điều chỉnh VAT BO</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh VAT cho đơn hàng BO:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh VAT BO"</li>
+                    <li>Nhập mã đơn hàng BO</li>
+                    <li>Chọn tùy chọn VAT mới</li>
+                    <li>Giải thích lý do điều chỉnh</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `,
+          
+          "Phòng Phát triển Kinh doanh": `
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-chart-line text-purple-600 mr-3"></i>
+                Phòng Phát triển Kinh doanh - Hướng dẫn tạo Ticket
+              </h3>
+              
+              <div class="space-y-6">
+                <div class="border-l-4 border-indigo-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">1. Điều chỉnh giá SOD</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh giá trong đơn hàng bán (SOD):</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh giá SOD"</li>
+                    <li>Nhập mã đơn hàng SOD</li>
+                    <li>Nhập giá trị điều chỉnh mới</li>
+                    <li>Mô tả lý do thay đổi giá bán</li>
+                    <li>Cung cấp thông tin khách hàng liên quan</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-pink-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">2. Điều chỉnh VAT SOD</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh VAT cho đơn hàng bán:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh VAT SOD"</li>
+                    <li>Nhập mã đơn hàng SOD</li>
+                    <li>Chọn tùy chọn VAT (Có VAT/Không VAT)</li>
+                    <li>Mô tả lý do thay đổi VAT</li>
+                  </ul>
+                </div>
+                
+                <div class="border-l-4 border-cyan-400 pl-4">
+                  <h4 class="font-semibold text-gray-800 mb-2">3. Điều chỉnh VAT SO</h4>
+                  <p class="text-gray-600 mb-2">Khi cần điều chỉnh VAT cho đơn hàng SO:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                    <li>Chọn loại: "Điều chỉnh VAT SO"</li>
+                    <li>Nhập mã đơn hàng SO</li>
+                    <li>Chọn tùy chọn VAT mới</li>
+                    <li>Giải thích lý do điều chỉnh</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `,
+          
           "Hệ thống": `
-        <h3>Tài liệu Hệ thống</h3>
-        <p>Đây là hướng dẫn dành riêng cho Admin hoặc phòng Hệ thống.</p>
-        <ul>
-          <li>Quản lý user</li>
-          <li>Phân quyền</li>
-          <li>Giám sát quy trình</li>
-        </ul>
-      `,
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-cogs text-red-600 mr-3"></i>
+                Hệ thống - Tài liệu toàn bộ quy trình
+              </h3>
+              
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <h4 class="font-semibold text-gray-800 border-b pb-2">Kho vận</h4>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex items-center p-2 bg-yellow-50 rounded">
+                      <i class="fas fa-box text-yellow-600 mr-2"></i>
+                      <span>Hủy phiếu xuất kho</span>
+                    </div>
+                    <div class="flex items-center p-2 bg-red-50 rounded">
+                      <i class="fas fa-inbox text-red-600 mr-2"></i>
+                      <span>Hủy phiếu nhập kho</span>
+                    </div>
+                    <div class="flex items-center p-2 bg-green-50 rounded">
+                      <i class="fas fa-balance-scale text-green-600 mr-2"></i>
+                      <span>Điều chỉnh định lượng</span>
+                    </div>
+                    <div class="flex items-center p-2 bg-purple-50 rounded">
+                      <i class="fas fa-edit text-purple-600 mr-2"></i>
+                      <span>Điều chỉnh phiếu xuất/nhập</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="space-y-4">
+                  <h4 class="font-semibold text-gray-800 border-b pb-2">Cung ứng & Kinh doanh</h4>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex items-center p-2 bg-blue-50 rounded">
+                      <i class="fas fa-dollar-sign text-blue-600 mr-2"></i>
+                      <span>Điều chỉnh giá BOD/SOD</span>
+                    </div>
+                    <div class="flex items-center p-2 bg-orange-50 rounded">
+                      <i class="fas fa-percentage text-orange-600 mr-2"></i>
+                      <span>Điều chỉnh VAT BOD/SOD/BO/SO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">Quy trình chung:</h4>
+                <ol class="list-decimal list-inside text-sm text-gray-600 space-y-1">
+                  <li>Chọn phòng ban phù hợp</li>
+                  <li>Chọn loại yêu cầu tương ứng</li>
+                  <li>Điền đầy đủ thông tin bắt buộc</li>
+                  <li>Mô tả chi tiết lý do yêu cầu</li>
+                  <li>Gửi ticket và chờ phê duyệt</li>
+                </ol>
+              </div>
+            </div>
+          `
         };
 
-        document.getElementById("guideContent").innerHTML =
-          guidesByDepartment[phongban] ||
-          `<p>Hiện chưa có tài liệu cho phòng ban <strong>${phongban}</strong>.</p>`;
+        // Nếu là admin, hiển thị tất cả hướng dẫn
+        if (isAdmin) {
+          let allGuides = "";
+          Object.keys(guidesByDepartment).forEach(dept => {
+            if (dept !== "Hệ thống") {
+              allGuides += guidesByDepartment[dept];
+            }
+          });
+          allGuides += guidesByDepartment["Hệ thống"];
+          document.getElementById("guideContent").innerHTML = allGuides;
+        } else {
+          // User thường chỉ thấy hướng dẫn của phòng ban mình
+          document.getElementById("guideContent").innerHTML =
+            guidesByDepartment[phongban] ||
+            `<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div class="text-center py-8">
+                <i class="fas fa-info-circle text-gray-400 text-4xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Chưa có hướng dẫn</h3>
+                <p class="text-gray-600">Hiện chưa có tài liệu hướng dẫn cho phòng ban <strong>${phongban}</strong>.</p>
+                <p class="text-sm text-gray-500 mt-2">Vui lòng liên hệ quản trị viên để được hỗ trợ.</p>
+              </div>
+            </div>`;
+        }
       }
 
       // Load khi vào page
