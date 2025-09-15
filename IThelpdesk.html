@@ -1355,9 +1355,9 @@
           //{ value: "283640006", text: "Điều chỉnh VAT BO" },
         ],
         "Phòng Phát triển Kinh doanh": [
-          { value: "191920000", text: "Điều chỉnh giá SOD" },
-          { value: "191920001", text: "Điều chỉnh VAT SOD" },
-          //{ value: "283640001", text: "Điều chỉnh VAT SO" },
+          { value: "191920000", text: "Điều chỉnh giá Sale order detail" },
+          { value: "191920001", text: "Điều chỉnh VAT Sale order detail" },
+          { value: "283640001", text: "Điều chỉnh VAT Sale order" },
         ],
         "Phòng Nhân sự": [],
         "Phòng Tài chính & Kế toán": [],
@@ -4311,8 +4311,26 @@
 
           // ==== Điều chỉnh VAT ====
           case 191920001: // VAT SOD
-          case 283640001: // VAT SO
           case 283640003: // VAT BOD
+            container.innerHTML = `
+        <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6">
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã đơn hàng</label>
+            <input type="text" id="maDonHangSodBod" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập mã đơn hàng..." required>
+          </div>
+          <div>
+            <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">VAT</label>
+            <select id="vatOption" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" required>
+              <option value="0%">0%</option>
+              <option value="5%">5%</option>
+              <option value="8%">8%</option>
+              <option value="10%">10%</option>
+            </select>
+          </div>
+        </div>
+      `;
+            break;
+          case 283640001: // VAT SO
           case 283640006: // VAT BO
             container.innerHTML = `
         <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6">
@@ -4955,6 +4973,10 @@
                     <li>Nhập mã đơn hàng BO</li>
                     <li>Chọn tùy chọn VAT mới</li>
                     <li>Giải thích lý do điều chỉnh</li>
+                    <p class="text-red-600 font-semibold mt-3">
+                      ⚠️ Lưu ý: Với các giá trị VAT 0%, 5%, 8%, 10% khi chọn.
+                      Hệ thống sẽ tự động áp dụng VAT này cho toàn đơn Sale order detail liên quan.
+                    </p>
                   </ul>
                 </div>
               </div>
@@ -5009,9 +5031,17 @@
                   <p class="text-gray-600 mb-2">Khi cần điều chỉnh VAT cho đơn hàng SO:</p>
                   <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
                     <li>Chọn loại: "Điều chỉnh VAT SO"</li>
+                    <li>
+                        Chọn người duyệt 
+                        <span class="text-red-600 font-semibold ml-1">(yêu cầu: ít nhất 1 user)</span>
+                    </li>
                     <li>Nhập mã đơn hàng SO</li>
                     <li>Chọn tùy chọn VAT mới</li>
                     <li>Giải thích lý do điều chỉnh</li>
+                    <p class="text-red-600 font-semibold mt-3">
+                      ⚠️ Lưu ý: Với các giá trị VAT 0%, 5%, 8%, 10% khi chọn.
+                      Hệ thống sẽ tự động áp dụng VAT này cho toàn đơn Sale order detail liên quan.
+                    </p>
                   </ul>
                 </div>
               </div>
