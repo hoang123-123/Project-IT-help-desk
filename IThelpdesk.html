@@ -396,7 +396,8 @@
 
       /* Input focus glow effect */
       .input-glow:focus {
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.1);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1),
+          0 0 20px rgba(59, 130, 246, 0.1);
       }
 
       /* Button hover glow */
@@ -487,8 +488,6 @@
           </div>
 
           <div class="flex items-center space-x-2 lg:space-x-4">
-
-
             <!-- User Menu -->
             <div class="relative">
               <button
@@ -542,12 +541,18 @@
         <!-- Dashboard Section -->
         <div id="dashboard" class="page-content">
           <!-- Stats Cards -->
-          <div id="dashboardStats" class="responsive-grid responsive-grid-sm-2 responsive-grid-lg-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
+          <div
+            id="dashboardStats"
+            class="responsive-grid responsive-grid-sm-2 responsive-grid-lg-4 gap-3 lg:gap-6 mb-6 lg:mb-8"
+          >
             <!-- Stats sẽ được render động bằng JavaScript -->
           </div>
 
           <!-- Charts Section -->
-          <div id="chartsSection" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 lg:mb-8">
+          <div
+            id="chartsSection"
+            class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 lg:mb-8"
+          >
             <!-- Biểu đồ sẽ được render ở đây -->
           </div>
 
@@ -561,161 +566,195 @@
                 <button
                   id="showAllActivities"
                   class="text-blue-600 hover:text-blue-700 text-xs lg:text-sm font-medium cursor-pointer"
-                  >Xem tất cả</button
                 >
+                  Xem tất cả
+                </button>
               </div>
             </div>
             <div class="p-4 lg:p-6">
-              <div id="recentActivities" class="space-y-3 lg:space-y-4 max-h-96 overflow-y-auto">
+              <div
+                id="recentActivities"
+                class="space-y-3 lg:space-y-4 max-h-96 overflow-y-auto"
+              >
                 <!-- Recent activities will be populated here -->
               </div>
             </div>
           </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
         <!-- Tickets Section -->
-<div id="tickets" class="page-content hidden">
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
-    
-    <!-- Header -->
-    <div class="p-4 lg:p-6 border-b border-gray-200">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0">
-        <!-- Tiêu đề cho mobile -->
-        <div class="sm:hidden">
-          <h3 class="text-base lg:text-lg font-semibold text-gray-800">
-            Quản lý Tickets
-          </h3>
-          <div id="searchResultsMobile" class="text-sm text-gray-600 mt-1 hidden">
-            <!-- Kết quả tìm kiếm sẽ hiển thị ở đây trên mobile -->
-          </div>
-        </div>
-        
-        <!-- Tiêu đề cho desktop -->
-        <div class="hidden sm:block">
-          <h3 class="text-lg lg:text-xl font-semibold text-gray-800">
-            Quản lý Tickets
-          </h3>
-        </div>
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
-          
-          <!-- Ô tìm kiếm -->
-          <div class="relative flex-1 sm:flex-none">
-            <input
-              type="text"
-              id="searchTickets"
-              placeholder="Tìm kiếm tickets..."
-              class="w-full sm:w-48 lg:w-64 pl-8 lg:pl-10 pr-8 lg:pr-10 py-2 text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <i class="fas fa-search absolute left-2.5 lg:left-3 top-2.5 lg:top-3 text-gray-400 text-sm"></i>
-            <button
-              id="clearSearch"
-              class="absolute right-2.5 lg:right-3 top-2.5 lg:top-3 text-gray-400 hover:text-gray-600 text-sm hidden"
-              title="Xóa tìm kiếm"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-
-          <!-- Bộ lọc trạng thái -->
-          <select
-            id="statusFilter"
-            class="w-full sm:w-auto px-3 lg:px-4 py-2 text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        <div id="tickets" class="page-content hidden">
+          <div
+            class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]"
           >
-            <option value="">Tất cả trạng thái</option>
-            <option value="pending">Chờ phê duyệt</option>
-            <option value="approved">Đã phê duyệt</option>
-            <option value="in-progress">Đang xử lý</option>
-            <option value="completed">Hoàn thành</option>
-            <option value="rejected">Từ chối</option>
-          </select>
+            <!-- Header -->
+            <div class="p-4 lg:p-6 border-b border-gray-200">
+              <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-3 sm:space-y-0"
+              >
+                <!-- Tiêu đề cho mobile -->
+                <div class="sm:hidden">
+                  <h3 class="text-base lg:text-lg font-semibold text-gray-800">
+                    Quản lý Tickets
+                  </h3>
+                  <div
+                    id="searchResultsMobile"
+                    class="text-sm text-gray-600 mt-1 hidden"
+                  >
+                    <!-- Kết quả tìm kiếm sẽ hiển thị ở đây trên mobile -->
+                  </div>
+                </div>
 
-          <!-- Nút tạo Ticket -->
-          <button
-            id="btnCreateTicket"
-            class="w-full sm:w-auto px-3 lg:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm lg:text-base"
-          >
-            <i class="fas fa-plus-circle mr-2"></i>
-            <span class="mobile-hidden sm:inline">Tạo Ticket</span>
-            <span class="sm:hidden">Tạo</span>
-          </button>
-        </div>
-      </div>
-    </div>
+                <!-- Tiêu đề cho desktop -->
+                <div class="hidden sm:block">
+                  <h3 class="text-lg lg:text-xl font-semibold text-gray-800">
+                    Quản lý Tickets
+                  </h3>
+                </div>
+                <div
+                  class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto"
+                >
+                  <!-- Ô tìm kiếm -->
+                  <div class="relative flex-1 sm:flex-none">
+                    <input
+                      type="text"
+                      id="searchTickets"
+                      placeholder="Tìm kiếm tickets..."
+                      class="w-full sm:w-48 lg:w-64 pl-8 lg:pl-10 pr-8 lg:pr-10 py-2 text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <i
+                      class="fas fa-search absolute left-2.5 lg:left-3 top-2.5 lg:top-3 text-gray-400 text-sm"
+                    ></i>
+                    <button
+                      id="clearSearch"
+                      class="absolute right-2.5 lg:right-3 top-2.5 lg:top-3 text-gray-400 hover:text-gray-600 text-sm hidden"
+                      title="Xóa tìm kiếm"
+                    >
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
 
-    <!-- Table + Scroll -->
-    <div class="flex-1 flex flex-col min-h-0">
-      <div class="flex-1 overflow-y-auto overflow-x-auto min-h-[300px]">
-        <table class="w-full whitespace-nowrap">
-          <thead class="bg-gray-50 sticky top-0 z-10">
-            <tr>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Tiêu đề</th>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Loại</th>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Người tạo</th>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày tạo</th>
-              <th class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
-            </tr>
-          </thead>
-          <tbody id="ticketsTable" class="bg-white divide-y divide-gray-200">
-            <!-- Placeholder rows để đảm bảo chiều cao tối thiểu -->
-            <tr class="h-12"><td colspan="7" class="text-center text-gray-500 py-8">Đang tải dữ liệu...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Pagination - Luôn ở vị trí cố định -->
-      <div class="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <!-- Thông tin trang -->
-          <div class="text-sm text-gray-600 order-2 sm:order-1">
-            <span id="paginationInfo">Hiển thị 1-10 của 0 kết quả</span>
+                  <!-- Bộ lọc trạng thái -->
+                  <select
+                    id="statusFilter"
+                    class="w-full sm:w-auto px-3 lg:px-4 py-2 text-sm lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending">Chờ phê duyệt</option>
+                    <option value="approved">Đã phê duyệt</option>
+                    <option value="in-progress">Đang xử lý</option>
+                    <option value="completed">Hoàn thành</option>
+                    <option value="rejected">Từ chối</option>
+                  </select>
+
+                  <!-- Nút tạo Ticket -->
+                  <button
+                    id="btnCreateTicket"
+                    class="w-full sm:w-auto px-3 lg:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm lg:text-base"
+                  >
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    <span class="mobile-hidden sm:inline">Tạo Ticket</span>
+                    <span class="sm:hidden">Tạo</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table + Scroll -->
+            <div class="flex-1 flex flex-col min-h-0">
+              <div class="flex-1 overflow-y-auto overflow-x-auto min-h-[300px]">
+                <table class="w-full whitespace-nowrap">
+                  <thead class="bg-gray-50 sticky top-0 z-10">
+                    <tr>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        ID
+                      </th>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Tiêu đề
+                      </th>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Loại
+                      </th>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Người tạo
+                      </th>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Trạng thái
+                      </th>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Ngày tạo
+                      </th>
+                      <th
+                        class="px-3 lg:px-6 py-2 lg:py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                      >
+                        Hành động
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="ticketsTable"
+                    class="bg-white divide-y divide-gray-200"
+                  >
+                    <!-- Placeholder rows để đảm bảo chiều cao tối thiểu -->
+                    <tr class="h-12">
+                      <td colspan="7" class="text-center text-gray-500 py-8">
+                        Đang tải dữ liệu...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination - Luôn ở vị trí cố định -->
+              <div class="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+                <div
+                  class="flex flex-col sm:flex-row items-center justify-between gap-3"
+                >
+                  <!-- Thông tin trang -->
+                  <div class="text-sm text-gray-600 order-2 sm:order-1">
+                    <span id="paginationInfo">Hiển thị 1-10 của 0 kết quả</span>
+                  </div>
+
+                  <!-- Điều khiển phân trang -->
+                  <div
+                    id="ticketsPagination"
+                    class="flex flex-wrap items-center justify-center gap-1 order-1 sm:order-2"
+                  >
+                    <button
+                      class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      Previous
+                    </button>
+                    <button
+                      class="px-3 py-1 border rounded bg-blue-600 text-white"
+                    >
+                      1
+                    </button>
+                    <button
+                      class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      disabled
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          
-          <!-- Điều khiển phân trang -->
-          <div id="ticketsPagination" class="flex flex-wrap items-center justify-center gap-1 order-1 sm:order-2">
-            <button class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed" disabled>Previous</button>
-            <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
-            <button class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed" disabled>Next</button>
-          </div>
         </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         <!-- Quy trình nghiệp vụ -->
         <div id="guides" class="page-content hidden space-responsive">
@@ -825,7 +864,8 @@
                       id="ticketDescription"
                       rows="3"
                       class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-                      placeholder="Mô tả chi tiết vấn đề... required"
+                      placeholder="Mô tả chi tiết vấn đề... "
+                      required
                     ></textarea>
                   </div>
                 </form>
@@ -1018,20 +1058,30 @@
 
           <!-- Header -->
           <div class="text-center mb-8">
-            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <div
+              class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg"
+            >
               <i class="fas fa-user-shield text-white text-2xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">Chào mừng trở lại</h3>
-            <p class="text-gray-600 text-sm">Đăng nhập để tiếp tục sử dụng hệ thống</p>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">
+              Chào mừng trở lại
+            </h3>
+            <p class="text-gray-600 text-sm">
+              Đăng nhập để tiếp tục sử dụng hệ thống
+            </p>
           </div>
 
           <!-- Form -->
           <form id="loginForm" class="space-y-6">
             <!-- Username Field -->
             <div class="relative">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Tài khoản</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Tài khoản</label
+              >
               <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
                   <i class="fas fa-user text-gray-400 text-sm"></i>
                 </div>
                 <input
@@ -1046,9 +1096,13 @@
 
             <!-- Password Field -->
             <div class="relative">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Mật khẩu</label
+              >
               <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
                   <i class="fas fa-lock text-gray-400 text-sm"></i>
                 </div>
                 <input
@@ -1071,10 +1125,19 @@
             <!-- Remember Me -->
             <div class="flex items-center justify-between">
               <label class="flex items-center">
-                <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2">
-                <span class="ml-2 text-sm text-gray-600">Ghi nhớ đăng nhập</span>
+                <input
+                  type="checkbox"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                />
+                <span class="ml-2 text-sm text-gray-600"
+                  >Ghi nhớ đăng nhập</span
+                >
               </label>
-              <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">Quên mật khẩu?</a>
+              <a
+                href="#"
+                class="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+                >Quên mật khẩu?</a
+              >
             </div>
 
             <!-- Buttons -->
@@ -1100,10 +1163,14 @@
           <!-- Footer -->
           <div class="mt-8 pt-6 border-t border-gray-200/50 text-center">
             <p class="text-xs text-gray-500">
-              Bằng việc đăng nhập, bạn đồng ý với 
-              <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Điều khoản sử dụng</a>
-              và 
-              <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Chính sách bảo mật</a>
+              Bằng việc đăng nhập, bạn đồng ý với
+              <a href="#" class="text-blue-600 hover:text-blue-700 font-medium"
+                >Điều khoản sử dụng</a
+              >
+              và
+              <a href="#" class="text-blue-600 hover:text-blue-700 font-medium"
+                >Chính sách bảo mật</a
+              >
             </p>
           </div>
         </div>
@@ -1114,7 +1181,7 @@
       // ======== Setting =============
 
       let token = null; // Token để xác thực API
-      
+
       // Dashboard filtering functions
       function filterDashboard(filterType, filterLabel, cardElement) {
         // Toggle filter nếu click vào card đã active
@@ -1122,32 +1189,32 @@
           clearDashboardFilter();
           return;
         }
-        
+
         // Set filter mới
         window.currentDashboardFilter = filterType;
-        
+
         // Update visual state của cards
         updateStatsCardsVisualState(cardElement);
-        
+
         // Filter charts và activities
         filterChartsAndActivities(filterType);
-        
+
         // Show filter indicator
         showFilterIndicator(filterLabel);
       }
-      
+
       function clearDashboardFilter() {
         window.currentDashboardFilter = null;
-        
+
         // Reset visual state của tất cả cards
-        document.querySelectorAll('[data-filter]').forEach(card => {
-          card.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+        document.querySelectorAll("[data-filter]").forEach((card) => {
+          card.classList.remove("ring-2", "ring-blue-500", "bg-blue-50");
         });
-        
+
         // Reload charts và activities với dữ liệu đầy đủ
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const isAdmin = currentUser?.idU === "admin";
-        
+
         if (isAdmin) {
           createStatusChart();
           createTimeChart();
@@ -1156,66 +1223,71 @@
           createUserStatusChart(currentUser.idU);
           createUserActivityChart(currentUser.idU);
         }
-        
+
         loadRecentActivities();
         hideFilterIndicator();
       }
-      
+
       function updateStatsCardsVisualState(activeCard) {
         // Reset tất cả cards
-        document.querySelectorAll('[data-filter]').forEach(card => {
-          card.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50');
+        document.querySelectorAll("[data-filter]").forEach((card) => {
+          card.classList.remove("ring-2", "ring-blue-500", "bg-blue-50");
         });
-        
+
         // Highlight card được chọn
         if (activeCard) {
-          activeCard.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+          activeCard.classList.add("ring-2", "ring-blue-500", "bg-blue-50");
         }
       }
-      
+
       function filterChartsAndActivities(filterType) {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const isAdmin = currentUser?.idU === "admin";
-        
+
         // Filter tickets theo status
         let filteredTickets = [];
         switch (filterType) {
-          case 'pending':
-            filteredTickets = tickets.filter(t => t.status === 191920002);
+          case "pending":
+            filteredTickets = tickets.filter((t) => t.status === 191920002);
             break;
-          case 'approved':
-            filteredTickets = tickets.filter(t => t.status === 191920000);
+          case "approved":
+            filteredTickets = tickets.filter((t) => t.status === 191920000);
             break;
-          case 'rejected':
-            filteredTickets = tickets.filter(t => t.status === 191920001);
+          case "rejected":
+            filteredTickets = tickets.filter((t) => t.status === 191920001);
             break;
           default:
             filteredTickets = tickets;
         }
-        
+
         // Update charts với dữ liệu đã filter
         if (isAdmin) {
           createFilteredAdminCharts(filteredTickets, filterType);
         } else {
-          createFilteredUserCharts(filteredTickets, filterType, currentUser.idU);
+          createFilteredUserCharts(
+            filteredTickets,
+            filterType,
+            currentUser.idU
+          );
         }
-        
+
         // Update activities với dữ liệu đã filter
         loadFilteredRecentActivities(filteredTickets);
       }
-      
+
       function showFilterIndicator(filterLabel) {
         // Tạo hoặc update filter indicator
-        let indicator = document.getElementById('filterIndicator');
+        let indicator = document.getElementById("filterIndicator");
         if (!indicator) {
-          indicator = document.createElement('div');
-          indicator.id = 'filterIndicator';
-          indicator.className = 'mb-4 p-3 bg-blue-100 border border-blue-200 rounded-lg flex items-center justify-between';
-          
-          const chartsSection = document.getElementById('chartsSection');
+          indicator = document.createElement("div");
+          indicator.id = "filterIndicator";
+          indicator.className =
+            "mb-4 p-3 bg-blue-100 border border-blue-200 rounded-lg flex items-center justify-between";
+
+          const chartsSection = document.getElementById("chartsSection");
           chartsSection.parentNode.insertBefore(indicator, chartsSection);
         }
-        
+
         indicator.innerHTML = `
           <div class="flex items-center">
             <i class="fas fa-filter text-blue-600 mr-2"></i>
@@ -1226,9 +1298,9 @@
           </button>
         `;
       }
-      
+
       function hideFilterIndicator() {
-        const indicator = document.getElementById('filterIndicator');
+        const indicator = document.getElementById("filterIndicator");
         if (indicator) {
           indicator.remove();
         }
@@ -1244,7 +1316,7 @@
       let unitChoices;
       //const ticketsPerPage = 10;
       let ticketsPerPage = getTicketsPerPage();
-      
+
       // Biến cho tính năng tìm kiếm và lọc
       let filteredTickets = [];
       let currentSearchTerm = "";
@@ -1280,12 +1352,12 @@
         "Phòng Cung ứng": [
           { value: "283640002", text: "Điều chỉnh giá BOD" },
           { value: "283640003", text: "Điều chỉnh VAT BOD" },
-          { value: "283640006", text: "Điều chỉnh VAT BO" },
+          //{ value: "283640006", text: "Điều chỉnh VAT BO" },
         ],
         "Phòng Phát triển Kinh doanh": [
           { value: "191920000", text: "Điều chỉnh giá SOD" },
           { value: "191920001", text: "Điều chỉnh VAT SOD" },
-          { value: "283640001", text: "Điều chỉnh VAT SO" },
+          //{ value: "283640001", text: "Điều chỉnh VAT SO" },
         ],
         "Phòng Nhân sự": [],
         "Phòng Tài chính & Kế toán": [],
@@ -1361,7 +1433,7 @@
               }
               return;
             }
-            
+
             newTicketModal.classList.remove("hidden");
           });
         }
@@ -1386,17 +1458,21 @@
         });
 
       // ========== Function ================
-      
+
       // Biến cache token
       let cachedToken = null;
       let tokenExpiry = null;
 
       async function getToken() {
         // Kiểm tra token còn hạn không (trừ đi 5 phút để đảm bảo an toàn)
-        if (cachedToken && tokenExpiry && new Date().getTime() < tokenExpiry - 300000) {
+        if (
+          cachedToken &&
+          tokenExpiry &&
+          new Date().getTime() < tokenExpiry - 300000
+        ) {
           return cachedToken;
         }
-        
+
         const url =
           "https://de210e4bcd22e60591ca8e841aad4b.8e.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1d8ccba4cda644d79f66bfe164b2a0bf/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Se56wn31gs_1-0gv4sPfYdy25OuhYBuVd4-xykYe8AM";
 
@@ -1412,22 +1488,22 @@
           }
 
           const data = await response.json();
-          
+
           // Xử lý format response mới
           let accessToken;
           if (data.body && data.body.access_token) {
             // Format mới: { statusCode: "200", body: { access_token: "...", expires_in: 3599 } }
             accessToken = data.body.access_token;
             const expiresIn = data.body.expires_in || 3600; // mặc định 1 giờ
-            tokenExpiry = new Date().getTime() + (expiresIn * 1000);
+            tokenExpiry = new Date().getTime() + expiresIn * 1000;
           } else if (data.access_token) {
             // Format cũ: { access_token: "..." }
             accessToken = data.access_token;
-            tokenExpiry = new Date().getTime() + (3600 * 1000); // mặc định 1 giờ
+            tokenExpiry = new Date().getTime() + 3600 * 1000; // mặc định 1 giờ
           } else {
             throw new Error("Không tìm thấy access_token trong response");
           }
-          
+
           cachedToken = accessToken;
           return cachedToken;
         } catch (err) {
@@ -1456,11 +1532,9 @@
 
         const query = buildXseptionsQuery(email);
         tickets = await getAllXseptions(cachedToken, query, mappingListTickets);
-        
+
         // Reset bộ lọc và áp dụng lại
         applyFilters();
-        
-
       }
 
       function getCurrentUserEmail() {
@@ -1590,13 +1664,13 @@
       // Dashboard functions
       function loadDashboard() {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        
+
         // Kiểm tra user đã đăng nhập chưa
         if (!currentUser) {
           const dashboardStats = document.getElementById("dashboardStats");
           const chartsSection = document.getElementById("chartsSection");
           const recentActivities = document.getElementById("recentActivities");
-          
+
           if (dashboardStats) {
             dashboardStats.innerHTML = `
               <div class="col-span-full bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
@@ -1606,11 +1680,11 @@
               </div>
             `;
           }
-          
+
           if (chartsSection) {
             chartsSection.innerHTML = "";
           }
-          
+
           if (recentActivities) {
             recentActivities.innerHTML = `
               <div class="text-center py-8 text-gray-500">
@@ -1619,122 +1693,158 @@
               </div>
             `;
           }
-          
+
           return;
         }
-        
+
         const isAdmin = currentUser?.idU === "admin";
-        
+
         if (isAdmin) {
           loadAdminDashboard();
         } else {
           loadUserDashboard();
         }
-        
+
         loadDashboardCharts();
         loadRecentActivities();
-        
+
         // Gắn event handler cho nút "Xem tất cả" chỉ một lần
         initializeShowAllActivitiesHandler();
       }
-      
+
       function loadAdminDashboard() {
         const stats = calculateAdminStats();
         renderDashboardStats(stats, true);
       }
-      
+
       function loadUserDashboard() {
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const userEmail = currentUser?.idU;
         const stats = calculateUserStats(userEmail);
         renderDashboardStats(stats, false);
       }
-      
+
       function calculateAdminStats() {
         const total = tickets.length;
-        const pending = tickets.filter(t => t.status === 191920002).length;
-        const approved = tickets.filter(t => t.status === 191920000).length;
-        const rejected = tickets.filter(t => t.status === 191920001).length;
-        const inProgress = tickets.filter(t => t.status === "in-progress").length;
-        const completed = tickets.filter(t => t.status === "completed").length;
-        
+        const pending = tickets.filter((t) => t.status === 191920002).length;
+        const approved = tickets.filter((t) => t.status === 191920000).length;
+        const rejected = tickets.filter((t) => t.status === 191920001).length;
+        const inProgress = tickets.filter(
+          (t) => t.status === "in-progress"
+        ).length;
+        const completed = tickets.filter(
+          (t) => t.status === "completed"
+        ).length;
+
         // Tính toán xu hướng (giả lập - có thể cải thiện với dữ liệu thực tế)
         const thisMonth = new Date().getMonth();
-        const thisMonthTickets = tickets.filter(t => {
+        const thisMonthTickets = tickets.filter((t) => {
           const ticketMonth = new Date(t.createdAt).getMonth();
           return ticketMonth === thisMonth;
         }).length;
-        
-        const lastMonthTickets = tickets.filter(t => {
+
+        const lastMonthTickets = tickets.filter((t) => {
           const ticketMonth = new Date(t.createdAt).getMonth();
           return ticketMonth === thisMonth - 1;
         }).length;
-        
-        const trend = lastMonthTickets > 0 ? 
-          Math.round(((thisMonthTickets - lastMonthTickets) / lastMonthTickets) * 100) : 0;
-        
+
+        const trend =
+          lastMonthTickets > 0
+            ? Math.round(
+                ((thisMonthTickets - lastMonthTickets) / lastMonthTickets) * 100
+              )
+            : 0;
+
         return {
           total: { value: total, trend: trend, label: "Tổng Tickets" },
-          pending: { value: pending, trend: Math.round(Math.random() * 20 - 10), label: "Chờ phê duyệt" },
-          approved: { value: approved, trend: Math.round(Math.random() * 15), label: "Đã phê duyệt" },
-          rejected: { value: rejected, trend: Math.round(Math.random() * 10 - 5), label: "Từ chối" }
+          pending: {
+            value: pending,
+            trend: Math.round(Math.random() * 20 - 10),
+            label: "Chờ phê duyệt",
+          },
+          approved: {
+            value: approved,
+            trend: Math.round(Math.random() * 15),
+            label: "Đã phê duyệt",
+          },
+          rejected: {
+            value: rejected,
+            trend: Math.round(Math.random() * 10 - 5),
+            label: "Từ chối",
+          },
         };
       }
-      
+
       function calculateUserStats(userEmail) {
-        const userTickets = tickets.filter(t => t.createdBy === userEmail);
+        const userTickets = tickets.filter((t) => t.createdBy === userEmail);
         const total = userTickets.length;
-        const pending = userTickets.filter(t => t.status === 191920002).length;
-        const approved = userTickets.filter(t => t.status === 191920000).length;
-        const rejected = userTickets.filter(t => t.status === 191920001).length;
-        
+        const pending = userTickets.filter(
+          (t) => t.status === 191920002
+        ).length;
+        const approved = userTickets.filter(
+          (t) => t.status === 191920000
+        ).length;
+        const rejected = userTickets.filter(
+          (t) => t.status === 191920001
+        ).length;
+
         // Tickets cần phê duyệt (user là approver)
-        const needsApproval = tickets.filter(t => {
+        const needsApproval = tickets.filter((t) => {
           if (t.status !== 191920002) return false;
           // Kiểm tra nếu user này có trong danh sách approver
           return t.userTickets && t.userTickets.includes(userEmail);
         }).length;
-        
+
         return {
           total: { value: total, trend: 0, label: "Tickets của tôi" },
           pending: { value: pending, trend: 0, label: "Đang chờ duyệt" },
           approved: { value: approved, trend: 0, label: "Đã được duyệt" },
-          rejected: { value: rejected, trend: 0, label: "Từ chối" }
+          rejected: { value: rejected, trend: 0, label: "Từ chối" },
         };
       }
-      
+
       function renderDashboardStats(stats, isAdmin) {
         const statsContainer = document.getElementById("dashboardStats");
-        
-        const statsArray = isAdmin ? 
-          [stats.total, stats.pending, stats.approved, stats.rejected] :
-          [stats.total, stats.pending, stats.approved, stats.rejected];
-        
+
+        const statsArray = isAdmin
+          ? [stats.total, stats.pending, stats.approved, stats.rejected]
+          : [stats.total, stats.pending, stats.approved, stats.rejected];
+
         const colors = [
           { bg: "bg-blue-100", text: "text-blue-600", icon: "fa-ticket-alt" },
           { bg: "bg-yellow-100", text: "text-yellow-600", icon: "fa-clock" },
-          { bg: "bg-green-100", text: "text-green-600", icon: "fa-check-circle" },
-          { bg: "bg-red-100", text: "text-red-600", icon: "fa-times-circle" }
+          {
+            bg: "bg-green-100",
+            text: "text-green-600",
+            icon: "fa-check-circle",
+          },
+          { bg: "bg-red-100", text: "text-red-600", icon: "fa-times-circle" },
         ];
-        
+
         // Biến global để lưu filter hiện tại
         window.currentDashboardFilter = null;
-        
-        statsContainer.innerHTML = statsArray.map((stat, index) => {
-          const color = colors[index];
-          const trendColor = stat.trend >= 0 ? "text-green-600" : "text-red-600";
-          const trendIcon = stat.trend >= 0 ? "fa-arrow-up" : "fa-arrow-down";
-          
-          // Xác định filter value cho từng stat
-          let filterValue = null;
-          if (stat.label.includes('Chờ') || stat.label.includes('chờ')) filterValue = 'pending';
-          else if (stat.label.includes('Đã') || stat.label.includes('được')) filterValue = 'approved';
-          else if (stat.label.includes('Từ chối')) filterValue = 'rejected';
-          else if (stat.label.includes('Tổng')) filterValue = null; // Tổng tickets không filter
-          
-          return `
+
+        statsContainer.innerHTML = statsArray
+          .map((stat, index) => {
+            const color = colors[index];
+            const trendColor =
+              stat.trend >= 0 ? "text-green-600" : "text-red-600";
+            const trendIcon = stat.trend >= 0 ? "fa-arrow-up" : "fa-arrow-down";
+
+            // Xác định filter value cho từng stat
+            let filterValue = null;
+            if (stat.label.includes("Chờ") || stat.label.includes("chờ"))
+              filterValue = "pending";
+            else if (stat.label.includes("Đã") || stat.label.includes("được"))
+              filterValue = "approved";
+            else if (stat.label.includes("Từ chối")) filterValue = "rejected";
+            else if (stat.label.includes("Tổng")) filterValue = null; // Tổng tickets không filter
+
+            return `
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 card-hover cursor-pointer transition-all duration-200 hover:shadow-lg" 
-                 onclick="filterDashboard('${filterValue}', '${stat.label}', this)" 
+                 onclick="filterDashboard('${filterValue}', '${
+              stat.label
+            }', this)" 
                  data-filter="${filterValue}">
               <div class="flex items-center justify-between">
                 <div>
@@ -1745,11 +1855,17 @@
                     ${stat.value.toLocaleString()}
                   </p>
                 </div>
-                <div class="w-10 h-10 lg:w-12 lg:h-12 ${color.bg} rounded-lg flex items-center justify-center">
-                  <i class="fas ${color.icon} ${color.text} text-sm lg:text-base"></i>
+                <div class="w-10 h-10 lg:w-12 lg:h-12 ${
+                  color.bg
+                } rounded-lg flex items-center justify-center">
+                  <i class="fas ${color.icon} ${
+              color.text
+            } text-sm lg:text-base"></i>
                 </div>
               </div>
-              ${stat.trend !== 0 ? `
+              ${
+                stat.trend !== 0
+                  ? `
                 <div class="mt-3 lg:mt-4 flex items-center text-xs lg:text-sm">
                   <span class="${trendColor} flex items-center">
                     <i class="fas ${trendIcon} mr-1"></i>
@@ -1757,30 +1873,33 @@
                   </span>
                   <span class="text-gray-500 ml-2">so với tháng trước</span>
                 </div>
-              ` : ''}
+              `
+                  : ""
+              }
               <div class="mt-2 text-xs text-blue-600 opacity-0 transition-opacity duration-200 hover:opacity-100">
                 <i class="fas fa-filter mr-1"></i>Click để lọc dữ liệu
               </div>
             </div>
           `;
-        }).join('');
-       }
-       
-       function loadDashboardCharts() {
-         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-         const isAdmin = currentUser?.idU === "admin";
-         
-         if (isAdmin) {
-           renderAdminCharts();
-         } else {
-           renderUserCharts();
-         }
-       }
-       
-       function renderAdminCharts() {
-         const chartsSection = document.getElementById("chartsSection");
-         
-         chartsSection.innerHTML = `
+          })
+          .join("");
+      }
+
+      function loadDashboardCharts() {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+
+        if (isAdmin) {
+          renderAdminCharts();
+        } else {
+          renderUserCharts();
+        }
+      }
+
+      function renderAdminCharts() {
+        const chartsSection = document.getElementById("chartsSection");
+
+        chartsSection.innerHTML = `
            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 col-span-full">
              <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
                <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Phân bố trạng thái Tickets</h4>
@@ -1802,20 +1921,20 @@
              </div>
            </div>
          `;
-         
-         setTimeout(() => {
-           createStatusChart();
-           createTimeChart();
-           createAdminCategoryChart();
-         }, 100);
-       }
-       
-       function renderUserCharts() {
-         const chartsSection = document.getElementById("chartsSection");
-         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-         const userEmail = currentUser?.idU;
-         
-         chartsSection.innerHTML = `
+
+        setTimeout(() => {
+          createStatusChart();
+          createTimeChart();
+          createAdminCategoryChart();
+        }, 100);
+      }
+
+      function renderUserCharts() {
+        const chartsSection = document.getElementById("chartsSection");
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const userEmail = currentUser?.idU;
+
+        chartsSection.innerHTML = `
            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
              <h4 class="text-base lg:text-lg font-semibold text-gray-800 mb-4">Tickets của tôi</h4>
              <div style="height: 300px; position: relative;">
@@ -1829,780 +1948,883 @@
              </div>
            </div>
          `;
-         
-         setTimeout(() => {
-           createUserStatusChart(userEmail);
-           createUserActivityChart(userEmail);
-         }, 100);
-       }
-       
-       // Biến lưu trữ các chart instances
-       let chartInstances = {};
-       
-       function createStatusChart() {
-         const ctx = document.getElementById('statusChart');
-         if (!ctx) return;
-         
-         // Destroy chart cũ nếu tồn tại
-         if (chartInstances.statusChart) {
-           chartInstances.statusChart.destroy();
-         }
-         
-         const pending = tickets.filter(t => t.status === 191920002).length;
-         const approved = tickets.filter(t => t.status === 191920000).length;
-         const rejected = tickets.filter(t => t.status === 191920001).length;
-         
-         const total = pending + approved + rejected;
-         
-         chartInstances.statusChart = new Chart(ctx, {
-           type: 'doughnut',
-           data: {
-             labels: ['Chờ phê duyệt', 'Đã phê duyệt', 'Từ chối'],
-             datasets: [{
-               data: [pending, approved, rejected],
-               backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
-               borderWidth: 2,
-               borderColor: '#ffffff'
-             }]
-           },
-           options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             plugins: {
-               legend: {
-                 position: 'bottom',
-                 labels: {
-                   padding: 20,
-                   usePointStyle: true
-                 }
-               },
-               tooltip: {
-                 enabled: false
-               }
-             }
-           },
-           plugins: [{
-             afterDraw: function(chart) {
-               const ctx = chart.ctx;
-               const data = chart.data;
-               const datasets = data.datasets[0];
-               
-               // Vẽ phần trăm ở giữa từng phần của chart
-                   chart.data.labels.forEach((label, index) => {
-                     const meta = chart.getDatasetMeta(0);
-                     const arc = meta.data[index];
-                     const value = datasets.data[index];
-                     const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                     
-                     // Chỉ hiển thị phần trăm nếu giá trị > 0
-                     if (value > 0) {
-                       // Tính toán vị trí giữa arc
-                       const angle = (arc.startAngle + arc.endAngle) / 2;
-                       const radius = (arc.innerRadius + arc.outerRadius) / 2;
-                       const x = arc.x + Math.cos(angle) * radius;
-                       const y = arc.y + Math.sin(angle) * radius;
-                       
-                       // Vẽ phần trăm
-                       ctx.fillStyle = '#ffffff';
-                       ctx.font = 'bold 14px Arial';
-                       ctx.textAlign = 'center';
-                       ctx.textBaseline = 'middle';
-                       ctx.fillText(`${percentage}%`, x, y);
-                     }
-                   });
-             }
-           }]
-         });
-       }
-       
-       function createTimeChart() {
-         const ctx = document.getElementById('timeChart');
-         if (!ctx) return;
-         
-         // Destroy chart cũ nếu tồn tại
-         if (chartInstances.timeChart) {
-           chartInstances.timeChart.destroy();
-         }
-         
-         // Tạo dữ liệu cho 30 ngày gần nhất
-         const last30Days = [];
-         const ticketCounts = [];
-         
-         for (let i = 29; i >= 0; i--) {
-           const date = new Date();
-           date.setDate(date.getDate() - i);
-           const dateStr = date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' });
-           last30Days.push(dateStr);
-           
-           const count = tickets.filter(ticket => {
-             const ticketDate = new Date(ticket.createdAt);
-             return ticketDate.toDateString() === date.toDateString();
-           }).length;
-           
-           ticketCounts.push(count);
-         }
-         
-         chartInstances.timeChart = new Chart(ctx, {
-           type: 'line',
-           data: {
-             labels: last30Days,
-             datasets: [{
-               label: 'Tickets mới',
-               data: ticketCounts,
-               borderColor: '#3b82f6',
-               backgroundColor: 'rgba(59, 130, 246, 0.1)',
-               borderWidth: 2,
-               fill: true,
-               tension: 0.4
-             }]
-           },
-           options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             plugins: {
-               legend: {
-                 display: false
-               }
-             },
-             scales: {
-               y: {
-                 beginAtZero: true,
-                 ticks: {
-                   stepSize: 1
-                 }
-               },
-               x: {
-                 ticks: {
-                   maxTicksLimit: 10,
-                   maxRotation: 45
-                 }
-               }
-             }
-           }
-         });
-       }
-       
-       function createAdminCategoryChart() {
-         const ctx = document.getElementById('adminCategoryChart');
-         if (!ctx) return;
-         
-         // Destroy chart cũ nếu tồn tại
-         if (chartInstances.adminCategoryChart) {
-           chartInstances.adminCategoryChart.destroy();
-         }
-         
-         // Đếm số lượng theo từng category cho toàn hệ thống
-         const categoryCount = {};
-         const categoryColors = {
-           283640007: '#3b82f6', // Điều chỉnh định lượng
-           283640004: '#ef4444', // Hủy phiếu nhập kho
-           283640008: '#f59e0b', // Hủy phiếu xuất kho
-           283640005: '#10b981', // Điều chỉnh phiếu nhập kho
-           283640009: '#8b5cf6', // Điều chỉnh phiếu xuất kho
-           191920000: '#06b6d4', // Điều chỉnh giá SOD
-           283640002: '#84cc16', // Điều chỉnh giá BOD
-           191920001: '#f97316', // VAT SOD
-           283640001: '#ec4899', // VAT SO
-           283640003: '#6366f1', // VAT BOD
-           283640006: '#14b8a6'  // VAT BO
-         };
-         
-         tickets.forEach(ticket => {
-           const category = ticket.category;
-           if (categoryCount[category]) {
-             categoryCount[category]++;
-           } else {
-             categoryCount[category] = 1;
-           }
-         });
-         
-         // Sắp xếp theo số lượng giảm dần và lấy top 8
-         const sortedCategories = Object.entries(categoryCount)
-           .sort(([,a], [,b]) => b - a)
-           .slice(0, 8);
-         
-         const labels = [];
-         const data = [];
-         const backgroundColor = [];
-         
-         sortedCategories.forEach(([category, count]) => {
-           labels.push(getCategoryText(parseInt(category)));
-           data.push(count);
-           backgroundColor.push(categoryColors[category] || '#6b7280');
-         });
-         
-         chartInstances.adminCategoryChart = new Chart(ctx, {
-           type: 'bar',
-           data: {
-             labels: labels,
-             datasets: [{
-               label: 'Số lượng tickets',
-               data: data,
-               backgroundColor: backgroundColor,
-               borderRadius: 8,
-               borderSkipped: false
-             }]
-           },
-           options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             plugins: {
-               legend: {
-                 display: false
-               }
-             },
-             scales: {
-               y: {
-                 beginAtZero: true,
-                 ticks: {
-                   stepSize: 1
-                 }
-               },
-               x: {
-                 ticks: {
-                   maxRotation: 45,
-                   minRotation: 0
-                 }
-               }
-             }
-           }
-         });
-       }
-       
-       // Filtered chart functions
-       function createFilteredAdminCharts(filteredTickets, filterType) {
-         // Update status chart với dữ liệu đã filter
-         const ctx1 = document.getElementById('statusChart');
-         if (ctx1 && chartInstances.statusChart) {
-           chartInstances.statusChart.destroy();
-           
-           const pending = filteredTickets.filter(t => t.status === 191920002).length;
-           const approved = filteredTickets.filter(t => t.status === 191920000).length;
-           const rejected = filteredTickets.filter(t => t.status === 191920001).length;
-           const total = pending + approved + rejected;
-           
-           chartInstances.statusChart = new Chart(ctx1, {
-             type: 'doughnut',
-             data: {
-               labels: ['Chờ phê duyệt', 'Đã phê duyệt', 'Từ chối'],
-               datasets: [{
-                 data: [pending, approved, rejected],
-                 backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
-                 borderWidth: 2,
-                 borderColor: '#ffffff'
-               }]
-             },
-             options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: {
-                 legend: {
-                   position: 'bottom',
-                   labels: {
-                     padding: 20,
-                     usePointStyle: true
-                   }
-                 },
-                 title: {
-                   display: true,
-                   text: `Filtered: ${getFilterLabel(filterType)}`,
-                   color: '#3b82f6'
-                 },
-                 tooltip: {
-                   enabled: false
-                 }
-               }
-             },
-             plugins: [{
-               afterDraw: function(chart) {
-                 const ctx = chart.ctx;
-                 const data = chart.data;
-                 const datasets = data.datasets[0];
-                 
-                 // Vẽ phần trăm ở giữa từng phần của chart
-                 chart.data.labels.forEach((label, index) => {
-                   const meta = chart.getDatasetMeta(0);
-                   const arc = meta.data[index];
-                   const value = datasets.data[index];
-                   const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                   
-                   // Chỉ hiển thị phần trăm nếu giá trị > 0
-                   if (value > 0) {
-                     // Tính toán vị trí giữa arc
-                     const angle = (arc.startAngle + arc.endAngle) / 2;
-                     const radius = (arc.innerRadius + arc.outerRadius) / 2;
-                     const x = arc.x + Math.cos(angle) * radius;
-                     const y = arc.y + Math.sin(angle) * radius;
-                     
-                     // Vẽ phần trăm
-                     ctx.fillStyle = '#ffffff';
-                     ctx.font = 'bold 14px Arial';
-                     ctx.textAlign = 'center';
-                     ctx.textBaseline = 'middle';
-                     ctx.fillText(`${percentage}%`, x, y);
-                   }
-                 });
-               }
-             }]
-           });
-         }
-         
-         // Update time chart với dữ liệu đã filter
-         const ctx2 = document.getElementById('timeChart');
-         if (ctx2 && chartInstances.timeChart) {
-           chartInstances.timeChart.destroy();
-           
-           const last30Days = [];
-            const ticketCounts = [];
-            
-            for (let i = 29; i >= 0; i--) {
-              const date = new Date();
-              date.setDate(date.getDate() - i);
-              const dateStr = date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'numeric' });
-              last30Days.push(dateStr);
-             
-             const count = filteredTickets.filter(ticket => {
-               const ticketDate = new Date(ticket.createdAt);
-               return ticketDate.toDateString() === date.toDateString();
-             }).length;
-             
-             ticketCounts.push(count);
-           }
-           
-           chartInstances.timeChart = new Chart(ctx2, {
-              type: 'line',
-              data: {
-                labels: last30Days,
-                datasets: [{
-                  label: 'Tickets mới',
+
+        setTimeout(() => {
+          createUserStatusChart(userEmail);
+          createUserActivityChart(userEmail);
+        }, 100);
+      }
+
+      // Biến lưu trữ các chart instances
+      let chartInstances = {};
+
+      function createStatusChart() {
+        const ctx = document.getElementById("statusChart");
+        if (!ctx) return;
+
+        // Destroy chart cũ nếu tồn tại
+        if (chartInstances.statusChart) {
+          chartInstances.statusChart.destroy();
+        }
+
+        const pending = tickets.filter((t) => t.status === 191920002).length;
+        const approved = tickets.filter((t) => t.status === 191920000).length;
+        const rejected = tickets.filter((t) => t.status === 191920001).length;
+
+        const total = pending + approved + rejected;
+
+        chartInstances.statusChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: ["Chờ phê duyệt", "Đã phê duyệt", "Từ chối"],
+            datasets: [
+              {
+                data: [pending, approved, rejected],
+                backgroundColor: ["#fbbf24", "#10b981", "#ef4444"],
+                borderWidth: 2,
+                borderColor: "#ffffff",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  padding: 20,
+                  usePointStyle: true,
+                },
+              },
+              tooltip: {
+                enabled: false,
+              },
+            },
+          },
+          plugins: [
+            {
+              afterDraw: function (chart) {
+                const ctx = chart.ctx;
+                const data = chart.data;
+                const datasets = data.datasets[0];
+
+                // Vẽ phần trăm ở giữa từng phần của chart
+                chart.data.labels.forEach((label, index) => {
+                  const meta = chart.getDatasetMeta(0);
+                  const arc = meta.data[index];
+                  const value = datasets.data[index];
+                  const percentage =
+                    total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+
+                  // Chỉ hiển thị phần trăm nếu giá trị > 0
+                  if (value > 0) {
+                    // Tính toán vị trí giữa arc
+                    const angle = (arc.startAngle + arc.endAngle) / 2;
+                    const radius = (arc.innerRadius + arc.outerRadius) / 2;
+                    const x = arc.x + Math.cos(angle) * radius;
+                    const y = arc.y + Math.sin(angle) * radius;
+
+                    // Vẽ phần trăm
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "bold 14px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(`${percentage}%`, x, y);
+                  }
+                });
+              },
+            },
+          ],
+        });
+      }
+
+      function createTimeChart() {
+        const ctx = document.getElementById("timeChart");
+        if (!ctx) return;
+
+        // Destroy chart cũ nếu tồn tại
+        if (chartInstances.timeChart) {
+          chartInstances.timeChart.destroy();
+        }
+
+        // Tạo dữ liệu cho 30 ngày gần nhất
+        const last30Days = [];
+        const ticketCounts = [];
+
+        for (let i = 29; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dateStr = date.toLocaleDateString("vi-VN", {
+            day: "numeric",
+            month: "numeric",
+          });
+          last30Days.push(dateStr);
+
+          const count = tickets.filter((ticket) => {
+            const ticketDate = new Date(ticket.createdAt);
+            return ticketDate.toDateString() === date.toDateString();
+          }).length;
+
+          ticketCounts.push(count);
+        }
+
+        chartInstances.timeChart = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: last30Days,
+            datasets: [
+              {
+                label: "Tickets mới",
+                data: ticketCounts,
+                borderColor: "#3b82f6",
+                backgroundColor: "rgba(59, 130, 246, 0.1)",
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+              x: {
+                ticks: {
+                  maxTicksLimit: 10,
+                  maxRotation: 45,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function createAdminCategoryChart() {
+        const ctx = document.getElementById("adminCategoryChart");
+        if (!ctx) return;
+
+        // Destroy chart cũ nếu tồn tại
+        if (chartInstances.adminCategoryChart) {
+          chartInstances.adminCategoryChart.destroy();
+        }
+
+        // Đếm số lượng theo từng category cho toàn hệ thống
+        const categoryCount = {};
+        const categoryColors = {
+          283640007: "#3b82f6", // Điều chỉnh định lượng
+          283640004: "#ef4444", // Hủy phiếu nhập kho
+          283640008: "#f59e0b", // Hủy phiếu xuất kho
+          283640005: "#10b981", // Điều chỉnh phiếu nhập kho
+          283640009: "#8b5cf6", // Điều chỉnh phiếu xuất kho
+          191920000: "#06b6d4", // Điều chỉnh giá SOD
+          283640002: "#84cc16", // Điều chỉnh giá BOD
+          191920001: "#f97316", // VAT SOD
+          283640001: "#ec4899", // VAT SO
+          283640003: "#6366f1", // VAT BOD
+          283640006: "#14b8a6", // VAT BO
+        };
+
+        tickets.forEach((ticket) => {
+          const category = ticket.category;
+          if (categoryCount[category]) {
+            categoryCount[category]++;
+          } else {
+            categoryCount[category] = 1;
+          }
+        });
+
+        // Sắp xếp theo số lượng giảm dần và lấy top 8
+        const sortedCategories = Object.entries(categoryCount)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 8);
+
+        const labels = [];
+        const data = [];
+        const backgroundColor = [];
+
+        sortedCategories.forEach(([category, count]) => {
+          labels.push(getCategoryText(parseInt(category)));
+          data.push(count);
+          backgroundColor.push(categoryColors[category] || "#6b7280");
+        });
+
+        chartInstances.adminCategoryChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Số lượng tickets",
+                data: data,
+                backgroundColor: backgroundColor,
+                borderRadius: 8,
+                borderSkipped: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+              x: {
+                ticks: {
+                  maxRotation: 45,
+                  minRotation: 0,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // Filtered chart functions
+      function createFilteredAdminCharts(filteredTickets, filterType) {
+        // Update status chart với dữ liệu đã filter
+        const ctx1 = document.getElementById("statusChart");
+        if (ctx1 && chartInstances.statusChart) {
+          chartInstances.statusChart.destroy();
+
+          const pending = filteredTickets.filter(
+            (t) => t.status === 191920002
+          ).length;
+          const approved = filteredTickets.filter(
+            (t) => t.status === 191920000
+          ).length;
+          const rejected = filteredTickets.filter(
+            (t) => t.status === 191920001
+          ).length;
+          const total = pending + approved + rejected;
+
+          chartInstances.statusChart = new Chart(ctx1, {
+            type: "doughnut",
+            data: {
+              labels: ["Chờ phê duyệt", "Đã phê duyệt", "Từ chối"],
+              datasets: [
+                {
+                  data: [pending, approved, rejected],
+                  backgroundColor: ["#fbbf24", "#10b981", "#ef4444"],
+                  borderWidth: 2,
+                  borderColor: "#ffffff",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: {
+                    padding: 20,
+                    usePointStyle: true,
+                  },
+                },
+                title: {
+                  display: true,
+                  text: `Filtered: ${getFilterLabel(filterType)}`,
+                  color: "#3b82f6",
+                },
+                tooltip: {
+                  enabled: false,
+                },
+              },
+            },
+            plugins: [
+              {
+                afterDraw: function (chart) {
+                  const ctx = chart.ctx;
+                  const data = chart.data;
+                  const datasets = data.datasets[0];
+
+                  // Vẽ phần trăm ở giữa từng phần của chart
+                  chart.data.labels.forEach((label, index) => {
+                    const meta = chart.getDatasetMeta(0);
+                    const arc = meta.data[index];
+                    const value = datasets.data[index];
+                    const percentage =
+                      total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+
+                    // Chỉ hiển thị phần trăm nếu giá trị > 0
+                    if (value > 0) {
+                      // Tính toán vị trí giữa arc
+                      const angle = (arc.startAngle + arc.endAngle) / 2;
+                      const radius = (arc.innerRadius + arc.outerRadius) / 2;
+                      const x = arc.x + Math.cos(angle) * radius;
+                      const y = arc.y + Math.sin(angle) * radius;
+
+                      // Vẽ phần trăm
+                      ctx.fillStyle = "#ffffff";
+                      ctx.font = "bold 14px Arial";
+                      ctx.textAlign = "center";
+                      ctx.textBaseline = "middle";
+                      ctx.fillText(`${percentage}%`, x, y);
+                    }
+                  });
+                },
+              },
+            ],
+          });
+        }
+
+        // Update time chart với dữ liệu đã filter
+        const ctx2 = document.getElementById("timeChart");
+        if (ctx2 && chartInstances.timeChart) {
+          chartInstances.timeChart.destroy();
+
+          const last30Days = [];
+          const ticketCounts = [];
+
+          for (let i = 29; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateStr = date.toLocaleDateString("vi-VN", {
+              day: "numeric",
+              month: "numeric",
+            });
+            last30Days.push(dateStr);
+
+            const count = filteredTickets.filter((ticket) => {
+              const ticketDate = new Date(ticket.createdAt);
+              return ticketDate.toDateString() === date.toDateString();
+            }).length;
+
+            ticketCounts.push(count);
+          }
+
+          chartInstances.timeChart = new Chart(ctx2, {
+            type: "line",
+            data: {
+              labels: last30Days,
+              datasets: [
+                {
+                  label: "Tickets mới",
                   data: ticketCounts,
-                  borderColor: '#3b82f6',
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  borderColor: "#3b82f6",
+                  backgroundColor: "rgba(59, 130, 246, 0.1)",
                   borderWidth: 2,
                   fill: true,
-                  tension: 0.4
-                }]
+                  tension: 0.4,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: `Filtered: ${getFilterLabel(filterType)}`,
+                  color: "#3b82f6",
+                },
               },
-             options: {
-                 responsive: true,
-                 maintainAspectRatio: false,
-                 plugins: {
-                   legend: { display: false },
-                   title: {
-                     display: true,
-                     text: `Filtered: ${getFilterLabel(filterType)}`,
-                     color: '#3b82f6'
-                   }
-                 },
-                 scales: {
-                   y: { beginAtZero: true, ticks: { stepSize: 1 } },
-                   x: {
-                     ticks: {
-                       maxTicksLimit: 10,
-                       maxRotation: 45
-                     }
-                   }
-                 }
-               }
-           });
-         }
-         
-         // Update category chart với dữ liệu đã filter
-         const ctx3 = document.getElementById('adminCategoryChart');
-         if (ctx3 && chartInstances.adminCategoryChart) {
-           chartInstances.adminCategoryChart.destroy();
-           
-           const categoryCount = {};
-           const categoryColors = {
-             283640007: '#3b82f6', 283640004: '#ef4444', 283640008: '#f59e0b',
-             283640005: '#10b981', 283640009: '#8b5cf6', 191920000: '#06b6d4',
-             283640002: '#84cc16', 191920001: '#f97316', 283640001: '#ec4899',
-             283640003: '#6366f1', 283640006: '#14b8a6'
-           };
-           
-           filteredTickets.forEach(ticket => {
-             const category = ticket.category;
-             categoryCount[category] = (categoryCount[category] || 0) + 1;
-           });
-           
-           const sortedCategories = Object.entries(categoryCount)
-             .sort(([,a], [,b]) => b - a)
-             .slice(0, 8);
-           
-           const labels = sortedCategories.map(([category]) => getCategoryText(parseInt(category)));
-           const data = sortedCategories.map(([,count]) => count);
-           const backgroundColor = sortedCategories.map(([category]) => categoryColors[category] || '#6b7280');
-           
-           chartInstances.adminCategoryChart = new Chart(ctx3, {
-             type: 'bar',
-             data: {
-               labels: labels,
-               datasets: [{
-                 label: 'Số lượng tickets',
-                 data: data,
-                 backgroundColor: backgroundColor,
-                 borderRadius: 8,
-                 borderSkipped: false
-               }]
-             },
-             options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: {
-                 legend: { display: false },
-                 title: {
-                   display: true,
-                   text: `Filtered: ${getFilterLabel(filterType)}`,
-                   color: '#3b82f6'
-                 }
-               },
-               scales: {
-                 y: { beginAtZero: true, ticks: { stepSize: 1 } },
-                 x: { ticks: { maxRotation: 45, minRotation: 0 } }
-               }
-             }
-           });
-         }
-       }
-       
-       function createFilteredUserCharts(filteredTickets, filterType, userEmail) {
-         // Filter tickets của user
-         const userFilteredTickets = filteredTickets.filter(t => t.createdBy === userEmail);
-         
-         // Update user status chart
-         const ctx1 = document.getElementById('userStatusChart');
-         if (ctx1 && chartInstances.userStatusChart) {
-           chartInstances.userStatusChart.destroy();
-           
-           const pending = userFilteredTickets.filter(t => t.status === 191920002).length;
-           const approved = userFilteredTickets.filter(t => t.status === 191920000).length;
-           const rejected = userFilteredTickets.filter(t => t.status === 191920001).length;
-           
-           chartInstances.userStatusChart = new Chart(ctx1, {
-             type: 'bar',
-             data: {
-               labels: ['Chờ duyệt', 'Đã duyệt', 'Từ chối'],
-               datasets: [{
-                 label: 'Số lượng',
-                 data: [pending, approved, rejected],
-                 backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
-                 borderRadius: 8,
-                 borderSkipped: false
-               }]
-             },
-             options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: {
-                 legend: { display: false },
-                 title: {
-                   display: true,
-                   text: `Filtered: ${getFilterLabel(filterType)}`,
-                   color: '#3b82f6'
-                 }
-               },
-               scales: {
-                 y: { beginAtZero: true, ticks: { stepSize: 1 } }
-               }
-             }
-           });
-         }
-         
-         // Update user activity chart (category analysis)
-         const ctx2 = document.getElementById('userActivityChart');
-         if (ctx2 && chartInstances.userActivityChart) {
-           chartInstances.userActivityChart.destroy();
-           
-           const categoryCount = {};
-           const categoryColors = {
-             283640007: '#3b82f6', 283640004: '#ef4444', 283640008: '#f59e0b',
-             283640005: '#10b981', 283640009: '#8b5cf6', 191920000: '#06b6d4',
-             283640002: '#84cc16', 191920001: '#f97316', 283640001: '#ec4899',
-             283640003: '#6366f1', 283640006: '#14b8a6'
-           };
-           
-           userFilteredTickets.forEach(ticket => {
-             const category = ticket.category;
-             categoryCount[category] = (categoryCount[category] || 0) + 1;
-           });
-           
-           const labels = Object.keys(categoryCount).map(cat => getCategoryText(parseInt(cat)));
-           const data = Object.values(categoryCount);
-           const backgroundColor = Object.keys(categoryCount).map(cat => categoryColors[cat] || '#6b7280');
-           
-           chartInstances.userActivityChart = new Chart(ctx2, {
-             type: 'doughnut',
-             data: {
-               labels: labels,
-               datasets: [{
-                 data: data,
-                 backgroundColor: backgroundColor,
-                 borderWidth: 2,
-                 borderColor: '#ffffff'
-               }]
-             },
-             options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: {
-                 legend: {
-                   position: 'bottom',
-                   labels: { padding: 20, usePointStyle: true }
-                 },
-                 title: {
-                   display: true,
-                   text: `Filtered: ${getFilterLabel(filterType)}`,
-                   color: '#3b82f6'
-                 }
-               }
-             }
-           });
-         }
-       }
-       
-       function loadFilteredRecentActivities(filteredTickets) {
-         const recentActivities = document.getElementById("recentActivities");
-         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-         const isAdmin = currentUser?.idU === "admin";
-         const userEmail = currentUser?.idU;
-         
-         // Lọc tickets theo quyền và filter
-         let relevantTickets = [];
-         if (isAdmin) {
-           relevantTickets = filteredTickets;
-         } else {
-           relevantTickets = filteredTickets.filter(ticket => 
-             ticket.createdBy === userEmail || 
-             (ticket.userTickets && ticket.userTickets.includes(userEmail))
-           );
-         }
-         
-         // Tạo activities từ filtered tickets
-         const activities = [];
-         relevantTickets.forEach((ticket) => {
-           let activity;
-           if (ticket.status === 191920000) {
-             activity = {
-               type: "approved",
-               ticket: ticket,
-               time: new Date(ticket.createdAt).getTime() + 3600000,
-               description: isAdmin ? 
-                 `Ticket ${ticket.name} đã được phê duyệt` :
-                 ticket.createdBy === userEmail ?
-                   `Ticket của bạn đã được phê duyệt: ${ticket.title}` :
-                   `Đã phê duyệt ticket: ${ticket.title}`,
-             };
-           } else if (ticket.status === 191920001) {
-             activity = {
-               type: "rejected",
-               ticket: ticket,
-               time: new Date(ticket.createdAt).getTime() + 3600000,
-               description: isAdmin ? 
-                 `Ticket ${ticket.name} đã bị từ chối` :
-                 ticket.createdBy === userEmail ?
-                   `Ticket của bạn đã bị từ chối: ${ticket.title}` :
-                   `Đã từ chối ticket: ${ticket.title}`,
-             };
-           } else {
-             activity = {
-               type: "created",
-               ticket: ticket,
-               time: new Date(ticket.createdAt).getTime(),
-               description: isAdmin ? 
-                 `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${ticket.title}` :
-                 ticket.createdBy === userEmail ? 
-                   `Bạn đã tạo ticket: ${ticket.title}` :
-                   `Ticket mới cần phê duyệt: ${ticket.title}`,
-             };
-           }
-           activities.push(activity);
-         });
-         
-         activities.sort((a, b) => b.time - a.time);
-         const recentActivitiesList = activities.slice(0, 10);
-         
-         if (recentActivitiesList.length === 0) {
-           recentActivities.innerHTML = `
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: {
+                  ticks: {
+                    maxTicksLimit: 10,
+                    maxRotation: 45,
+                  },
+                },
+              },
+            },
+          });
+        }
+
+        // Update category chart với dữ liệu đã filter
+        const ctx3 = document.getElementById("adminCategoryChart");
+        if (ctx3 && chartInstances.adminCategoryChart) {
+          chartInstances.adminCategoryChart.destroy();
+
+          const categoryCount = {};
+          const categoryColors = {
+            283640007: "#3b82f6",
+            283640004: "#ef4444",
+            283640008: "#f59e0b",
+            283640005: "#10b981",
+            283640009: "#8b5cf6",
+            191920000: "#06b6d4",
+            283640002: "#84cc16",
+            191920001: "#f97316",
+            283640001: "#ec4899",
+            283640003: "#6366f1",
+            283640006: "#14b8a6",
+          };
+
+          filteredTickets.forEach((ticket) => {
+            const category = ticket.category;
+            categoryCount[category] = (categoryCount[category] || 0) + 1;
+          });
+
+          const sortedCategories = Object.entries(categoryCount)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 8);
+
+          const labels = sortedCategories.map(([category]) =>
+            getCategoryText(parseInt(category))
+          );
+          const data = sortedCategories.map(([, count]) => count);
+          const backgroundColor = sortedCategories.map(
+            ([category]) => categoryColors[category] || "#6b7280"
+          );
+
+          chartInstances.adminCategoryChart = new Chart(ctx3, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Số lượng tickets",
+                  data: data,
+                  backgroundColor: backgroundColor,
+                  borderRadius: 8,
+                  borderSkipped: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: `Filtered: ${getFilterLabel(filterType)}`,
+                  color: "#3b82f6",
+                },
+              },
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { maxRotation: 45, minRotation: 0 } },
+              },
+            },
+          });
+        }
+      }
+
+      function createFilteredUserCharts(
+        filteredTickets,
+        filterType,
+        userEmail
+      ) {
+        // Filter tickets của user
+        const userFilteredTickets = filteredTickets.filter(
+          (t) => t.createdBy === userEmail
+        );
+
+        // Update user status chart
+        const ctx1 = document.getElementById("userStatusChart");
+        if (ctx1 && chartInstances.userStatusChart) {
+          chartInstances.userStatusChart.destroy();
+
+          const pending = userFilteredTickets.filter(
+            (t) => t.status === 191920002
+          ).length;
+          const approved = userFilteredTickets.filter(
+            (t) => t.status === 191920000
+          ).length;
+          const rejected = userFilteredTickets.filter(
+            (t) => t.status === 191920001
+          ).length;
+
+          chartInstances.userStatusChart = new Chart(ctx1, {
+            type: "bar",
+            data: {
+              labels: ["Chờ duyệt", "Đã duyệt", "Từ chối"],
+              datasets: [
+                {
+                  label: "Số lượng",
+                  data: [pending, approved, rejected],
+                  backgroundColor: ["#fbbf24", "#10b981", "#ef4444"],
+                  borderRadius: 8,
+                  borderSkipped: false,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: `Filtered: ${getFilterLabel(filterType)}`,
+                  color: "#3b82f6",
+                },
+              },
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+              },
+            },
+          });
+        }
+
+        // Update user activity chart (category analysis)
+        const ctx2 = document.getElementById("userActivityChart");
+        if (ctx2 && chartInstances.userActivityChart) {
+          chartInstances.userActivityChart.destroy();
+
+          const categoryCount = {};
+          const categoryColors = {
+            283640007: "#3b82f6",
+            283640004: "#ef4444",
+            283640008: "#f59e0b",
+            283640005: "#10b981",
+            283640009: "#8b5cf6",
+            191920000: "#06b6d4",
+            283640002: "#84cc16",
+            191920001: "#f97316",
+            283640001: "#ec4899",
+            283640003: "#6366f1",
+            283640006: "#14b8a6",
+          };
+
+          userFilteredTickets.forEach((ticket) => {
+            const category = ticket.category;
+            categoryCount[category] = (categoryCount[category] || 0) + 1;
+          });
+
+          const labels = Object.keys(categoryCount).map((cat) =>
+            getCategoryText(parseInt(cat))
+          );
+          const data = Object.values(categoryCount);
+          const backgroundColor = Object.keys(categoryCount).map(
+            (cat) => categoryColors[cat] || "#6b7280"
+          );
+
+          chartInstances.userActivityChart = new Chart(ctx2, {
+            type: "doughnut",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  data: data,
+                  backgroundColor: backgroundColor,
+                  borderWidth: 2,
+                  borderColor: "#ffffff",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: { padding: 20, usePointStyle: true },
+                },
+                title: {
+                  display: true,
+                  text: `Filtered: ${getFilterLabel(filterType)}`,
+                  color: "#3b82f6",
+                },
+              },
+            },
+          });
+        }
+      }
+
+      function loadFilteredRecentActivities(filteredTickets) {
+        const recentActivities = document.getElementById("recentActivities");
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+        const userEmail = currentUser?.idU;
+
+        // Lọc tickets theo quyền và filter
+        let relevantTickets = [];
+        if (isAdmin) {
+          relevantTickets = filteredTickets;
+        } else {
+          relevantTickets = filteredTickets.filter(
+            (ticket) =>
+              ticket.createdBy === userEmail ||
+              (ticket.userTickets && ticket.userTickets.includes(userEmail))
+          );
+        }
+
+        // Tạo activities từ filtered tickets
+        const activities = [];
+        relevantTickets.forEach((ticket) => {
+          let activity;
+          if (ticket.status === 191920000) {
+            activity = {
+              type: "approved",
+              ticket: ticket,
+              time: new Date(ticket.createdAt).getTime() + 3600000,
+              description: isAdmin
+                ? `Ticket ${ticket.name} đã được phê duyệt`
+                : ticket.createdBy === userEmail
+                ? `Ticket của bạn đã được phê duyệt: ${ticket.title}`
+                : `Đã phê duyệt ticket: ${ticket.title}`,
+            };
+          } else if (ticket.status === 191920001) {
+            activity = {
+              type: "rejected",
+              ticket: ticket,
+              time: new Date(ticket.createdAt).getTime() + 3600000,
+              description: isAdmin
+                ? `Ticket ${ticket.name} đã bị từ chối`
+                : ticket.createdBy === userEmail
+                ? `Ticket của bạn đã bị từ chối: ${ticket.title}`
+                : `Đã từ chối ticket: ${ticket.title}`,
+            };
+          } else {
+            activity = {
+              type: "created",
+              ticket: ticket,
+              time: new Date(ticket.createdAt).getTime(),
+              description: isAdmin
+                ? `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${
+                    ticket.title
+                  }`
+                : ticket.createdBy === userEmail
+                ? `Bạn đã tạo ticket: ${ticket.title}`
+                : `Ticket mới cần phê duyệt: ${ticket.title}`,
+            };
+          }
+          activities.push(activity);
+        });
+
+        activities.sort((a, b) => b.time - a.time);
+        const recentActivitiesList = activities.slice(0, 10);
+
+        if (recentActivitiesList.length === 0) {
+          recentActivities.innerHTML = `
              <div class="text-center py-8 text-gray-500">
                <i class="fas fa-filter text-3xl mb-2 block"></i>
                <p>Không có hoạt động nào với bộ lọc này</p>
              </div>
            `;
-           return;
-         }
-         
-         recentActivities.innerHTML = recentActivitiesList
-           .map(activity => `
-             <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="viewTicket('${activity.ticket.id}')">
+          return;
+        }
+
+        recentActivities.innerHTML = recentActivitiesList
+          .map(
+            (activity) => `
+             <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="viewTicket('${
+               activity.ticket.id
+             }')">
                <div class="flex-shrink-0">
-                 <div class="w-8 h-8 rounded-full flex items-center justify-center ${getActivityIconClass(activity.type)}">
-                   <i class="fas ${getActivityIcon(activity.type)} text-white text-xs"></i>
+                 <div class="w-8 h-8 rounded-full flex items-center justify-center ${getActivityIconClass(
+                   activity.type
+                 )}">
+                   <i class="fas ${getActivityIcon(
+                     activity.type
+                   )} text-white text-xs"></i>
                  </div>
                </div>
                <div class="flex-1 min-w-0">
                  <div class="flex items-center justify-between">
-                   <p class="text-sm text-gray-900 truncate font-medium">${activity.description}</p>
-                   <span class="text-xs text-gray-500 ml-2 flex-shrink-0">${formatTimeAgo(activity.time)}</span>
+                   <p class="text-sm text-gray-900 truncate font-medium">${
+                     activity.description
+                   }</p>
+                   <span class="text-xs text-gray-500 ml-2 flex-shrink-0">${formatTimeAgo(
+                     activity.time
+                   )}</span>
                  </div>
                  <div class="flex items-center space-x-2 mt-1">
-                   <span class="text-xs text-gray-500">${getCategoryText(activity.ticket.category)}</span>
+                   <span class="text-xs text-gray-500">${getCategoryText(
+                     activity.ticket.category
+                   )}</span>
                    <span class="text-xs text-gray-400">•</span>
-                   <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${getStatusClass(activity.ticket.status)}">
+                   <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${getStatusClass(
+                     activity.ticket.status
+                   )}">
                      ${getStatusText(activity.ticket.status)}
                    </span>
                  </div>
                </div>
              </div>
-           `).join("");
-       }
-       
-       function getFilterLabel(filterType) {
-         switch (filterType) {
-           case 'pending': return 'Chờ phê duyệt';
-           case 'approved': return 'Đã phê duyệt';
-           case 'rejected': return 'Từ chối';
-           default: return 'Tất cả';
-         }
-       }
-       
-       function createUserStatusChart(userEmail) {
-         const ctx = document.getElementById('userStatusChart');
-         if (!ctx) return;
-         
-         // Destroy chart cũ nếu tồn tại
-         if (chartInstances.userStatusChart) {
-           chartInstances.userStatusChart.destroy();
-         }
-         
-         const userTickets = tickets.filter(t => t.createdBy === userEmail);
-         const pending = userTickets.filter(t => t.status === 191920002).length;
-         const approved = userTickets.filter(t => t.status === 191920000).length;
-         const rejected = userTickets.filter(t => t.status === 191920001).length;
-         
-         chartInstances.userStatusChart = new Chart(ctx, {
-           type: 'bar',
-           data: {
-             labels: ['Chờ duyệt', 'Đã duyệt', 'Từ chối'],
-             datasets: [{
-               label: 'Số lượng',
-               data: [pending, approved, rejected],
-               backgroundColor: ['#fbbf24', '#10b981', '#ef4444'],
-               borderRadius: 8,
-               borderSkipped: false
-             }]
-           },
-           options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             plugins: {
-               legend: {
-                 display: false
-               }
-             },
-             scales: {
-               y: {
-                 beginAtZero: true,
-                 ticks: {
-                   stepSize: 1
-                 }
-               }
-             }
-           }
-         });
-       }
-       
-       function createUserActivityChart(userEmail) {
-         const ctx = document.getElementById('userActivityChart');
-         if (!ctx) return;
-         
-         // Destroy chart cũ nếu tồn tại
-         if (chartInstances.userActivityChart) {
-           chartInstances.userActivityChart.destroy();
-         }
-         
-         // Lấy tickets của user
-         const userTickets = tickets.filter(t => t.createdBy === userEmail);
-         
-         // Đếm số lượng theo từng category
-         const categoryCount = {};
-         const categoryColors = {
-           283640007: '#3b82f6', // Điều chỉnh định lượng
-           283640004: '#ef4444', // Hủy phiếu nhập kho
-           283640008: '#f59e0b', // Hủy phiếu xuất kho
-           283640005: '#10b981', // Điều chỉnh phiếu nhập kho
-           283640009: '#8b5cf6', // Điều chỉnh phiếu xuất kho
-           191920000: '#06b6d4', // Điều chỉnh giá SOD
-           283640002: '#84cc16', // Điều chỉnh giá BOD
-           191920001: '#f97316', // VAT SOD
-           283640001: '#ec4899', // VAT SO
-           283640003: '#6366f1', // VAT BOD
-           283640006: '#14b8a6'  // VAT BO
-         };
-         
-         userTickets.forEach(ticket => {
-           const category = ticket.category;
-           if (categoryCount[category]) {
-             categoryCount[category]++;
-           } else {
-             categoryCount[category] = 1;
-           }
-         });
-         
-         // Chuyển đổi thành arrays cho Chart.js
-         const labels = [];
-         const data = [];
-         const backgroundColor = [];
-         
-         Object.entries(categoryCount).forEach(([category, count]) => {
-           labels.push(getCategoryText(parseInt(category)));
-           data.push(count);
-           backgroundColor.push(categoryColors[category] || '#6b7280');
-         });
-         
-         chartInstances.userActivityChart = new Chart(ctx, {
-           type: 'doughnut',
-           data: {
-             labels: labels,
-             datasets: [{
-               data: data,
-               backgroundColor: backgroundColor,
-               borderWidth: 2,
-               borderColor: '#ffffff'
-             }]
-           },
-           options: {
-             responsive: true,
-             maintainAspectRatio: false,
-             plugins: {
-               legend: {
-                 position: 'bottom',
-                 labels: {
-                   padding: 20,
-                   usePointStyle: true
-                 }
-               }
-             }
-           }
-         });
-       }
- 
-       let allActivities = []; // Biến global để lưu tất cả hoạt động
-       let showingAllActivities = false; // Trạng thái hiển thị
-       let showAllActivitiesHandlerInitialized = false; // Flag để tránh gắn handler nhiều lần
-       
-       function initializeShowAllActivitiesHandler() {
-         if (showAllActivitiesHandlerInitialized) return;
-         
-         const showAllActivitiesBtn = document.getElementById("showAllActivities");
-         if (showAllActivitiesBtn) {
-           showAllActivitiesBtn.addEventListener("click", function() {
-             loadRecentActivities(!showingAllActivities);
-           });
-           showAllActivitiesHandlerInitialized = true;
-         }
-       }
-       
-       function loadRecentActivities(showAll = false) {
+           `
+          )
+          .join("");
+      }
+
+      function getFilterLabel(filterType) {
+        switch (filterType) {
+          case "pending":
+            return "Chờ phê duyệt";
+          case "approved":
+            return "Đã phê duyệt";
+          case "rejected":
+            return "Từ chối";
+          default:
+            return "Tất cả";
+        }
+      }
+
+      function createUserStatusChart(userEmail) {
+        const ctx = document.getElementById("userStatusChart");
+        if (!ctx) return;
+
+        // Destroy chart cũ nếu tồn tại
+        if (chartInstances.userStatusChart) {
+          chartInstances.userStatusChart.destroy();
+        }
+
+        const userTickets = tickets.filter((t) => t.createdBy === userEmail);
+        const pending = userTickets.filter(
+          (t) => t.status === 191920002
+        ).length;
+        const approved = userTickets.filter(
+          (t) => t.status === 191920000
+        ).length;
+        const rejected = userTickets.filter(
+          (t) => t.status === 191920001
+        ).length;
+
+        chartInstances.userStatusChart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Chờ duyệt", "Đã duyệt", "Từ chối"],
+            datasets: [
+              {
+                label: "Số lượng",
+                data: [pending, approved, rejected],
+                backgroundColor: ["#fbbf24", "#10b981", "#ef4444"],
+                borderRadius: 8,
+                borderSkipped: false,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  stepSize: 1,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      function createUserActivityChart(userEmail) {
+        const ctx = document.getElementById("userActivityChart");
+        if (!ctx) return;
+
+        // Destroy chart cũ nếu tồn tại
+        if (chartInstances.userActivityChart) {
+          chartInstances.userActivityChart.destroy();
+        }
+
+        // Lấy tickets của user
+        const userTickets = tickets.filter((t) => t.createdBy === userEmail);
+
+        // Đếm số lượng theo từng category
+        const categoryCount = {};
+        const categoryColors = {
+          283640007: "#3b82f6", // Điều chỉnh định lượng
+          283640004: "#ef4444", // Hủy phiếu nhập kho
+          283640008: "#f59e0b", // Hủy phiếu xuất kho
+          283640005: "#10b981", // Điều chỉnh phiếu nhập kho
+          283640009: "#8b5cf6", // Điều chỉnh phiếu xuất kho
+          191920000: "#06b6d4", // Điều chỉnh giá SOD
+          283640002: "#84cc16", // Điều chỉnh giá BOD
+          191920001: "#f97316", // VAT SOD
+          283640001: "#ec4899", // VAT SO
+          283640003: "#6366f1", // VAT BOD
+          283640006: "#14b8a6", // VAT BO
+        };
+
+        userTickets.forEach((ticket) => {
+          const category = ticket.category;
+          if (categoryCount[category]) {
+            categoryCount[category]++;
+          } else {
+            categoryCount[category] = 1;
+          }
+        });
+
+        // Chuyển đổi thành arrays cho Chart.js
+        const labels = [];
+        const data = [];
+        const backgroundColor = [];
+
+        Object.entries(categoryCount).forEach(([category, count]) => {
+          labels.push(getCategoryText(parseInt(category)));
+          data.push(count);
+          backgroundColor.push(categoryColors[category] || "#6b7280");
+        });
+
+        chartInstances.userActivityChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                data: data,
+                backgroundColor: backgroundColor,
+                borderWidth: 2,
+                borderColor: "#ffffff",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  padding: 20,
+                  usePointStyle: true,
+                },
+              },
+            },
+          },
+        });
+      }
+
+      let allActivities = []; // Biến global để lưu tất cả hoạt động
+      let showingAllActivities = false; // Trạng thái hiển thị
+      let showAllActivitiesHandlerInitialized = false; // Flag để tránh gắn handler nhiều lần
+
+      function initializeShowAllActivitiesHandler() {
+        if (showAllActivitiesHandlerInitialized) return;
+
+        const showAllActivitiesBtn =
+          document.getElementById("showAllActivities");
+        if (showAllActivitiesBtn) {
+          showAllActivitiesBtn.addEventListener("click", function () {
+            loadRecentActivities(!showingAllActivities);
+          });
+          showAllActivitiesHandlerInitialized = true;
+        }
+      }
+
+      function loadRecentActivities(showAll = false) {
         const recentActivities = document.getElementById("recentActivities");
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         const isAdmin = currentUser?.idU === "admin";
@@ -2614,9 +2836,10 @@
           relevantTickets = tickets; // Admin thấy tất cả
         } else {
           // User thường chỉ thấy tickets liên quan đến mình
-          relevantTickets = tickets.filter(ticket => 
-            ticket.createdBy === userEmail || 
-            (ticket.userTickets && ticket.userTickets.includes(userEmail))
+          relevantTickets = tickets.filter(
+            (ticket) =>
+              ticket.createdBy === userEmail ||
+              (ticket.userTickets && ticket.userTickets.includes(userEmail))
           );
         }
 
@@ -2626,18 +2849,18 @@
         relevantTickets.forEach((ticket) => {
           // Chỉ hiển thị activity quan trọng nhất cho mỗi ticket
           let activity;
-          
+
           if (ticket.status === 191920000) {
             // Ticket đã được phê duyệt - ưu tiên hiển thị trạng thái này
             activity = {
               type: "approved",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
-              description: isAdmin ? 
-                `Ticket ${ticket.name} đã được phê duyệt` :
-                ticket.createdBy === userEmail ?
-                  `Ticket của bạn đã được phê duyệt: ${ticket.title}` :
-                  `Đã phê duyệt ticket: ${ticket.title}`,
+              description: isAdmin
+                ? `Ticket ${ticket.name} đã được phê duyệt`
+                : ticket.createdBy === userEmail
+                ? `Ticket của bạn đã được phê duyệt: ${ticket.title}`
+                : `Đã phê duyệt ticket: ${ticket.title}`,
             };
           } else if (ticket.status === 191920001) {
             // Ticket bị từ chối - ưu tiên hiển thị trạng thái này
@@ -2645,11 +2868,11 @@
               type: "rejected",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime() + 3600000, // +1 giờ
-              description: isAdmin ? 
-                `Ticket ${ticket.name} đã bị từ chối` :
-                ticket.createdBy === userEmail ?
-                  `Ticket của bạn đã bị từ chối: ${ticket.title}` :
-                  `Đã từ chối ticket: ${ticket.title}`,
+              description: isAdmin
+                ? `Ticket ${ticket.name} đã bị từ chối`
+                : ticket.createdBy === userEmail
+                ? `Ticket của bạn đã bị từ chối: ${ticket.title}`
+                : `Đã từ chối ticket: ${ticket.title}`,
             };
           } else {
             // Ticket chưa được xử lý - hiển thị hoạt động tạo
@@ -2657,25 +2880,29 @@
               type: "created",
               ticket: ticket,
               time: new Date(ticket.createdAt).getTime(),
-              description: isAdmin ? 
-                `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${ticket.title}` :
-                ticket.createdBy === userEmail ? 
-                  `Bạn đã tạo ticket: ${ticket.title}` :
-                  `Ticket mới cần phê duyệt: ${ticket.title}`,
+              description: isAdmin
+                ? `${getUserNameByEmail(ticket.createdBy)} tạo ticket: ${
+                    ticket.title
+                  }`
+                : ticket.createdBy === userEmail
+                ? `Bạn đã tạo ticket: ${ticket.title}`
+                : `Ticket mới cần phê duyệt: ${ticket.title}`,
             };
           }
-          
+
           activities.push(activity);
         });
 
         // Sắp xếp theo thời gian (mới nhất trước)
         activities.sort((a, b) => b.time - a.time);
         allActivities = activities; // Lưu tất cả hoạt động
-        
+
         // Quyết định số lượng hiển thị
-        const recentActivitiesList = showAll ? activities : activities.slice(0, 10);
+        const recentActivitiesList = showAll
+          ? activities
+          : activities.slice(0, 10);
         showingAllActivities = showAll;
-        
+
         // Cập nhật text nút
         const showAllBtn = document.getElementById("showAllActivities");
         if (showAllBtn) {
@@ -2695,7 +2922,9 @@
         recentActivities.innerHTML = recentActivitiesList
           .map(
             (activity) => `
-                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="viewTicket('${activity.ticket.id}')">
+                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer" onclick="viewTicket('${
+                  activity.ticket.id
+                }')">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 rounded-full flex items-center justify-center ${getActivityIconClass(
                           activity.type
@@ -2715,7 +2944,9 @@
                             )}</span>
                         </div>
                         <div class="flex items-center space-x-2 mt-1">
-                            <span class="text-xs text-gray-500">${getCategoryText(activity.ticket.category)}</span>
+                            <span class="text-xs text-gray-500">${getCategoryText(
+                              activity.ticket.category
+                            )}</span>
                             <span class="text-xs text-gray-400">•</span>
                             <span class="inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${getStatusClass(
                               activity.ticket.status
@@ -2781,7 +3012,7 @@
 
       function handleSearch(event) {
         currentSearchTerm = event.target.value.toLowerCase().trim();
-        
+
         // Hiển thị/ẩn nút xóa tìm kiếm
         const clearSearchBtn = document.getElementById("clearSearch");
         if (clearSearchBtn) {
@@ -2791,7 +3022,7 @@
             clearSearchBtn.classList.add("hidden");
           }
         }
-        
+
         applyFilters();
       }
 
@@ -2805,39 +3036,47 @@
         const searchInput = document.getElementById("searchTickets");
         const statusFilter = document.getElementById("statusFilter");
         const clearSearchBtn = document.getElementById("clearSearch");
-        
+
         if (searchInput) {
           searchInput.value = "";
         }
-        
+
         if (statusFilter) {
           statusFilter.value = "";
         }
-        
+
         if (clearSearchBtn) {
           clearSearchBtn.classList.add("hidden");
         }
-        
+
         // Reset biến
         currentSearchTerm = "";
         currentStatusFilter = "";
-        
+
         // Áp dụng lại bộ lọc (sẽ hiển thị tất cả)
         applyFilters();
       }
 
       function applyFilters() {
-        filteredTickets = tickets.filter(ticket => {
+        filteredTickets = tickets.filter((ticket) => {
           // Lọc theo từ khóa tìm kiếm
-          const matchesSearch = !currentSearchTerm || 
+          const matchesSearch =
+            !currentSearchTerm ||
             ticket.name.toLowerCase().includes(currentSearchTerm) ||
             ticket.title.toLowerCase().includes(currentSearchTerm) ||
-            getCategoryText(ticket.category).toLowerCase().includes(currentSearchTerm) ||
-            getUserNameByEmail(ticket.createdBy).toLowerCase().includes(currentSearchTerm) ||
-            getStatusText(ticket.status).toLowerCase().includes(currentSearchTerm);
+            getCategoryText(ticket.category)
+              .toLowerCase()
+              .includes(currentSearchTerm) ||
+            getUserNameByEmail(ticket.createdBy)
+              .toLowerCase()
+              .includes(currentSearchTerm) ||
+            getStatusText(ticket.status)
+              .toLowerCase()
+              .includes(currentSearchTerm);
 
           // Lọc theo trạng thái
-          const matchesStatus = !currentStatusFilter || 
+          const matchesStatus =
+            !currentStatusFilter ||
             getStatusFilterValue(ticket.status) === currentStatusFilter;
 
           return matchesSearch && matchesStatus;
@@ -2852,23 +3091,27 @@
       }
 
       function updateSearchResultsDisplay() {
-        const searchResultsMobile = document.getElementById("searchResultsMobile");
-        
+        const searchResultsMobile = document.getElementById(
+          "searchResultsMobile"
+        );
+
         if (searchResultsMobile) {
           if (currentSearchTerm || currentStatusFilter) {
             const resultText = `Tìm thấy ${filteredTickets.length} kết quả`;
             const filterInfo = [];
-            
+
             if (currentSearchTerm) {
               filterInfo.push(`"${currentSearchTerm}"`);
             }
-            
+
             if (currentStatusFilter) {
               const statusText = getStatusTextFromFilter(currentStatusFilter);
               filterInfo.push(`trạng thái: ${statusText}`);
             }
-            
-            searchResultsMobile.textContent = `${resultText}${filterInfo.length > 0 ? ` cho ${filterInfo.join(", ")}` : ""}`;
+
+            searchResultsMobile.textContent = `${resultText}${
+              filterInfo.length > 0 ? ` cho ${filterInfo.join(", ")}` : ""
+            }`;
             searchResultsMobile.classList.remove("hidden");
           } else {
             searchResultsMobile.classList.add("hidden");
@@ -2917,9 +3160,10 @@
         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
         if (!currentUser) {
           const ticketsTable = document.getElementById("ticketsTable");
-          const paginationContainer = document.getElementById("ticketsPagination");
+          const paginationContainer =
+            document.getElementById("ticketsPagination");
           const paginationInfo = document.getElementById("paginationInfo");
-          
+
           if (ticketsTable) {
             ticketsTable.innerHTML = `
               <tr>
@@ -2930,25 +3174,29 @@
               </tr>
             `;
           }
-          
+
           if (paginationInfo) {
             paginationInfo.textContent = "Chưa đăng nhập";
           }
-          
+
           if (paginationContainer) {
             paginationContainer.innerHTML = "";
           }
-          
+
           return;
         }
-        
+
         currentTicketPage = page;
         const ticketsTable = document.getElementById("ticketsTable");
-        const paginationContainer = document.getElementById("ticketsPagination");
+        const paginationContainer =
+          document.getElementById("ticketsPagination");
         const paginationInfo = document.getElementById("paginationInfo");
 
         // Sử dụng filteredTickets thay vì tickets gốc
-        const ticketsToShow = filteredTickets.length > 0 || currentSearchTerm || currentStatusFilter ? filteredTickets : tickets;
+        const ticketsToShow =
+          filteredTickets.length > 0 || currentSearchTerm || currentStatusFilter
+            ? filteredTickets
+            : tickets;
         const totalPages = Math.ceil(ticketsToShow.length / ticketsPerPage);
         const start = (page - 1) * ticketsPerPage;
         const end = Math.min(start + ticketsPerPage, ticketsToShow.length);
@@ -2962,10 +3210,13 @@
             paginationInfo.textContent = "Không có dữ liệu";
           }
         } else {
-          const totalText = (currentSearchTerm || currentStatusFilter) ? 
-            `${ticketsToShow.length} kết quả tìm thấy` : 
-            `${ticketsToShow.length} kết quả`;
-          paginationInfo.textContent = `Hiển thị ${start + 1}-${end} của ${totalText}`;
+          const totalText =
+            currentSearchTerm || currentStatusFilter
+              ? `${ticketsToShow.length} kết quả tìm thấy`
+              : `${ticketsToShow.length} kết quả`;
+          paginationInfo.textContent = `Hiển thị ${
+            start + 1
+          }-${end} của ${totalText}`;
         }
 
         // Render bảng tickets
@@ -2982,7 +3233,9 @@
           ticketsTable.innerHTML = ticketsToRender
             .map(
               (ticket) => `
-          <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="handleTicketRowClick('${ticket.id}', ${ticket.status})">
+          <tr class="hover:bg-gray-50 cursor-pointer transition-colors" onclick="handleTicketRowClick('${
+            ticket.id
+          }', ${ticket.status})">
             <td class="px-3 lg:px-6 py-3 lg:py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate">${
               ticket.name
             }</td>
@@ -3027,7 +3280,9 @@
         if (totalPages > 1) {
           // Nút Previous
           paginationHTML += `
-            <button ${page === 1 ? "disabled" : ""} onclick="loadTickets(${page - 1})"
+            <button ${page === 1 ? "disabled" : ""} onclick="loadTickets(${
+            page - 1
+          })"
               class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-white">
               <i class="fas fa-chevron-left mr-1"></i>Previous
             </button>
@@ -3037,7 +3292,7 @@
           const maxVisiblePages = 5;
           let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
           let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-          
+
           if (endPage - startPage + 1 < maxVisiblePages) {
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
           }
@@ -3084,9 +3339,9 @@
 
           // Nút Next
           paginationHTML += `
-            <button ${page === totalPages ? "disabled" : ""} onclick="loadTickets(${
-              page + 1
-            })"
+            <button ${
+              page === totalPages ? "disabled" : ""
+            } onclick="loadTickets(${page + 1})"
               class="px-3 py-1 border rounded text-blue-600 hover:bg-blue-50 disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-white">
               Next<i class="fas fa-chevron-right ml-1"></i>
             </button>
@@ -3127,7 +3382,7 @@
           }
           return;
         }
-        
+
         const approvalsTable = document.getElementById("approvalsTable");
         const pendingTickets = tickets.filter((t) => t.status === 191920002);
 
@@ -3185,16 +3440,23 @@
           e.preventDefault(); // Ngăn form submit mặc định
 
           // Kiểm tra validation riêng cho trường người duyệt (Choices.js)
-          const selectedApprovers = approverChoices ? approverChoices.getValue(true) : [];
+          const selectedApprovers = approverChoices
+            ? approverChoices.getValue(true)
+            : [];
           if (!selectedApprovers || selectedApprovers.length === 0) {
             showNotification("Vui lòng chọn ít nhất một người duyệt!", "error");
             // Focus vào trường người duyệt
-            const approverContainer = document.querySelector(".choices[data-type='select-multiple']");
+            const approverContainer = document.querySelector(
+              ".choices[data-type='select-multiple']"
+            );
             if (approverContainer) {
-              approverContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              approverContainer.classList.add('border-red-500');
+              approverContainer.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              approverContainer.classList.add("border-red-500");
               setTimeout(() => {
-                approverContainer.classList.remove('border-red-500');
+                approverContainer.classList.remove("border-red-500");
               }, 3000);
             }
             return;
@@ -3205,7 +3467,7 @@
             newTicketForm.reportValidity();
             return;
           }
-          
+
           // Nếu tất cả đều hợp lệ thì tạo ticket
           createNewTicket();
         });
@@ -3261,7 +3523,7 @@
                 document.getElementById("IDPhieuHuy").value,
               crdfd_nguoiduyet: "Hệ thống", //approversText,
               cr1bb_giatriexuat:
-                document.getElementById("numberPhieuHuy").value
+                document.getElementById("numberPhieuHuy").value,
             });
             break;
 
@@ -3363,7 +3625,8 @@
         const ticketModal = document.getElementById("ticketModal");
         const closeTicketModal = document.getElementById("closeTicketModal");
         const approvalModal = document.getElementById("approvalModal");
-        const closeApprovalModal = document.getElementById("closeApprovalModal");
+        const closeApprovalModal =
+          document.getElementById("closeApprovalModal");
 
         closeTicketModal.addEventListener("click", () =>
           ticketModal.classList.add("hidden")
@@ -3626,8 +3889,6 @@
           setTimeout(() => document.body.removeChild(notification), 300);
         }, 3000);
       }
-
-
 
       // Utility functions
       function getStatusClass(status) {
@@ -4285,40 +4546,46 @@
         // ================================
         if (closeLoginBtn)
           closeLoginBtn.addEventListener("click", () => {
-            const modalContent = loginModal.querySelector('.login-modal-animate');
-            modalContent.style.animation = 'modalSlideOut 0.3s ease-in forwards';
+            const modalContent = loginModal.querySelector(
+              ".login-modal-animate"
+            );
+            modalContent.style.animation =
+              "modalSlideOut 0.3s ease-in forwards";
             setTimeout(() => {
               loginModal.classList.add("hidden");
-              modalContent.style.animation = '';
+              modalContent.style.animation = "";
             }, 300);
           });
         if (cancelLoginBtn)
           cancelLoginBtn.addEventListener("click", () => {
-            const modalContent = loginModal.querySelector('.login-modal-animate');
-            modalContent.style.animation = 'modalSlideOut 0.3s ease-in forwards';
+            const modalContent = loginModal.querySelector(
+              ".login-modal-animate"
+            );
+            modalContent.style.animation =
+              "modalSlideOut 0.3s ease-in forwards";
             setTimeout(() => {
               loginModal.classList.add("hidden");
-              modalContent.style.animation = '';
+              modalContent.style.animation = "";
             }, 300);
           });
 
         // ================================
         // 10. Toggle password visibility
         // ================================
-        const togglePasswordBtn = document.getElementById('togglePassword');
+        const togglePasswordBtn = document.getElementById("togglePassword");
         if (togglePasswordBtn) {
-          togglePasswordBtn.addEventListener('click', () => {
-            const passwordField = document.getElementById('password');
-            const icon = togglePasswordBtn.querySelector('i');
-            
-            if (passwordField.type === 'password') {
-              passwordField.type = 'text';
-              icon.classList.remove('fa-eye');
-              icon.classList.add('fa-eye-slash');
+          togglePasswordBtn.addEventListener("click", () => {
+            const passwordField = document.getElementById("password");
+            const icon = togglePasswordBtn.querySelector("i");
+
+            if (passwordField.type === "password") {
+              passwordField.type = "text";
+              icon.classList.remove("fa-eye");
+              icon.classList.add("fa-eye-slash");
             } else {
-              passwordField.type = 'password';
-              icon.classList.remove('fa-eye-slash');
-              icon.classList.add('fa-eye');
+              passwordField.type = "password";
+              icon.classList.remove("fa-eye-slash");
+              icon.classList.add("fa-eye");
             }
           });
         }
@@ -4328,13 +4595,19 @@
         // ================================
         const observer = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            if (
+              mutation.type === "attributes" &&
+              mutation.attributeName === "class"
+            ) {
               const modal = mutation.target;
-              if (!modal.classList.contains('hidden')) {
+              if (!modal.classList.contains("hidden")) {
                 // Modal được mở
-                const modalContent = modal.querySelector('.login-modal-animate');
+                const modalContent = modal.querySelector(
+                  ".login-modal-animate"
+                );
                 if (modalContent) {
-                  modalContent.style.animation = 'modalSlideIn 0.3s ease-out forwards';
+                  modalContent.style.animation =
+                    "modalSlideIn 0.3s ease-out forwards";
                 }
               }
             }
@@ -4371,37 +4644,35 @@
         currentSearchTerm = "";
         currentStatusFilter = "";
         currentTicketPage = 1;
-        
+
         // Reset token cache
         cachedToken = null;
         tokenExpiry = null;
-        
 
-        
         // Reset dashboard stats
         const dashboardStats = document.getElementById("dashboardStats");
         if (dashboardStats) dashboardStats.innerHTML = "";
-        
+
         // Reset charts section
         const chartsSection = document.getElementById("chartsSection");
         if (chartsSection) chartsSection.innerHTML = "";
-        
+
         // Reset recent activities
         const recentActivities = document.getElementById("recentActivities");
         if (recentActivities) recentActivities.innerHTML = "";
-        
+
         // Reset search input
         const searchInput = document.getElementById("searchTickets");
         if (searchInput) {
           searchInput.value = "";
         }
-        
+
         // Reset status filter
         const statusFilter = document.getElementById("statusFilter");
         if (statusFilter) {
           statusFilter.value = "";
         }
-        
+
         // Hide clear search button
         const clearSearchBtn = document.getElementById("clearSearch");
         if (clearSearchBtn) {
@@ -4602,7 +4873,7 @@
               </div>
             </div>
           `,
-          
+
           "Phòng Cung ứng": `
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
               <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
@@ -4647,7 +4918,7 @@
               </div>
             </div>
           `,
-          
+
           "Phòng Phát triển Kinh doanh": `
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
               <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
@@ -4666,6 +4937,10 @@
                     <li>Mô tả lý do thay đổi giá bán</li>
                     <li>Cung cấp thông tin khách hàng liên quan</li>
                   </ul>
+                  <p class="text-red-600 font-semibold mt-3">
+                      ⚠️ Lưu ý: Giá trị đơn giá cập nhật là <u>giá gốc, chưa trừ chiết khấu</u>. 
+                      Hệ thống sẽ tự động áp dụng chiết khấu từ các cột Chiết khấu liên quan.
+                  </p>
                 </div>
                 
                 <div class="border-l-4 border-pink-400 pl-4">
@@ -4692,7 +4967,7 @@
               </div>
             </div>
           `,
-          
+
           "Hệ thống": `
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
               <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
@@ -4749,13 +5024,13 @@
                 </ol>
               </div>
             </div>
-          `
+          `,
         };
 
         // Nếu là admin, hiển thị tất cả hướng dẫn
         if (isAdmin) {
           let allGuides = "";
-          Object.keys(guidesByDepartment).forEach(dept => {
+          Object.keys(guidesByDepartment).forEach((dept) => {
             if (dept !== "Hệ thống") {
               allGuides += guidesByDepartment[dept];
             }
