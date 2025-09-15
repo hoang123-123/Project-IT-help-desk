@@ -4377,16 +4377,29 @@
       // function setup value chọn phòng ban
       function loadDepartments() {
         const deptSelect = document.getElementById("ticketDepartment");
-        const uniqueDepartments = [
-          ...new Set(approversData.map((u) => u.phongban)),
-        ];
-        deptSelect.innerHTML = '<option value="">Chọn phòng ban</option>';
-        uniqueDepartments.forEach((dept) => {
-          const option = document.createElement("option");
-          option.value = dept;
-          option.textContent = dept;
-          deptSelect.appendChild(option);
-        });
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const isAdmin = currentUser?.idU === "admin";
+        
+        if (isAdmin) {
+          // Admin có thể chọn tất cả phòng ban
+          const uniqueDepartments = [
+            ...new Set(approversData.map((u) => u.phongban)),
+          ];
+          deptSelect.innerHTML = '<option value="">Chọn phòng ban</option>';
+          uniqueDepartments.forEach((dept) => {
+            const option = document.createElement("option");
+            option.value = dept;
+            option.textContent = dept;
+            deptSelect.appendChild(option);
+          });
+          deptSelect.disabled = false; // Đảm bảo admin có thể chọn
+        } else {
+          // User thường chỉ có phòng ban của mình
+          const userDepartment = currentUser?.phongban || "";
+          deptSelect.innerHTML = `<option value="${userDepartment}">${userDepartment}</option>`;
+          deptSelect.value = userDepartment;
+          deptSelect.disabled = true; // Không cho phép thay đổi
+        }
       }
 
       // function login
