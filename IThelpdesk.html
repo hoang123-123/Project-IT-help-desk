@@ -4399,6 +4399,9 @@
           deptSelect.innerHTML = `<option value="${userDepartment}">${userDepartment}</option>`;
           deptSelect.value = userDepartment;
           deptSelect.disabled = true; // Không cho phép thay đổi
+          
+          // Tự động load loại yêu cầu cho phòng ban của user
+          onDepartmentChange(userDepartment);
         }
       }
 
