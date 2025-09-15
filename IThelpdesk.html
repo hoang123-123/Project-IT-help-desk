@@ -4829,8 +4829,19 @@
                   <p class="text-gray-600 mb-2">Khi cần hủy phiếu xuất kho đã tạo:</p>
                   <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
                     <li>Chọn loại: "Hủy phiếu xuất kho"</li>
-                    <li>Nhập ID phiếu cần hủy</li>
-                    <li>Nhập số phiếu xuất kho</li>
+                    <li>
+                        Chọn người duyệt 
+                        <span class="text-red-600 font-semibold ml-1">(yêu cầu: ít nhất 1 user)</span>
+                    </li>
+                    <li>Nhập mã đơn hàng SOD
+                        <span class="text-red-600 font-semibold ml-1">(vd: "SO_10164392_12-09-2025_KH - CH Cẩm Bào ( Ninh Hoà)_Đơn 10/9 nước - có hóa đơn/2672206")</span>
+                    </li>
+                    <li>Nhập phiếu xuất kho cần hủy
+                        <span class="text-red-600 font-semibold ml-1">(vd: "PXK_10164392")</span>
+                    </li>
+                    <li>Nhập số lượng cần hủy theo kho
+                        <span class="text-red-600 font-semibold ml-1">(vd: "100")</span>
+                    </li>
                     <li>Mô tả lý do hủy phiếu</li>
                   </ul>
                 </div>
@@ -4840,8 +4851,19 @@
                   <p class="text-gray-600 mb-2">Khi cần hủy phiếu nhập kho đã tạo:</p>
                   <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
                     <li>Chọn loại: "Hủy phiếu nhập kho"</li>
-                    <li>Nhập ID phiếu cần hủy</li>
-                    <li>Nhập số phiếu nhập kho</li>
+                    <li>
+                        Chọn người duyệt 
+                        <span class="text-red-600 font-semibold ml-1">(yêu cầu: ít nhất 1 user)</span>
+                    </li>
+                    <li>Nhập mã đơn hàng BOD
+                        <span class="text-red-600 font-semibold ml-1">(vd: "BO_10037860_13-09-2025_Bắc Hà (Đinh Thép Việt)_Đinh TV_[Bình Định]/10126923")</span>
+                    </li>
+                    <li>Nhập số phiếu nhập kho cần hủy
+                        <span class="text-red-600 font-semibold ml-1">(vd: "PNK_10037860")</span>
+                    </li>
+                    <li>Nhập số lượng cần hủy theo kho
+                        <span class="text-red-600 font-semibold ml-1">(vd: "100")</span>
+                    </li>
                     <li>Mô tả lý do hủy phiếu</li>
                   </ul>
                 </div>
@@ -4892,6 +4914,10 @@
                     <li>Mô tả lý do thay đổi giá</li>
                     <li>Đính kèm tài liệu liên quan (nếu có)</li>
                   </ul>
+                  <p class="text-red-600 font-semibold mt-3">
+                      ⚠️ Lưu ý: Giá trị đơn giá cập nhật là <u>giá gốc, chưa trừ chiết khấu</u>. 
+                      Hệ thống sẽ tự động áp dụng chiết khấu từ các cột Chiết khấu liên quan.
+                  </p>
                 </div>
                 
                 <div class="border-l-4 border-orange-400 pl-4">
@@ -4900,7 +4926,7 @@
                   <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
                     <li>Chọn loại: "Điều chỉnh VAT BOD"</li>
                     <li>Nhập mã đơn hàng BOD</li>
-                    <li>Chọn tùy chọn VAT (Có VAT/Không VAT)</li>
+                    <li>Chọn tùy chọn VAT (0%, 5%, 8%, 10%)</li>
                     <li>Mô tả lý do thay đổi VAT</li>
                   </ul>
                 </div>
@@ -4932,6 +4958,10 @@
                   <p class="text-gray-600 mb-2">Khi cần điều chỉnh giá trong đơn hàng bán (SOD):</p>
                   <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
                     <li>Chọn loại: "Điều chỉnh giá SOD"</li>
+                    <li>
+                        Chọn người duyệt 
+                        <span class="text-red-600 font-semibold ml-1">(yêu cầu: ít nhất 1 user)</span>
+                    </li>
                     <li>Nhập mã đơn hàng SOD</li>
                     <li>Nhập giá trị điều chỉnh mới</li>
                     <li>Mô tả lý do thay đổi giá bán</li>
@@ -4948,8 +4978,12 @@
                   <p class="text-gray-600 mb-2">Khi cần điều chỉnh VAT cho đơn hàng bán:</p>
                   <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
                     <li>Chọn loại: "Điều chỉnh VAT SOD"</li>
+                    <li>
+                        Chọn người duyệt 
+                        <span class="text-red-600 font-semibold ml-1">(yêu cầu: ít nhất 1 user)</span>
+                    </li>
                     <li>Nhập mã đơn hàng SOD</li>
-                    <li>Chọn tùy chọn VAT (Có VAT/Không VAT)</li>
+                    <li>Chọn tùy chọn VAT (0%, 5%, 8%, 10%)</li>
                     <li>Mô tả lý do thay đổi VAT</li>
                   </ul>
                 </div>
