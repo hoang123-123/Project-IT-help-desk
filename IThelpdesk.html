@@ -1383,7 +1383,7 @@
 
       window.addEventListener("resize", () => {
         ticketsPerPage = getTicketsPerPage();
-        console.log("Cập nhật ticketsPerPage:", ticketsPerPage);
+        //console.log("Cập nhật ticketsPerPage:", ticketsPerPage);
         loadTickets(); // nếu bạn có hàm render lại
       });
 
@@ -1724,7 +1724,7 @@
           }
         }, 30000); // 30 giây
         
-        console.log("🚀 Đã bật tự động làm mới dữ liệu mỗi 30 giây");
+        //console.log("🚀 Đã bật tự động làm mới dữ liệu mỗi 30 giây");
       }
 
       // Function dừng auto refresh
@@ -1732,7 +1732,7 @@
         if (autoRefreshInterval) {
           clearInterval(autoRefreshInterval);
           autoRefreshInterval = null;
-          console.log("⏹️ Đã dừng tự động làm mới dữ liệu");
+          //console.log("⏹️ Đã dừng tự động làm mới dữ liệu");
         }
       }
 
@@ -3741,7 +3741,7 @@
           }
         });
         
-        console.log("newTicket:", newTicket);
+        //console.log("newTicket:", newTicket);
 
         // Validation dữ liệu trước khi gửi
         const validationErrors = [];
@@ -3794,7 +3794,7 @@
             
             try {
               rawErrorText = await response.text();
-              console.log('📋 Raw error response:', rawErrorText);
+              //console.log('📋 Raw error response:', rawErrorText);
               
               if (rawErrorText) {
                 try {
@@ -3831,11 +3831,9 @@
           const text = await response.text();
           if (text) {
             createdRecord = JSON.parse(text);
-            console.log("Ticket đã tạo trên Dataverse:", createdRecord);
+            //console.log("Ticket đã tạo trên Dataverse:", createdRecord);
           } else {
-            console.log(
-              "Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về."
-            );
+            //console.log("Ticket đã tạo trên Dataverse, nhưng không có dữ liệu trả về.");
           }
 
           document.getElementById("newTicketForm").reset();
@@ -5051,9 +5049,7 @@
             );
           }
 
-          console.log(
-            `✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`
-          );
+          //console.log(`✔ Approval updated to ${newStatus} cho user ${currentUserEmail}`);
           // Refresh data sau khi update
           refreshData();
 
@@ -5095,7 +5091,7 @@
       }
 
       function onDepartmentChange(deptName) {
-        console.log("depname: ", deptName);
+        //console.log("depname: ", deptName);
         const categorySelect = document.getElementById("ticketCategory");
         categorySelect.innerHTML =
           '<option value="">Chọn loại yêu cầu</option>'; // reset
@@ -5441,7 +5437,7 @@
           // Bước 1: Query transaction buy để lấy thông tin và expand buyorder detail
           const transactionQuery = `/crdfd_transactionbuies?$filter=crdfd_maphieunhap eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and crdfd_soluonganhantheokho eq ${soLuongHuy}&$select=crdfd_soluonganhantheokho,crdfd_transactionbuyid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_tensanpham_value)&$orderby=createdon desc&$top=1`;
           
-          console.log('🔍 Query transaction buy:', transactionQuery);
+          //console.log('🔍 Query transaction buy:', transactionQuery);
           
           const transactionResponse = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
             method: 'GET',
@@ -5469,7 +5465,7 @@
           }
           
           const transactionData = await transactionResponse.json();
-          console.log('🔍 API Response từ crdfd_transactionbuies:', transactionData);
+          //console.log('🔍 API Response từ crdfd_transactionbuies:', transactionData);
           
           if (!transactionData.value || transactionData.value.length === 0) {
             stockWarningText.textContent = `Không tìm thấy phiếu nhập kho tương ứng với mã đơn hàng: ${maDonHang}, mã phiếu: ${maPhieu} và số lượng: ${soLuongHuy}`;
@@ -5496,13 +5492,13 @@
           // crdfd_IDchitietonhang là object, không phải array
           const chiTiet = chiTietDonHang;
           
-          console.log('📦 Thông tin chi tiết đơn hàng:', chiTiet);
+          //console.log('📦 Thông tin chi tiết đơn hàng:', chiTiet);
           
           const viTriKho = chiTiet.crdfd_vitrikho ? chiTiet.crdfd_vitrikho.trim() : '';
           const sanPham = chiTiet._crdfd_tensanpham_value ? chiTiet._crdfd_tensanpham_value.trim() : '';
           
-          console.log('🏪 Vị trí kho:', viTriKho);
-          console.log('📦 Sản phẩm ID:', sanPham);
+          //console.log('🏪 Vị trí kho:', viTriKho);
+          //console.log('📦 Sản phẩm ID:', sanPham);
           
           if (!viTriKho || !sanPham) {
             stockWarningText.textContent = 'Thiếu thông tin vị trí kho hoặc sản phẩm.';
@@ -5518,7 +5514,7 @@
           
           const stockQuery = `/crdfd_kho_binh_dinhs?$filter=crdfd_vitrikhofx eq '${escapedViTriKho}' and _crdfd_tensanphamlookup_value eq '${escapedSanPham}'&$select=crdfd_tonkhothucte,createdon&$orderby=createdon desc&$top=1`;
           
-          console.log('🔍 Query tồn kho:', stockQuery);
+          //console.log('🔍 Query tồn kho:', stockQuery);
           
           const stockResponse = await fetch(`${DATAVERSE_URL}${stockQuery}`, {
             method: 'GET',
@@ -5546,10 +5542,10 @@
           }
           
           const stockData = await stockResponse.json();
-          console.log('🔍 API Response từ crdfd_kho_binh_dinhs:', stockData);
+          //console.log('🔍 API Response từ crdfd_kho_binh_dinhs:', stockData);
           
           if (stockData.value && stockData.value.length > 0) {
-            console.log('✅ Thông tin tồn kho tìm thấy:', stockData.value[0]);
+            //console.log('✅ Thông tin tồn kho tìm thấy:', stockData.value[0]);
             const stockInfo = stockData.value[0]; // Lấy record mới nhất
             const tonKhoHienTai = parseFloat(stockInfo.crdfd_tonkhothucte) || 0;
             const tenSanPham = 'Sản phẩm'; // Sẽ lấy từ lookup nếu cần
