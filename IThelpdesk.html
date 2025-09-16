@@ -3655,7 +3655,6 @@
             });
             break;
 
-          case 283640004: // hủy phiếu nhập kho
           case 283640008: // hủy phiếu xuất kho
             Object.assign(newTicket, {
               crdfd_maonhangchitiet:
@@ -3665,6 +3664,21 @@
               crdfd_nguoiduyet: "Hệ thống", //approversText,
               cr1bb_giatriexuat:
                 document.getElementById("numberPhieuHuy").value,
+            });
+            break;
+          case 283640004: // hủy phiếu nhập kho
+            // Lấy thông tin từ API response đã lưu trong global variable
+            const transactionId = window.lastTransactionData ? window.lastTransactionData.crdfd_transactionbuyid : null;
+            const apiQuantity = window.lastTransactionData ? window.lastTransactionData.crdfd_soluonganhantheokho : null;
+            
+            Object.assign(newTicket, {
+              crdfd_maonhangchitiet: transactionId || (
+                document.getElementById("IDMaDonHang").value +
+                "|" +
+                document.getElementById("IDPhieuHuy").value
+              ),
+              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              cr1bb_giatriexuat: apiQuantity || document.getElementById("numberPhieuHuy").value,
             });
             break;
 
@@ -4403,6 +4417,8 @@
                     if (stockWarning) {
                       stockWarning.classList.add('hidden');
                     }
+                    // Clear transaction data khi user thay đổi input
+                    window.lastTransactionData = null;
                     // Gọi function kiểm tra trạng thái nút submit
                     checkSubmitButtonState();
                   };
@@ -5388,6 +5404,9 @@
           
           const transactionInfo = transactionData.value[0];
           const chiTietDonHang = transactionInfo.crdfd_IDchitietonhang;
+          
+          // Lưu transaction data vào global variable để sử dụng khi tạo ticket
+          window.lastTransactionData = transactionInfo;
           
           if (!chiTietDonHang) {
             stockWarningText.textContent = 'Không tìm thấy thông tin chi tiết đơn hàng.';
