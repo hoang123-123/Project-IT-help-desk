@@ -718,9 +718,9 @@
               </div>
 
               <!-- Pagination - Luôn ở vị trí cố định -->
-              <div class="flex-shrink-0 p-4 border-t border-gray-200 bg-white">
+              <div class="flex-shrink-0 p-4 border-t border-gray-200 bg-white h-20 flex items-center">
                 <div
-                  class="flex flex-col sm:flex-row items-center justify-between gap-3"
+                  class="flex flex-col sm:flex-row items-center justify-between gap-3 w-full"
                 >
                   <!-- Thông tin trang -->
                   <div class="text-sm text-gray-600 order-2 sm:order-1">
@@ -885,7 +885,9 @@
                 <button
                   type="button"
                   id="submitTicket"
-                  class="w-full sm:w-auto px-3 lg:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mb-2 sm:mb-0 text-xs lg:text-sm"
+                  class="w-full sm:w-auto px-3 lg:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mb-2 sm:mb-0 text-xs lg:text-sm opacity-50 cursor-not-allowed"
+                  disabled
+                  title="Vui lòng nhập đầy đủ thông tin"
                 >
                   Tạo Ticket
                 </button>
@@ -1457,6 +1459,88 @@
           onDepartmentChange(e.target.value);
         });
 
+      // Event listener cho textarea mô tả và category để enable/disable nút tạo ticket
+      document.addEventListener("DOMContentLoaded", () => {
+        const ticketDescription = document.getElementById("ticketDescription");
+        const ticketCategory = document.getElementById("ticketCategory");
+        const submitTicketBtn = document.getElementById("submitTicket");
+        
+        if (ticketDescription && submitTicketBtn) {
+          ticketDescription.addEventListener("input", () => {
+            checkSubmitButtonState();
+          });
+        }
+        
+        if (ticketCategory && submitTicketBtn) {
+          ticketCategory.addEventListener("change", () => {
+            // Reset trạng thái khi thay đổi category
+            const stockWarning = document.getElementById("stockWarning");
+            if (stockWarning) {
+              stockWarning.classList.add("hidden");
+            }
+            checkSubmitButtonState();
+          });
+        }
+      });
+      
+      // Function kiểm tra trạng thái nút submit
+      function checkSubmitButtonState() {
+        const submitTicketBtn = document.getElementById("submitTicket");
+        const ticketDescription = document.getElementById("ticketDescription");
+        const ticketCategory = document.getElementById("ticketCategory");
+        
+        if (!submitTicketBtn || !ticketDescription) return;
+        
+        const hasDescription = ticketDescription.value.trim().length > 0;
+        const selectedCategory = ticketCategory ? ticketCategory.value : null;
+        
+        // Kiểm tra nếu là case cần check tồn kho (283640004)
+        const needsStockCheck = selectedCategory === "283640004";
+        
+        if (needsStockCheck) {
+           // Case cần check tồn kho: chỉ enable khi có mô tả VÀ đã pass stock check
+           const stockWarning = document.getElementById("stockWarning");
+           const hasStockWarning = stockWarning && !stockWarning.classList.contains("hidden");
+           const hasPassedStockCheck = hasStockWarning && stockWarning.classList.contains("text-green-600");
+           const hasFailedStockCheck = hasStockWarning && stockWarning.classList.contains("text-red-600");
+           
+           if (hasDescription && hasPassedStockCheck) {
+             enableSubmitButton();
+           } else if (hasFailedStockCheck) {
+             disableSubmitButton("Không thể tạo ticket vì tồn kho sẽ bị âm");
+           } else {
+             disableSubmitButton("Vui lòng nhập mô tả và kiểm tra tồn kho");
+           }
+         } else {
+          // Case không cần check: chỉ cần có mô tả
+          if (hasDescription) {
+            enableSubmitButton();
+          } else {
+            disableSubmitButton("Vui lòng nhập mô tả chi tiết");
+          }
+        }
+      }
+      
+      function enableSubmitButton() {
+        const submitTicketBtn = document.getElementById("submitTicket");
+        if (submitTicketBtn) {
+          submitTicketBtn.disabled = false;
+          submitTicketBtn.classList.remove("opacity-50", "cursor-not-allowed");
+          submitTicketBtn.classList.add("hover:bg-blue-700");
+          submitTicketBtn.title = "Tạo Ticket";
+        }
+      }
+      
+      function disableSubmitButton(reason) {
+        const submitTicketBtn = document.getElementById("submitTicket");
+        if (submitTicketBtn) {
+          submitTicketBtn.disabled = true;
+          submitTicketBtn.classList.add("opacity-50", "cursor-not-allowed");
+          submitTicketBtn.classList.remove("hover:bg-blue-700");
+          submitTicketBtn.title = reason;
+        }
+      }
+
       // ========== Function ================
 
       // Biến cache token
@@ -1590,8 +1674,65 @@
 
           initApproverChoices();
           loadDepartments();
+          
+          // Tự động làm mới dữ liệu mỗi 30 giây
+          startAutoRefresh();
         } catch (err) {
           console.error("Error init:", err);
+        }
+      }
+
+      // Biến lưu trữ interval ID để có thể dừng auto refresh
+      let autoRefreshInterval = null;
+
+      // Function tự động làm mới dữ liệu
+      function startAutoRefresh() {
+        // Dừng interval cũ nếu có
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+        }
+
+        // Tạo interval mới - làm mới mỗi 30 giây
+        autoRefreshInterval = setInterval(async () => {
+          const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+          if (currentUser) {
+            try {
+              //console.log("🔄 Tự động làm mới dữ liệu...");
+              await refreshData();
+              
+              // Cập nhật các component nếu đang hiển thị
+              const currentPage = document.querySelector('.page-content:not(.hidden)');
+              if (currentPage) {
+                const pageId = currentPage.id;
+                switch (pageId) {
+                  case 'tickets':
+                    loadTickets();
+                    break;
+                  case 'dashboard':
+                    loadDashboard();
+                    break;
+                  case 'approvals':
+                    loadApprovals();
+                    break;
+                }
+              }
+              
+              //console.log("✅ Làm mới dữ liệu thành công");
+            } catch (error) {
+              console.error("❌ Lỗi khi tự động làm mới dữ liệu:", error);
+            }
+          }
+        }, 30000); // 30 giây
+        
+        console.log("🚀 Đã bật tự động làm mới dữ liệu mỗi 30 giây");
+      }
+
+      // Function dừng auto refresh
+      function stopAutoRefresh() {
+        if (autoRefreshInterval) {
+          clearInterval(autoRefreshInterval);
+          autoRefreshInterval = null;
+          console.log("⏹️ Đã dừng tự động làm mới dữ liệu");
         }
       }
 
@@ -3527,7 +3668,7 @@
             });
             break;
 
-          case 283640005: // chỉnhphiếu nhập kho
+          case 283640005: // chỉnh phiếu nhập kho
           case 283640009: // chỉnh phiếu xuất kho
             Object.assign(newTicket, {
               crdfd_maonhangchitiet:
@@ -4057,12 +4198,12 @@
         const email = currentUser?.idU;
 
         let filteredData = [];
-        console.log("Current user email:", email);
-        console.log("All data count:", allData.length);
+        // console.log("Current user email:", email);
+        // console.log("All data count:", allData.length);
         if (email == "admin") {
           // 🔹 Admin → thấy tất cả records
           filteredData = allData;
-          console.log("Admin user - all records visible");
+          // console.log("Admin user - all records visible");
         } else {
           // 🔹 User thường → chỉ thấy ticket liên quan
           filteredData = allData.filter((item) => {
@@ -4241,8 +4382,45 @@
         <div>
           <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng *</label>
           <input type="number" step="any" id="numberPhieuHuy" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập số lượng cần hủy theo kho..." required>
+          <div id="stockWarning" class="mt-2 text-sm text-red-600 hidden">
+            <i class="fas fa-exclamation-triangle mr-1"></i>
+            <span id="stockWarningText"></span>
+          </div>
         </div>
       `;
+            
+            // Thêm event listener cho kiểm tra tồn kho khi user nhập số lượng hủy
+              setTimeout(() => {
+                const numberPhieuHuyInput = document.getElementById('numberPhieuHuy');
+                const IDPhieuHuyInput = document.getElementById('IDPhieuHuy');
+                const submitTicketBtn = document.getElementById('submitTicket');
+                
+                if (numberPhieuHuyInput && IDPhieuHuyInput) {
+                  // Reset nút về trạng thái ban đầu khi user thay đổi input
+                  const resetSubmitButton = () => {
+                    // Ẩn warning khi user thay đổi input
+                    const stockWarning = document.getElementById('stockWarning');
+                    if (stockWarning) {
+                      stockWarning.classList.add('hidden');
+                    }
+                    // Gọi function kiểm tra trạng thái nút submit
+                    checkSubmitButtonState();
+                  };
+                  
+                  // Reset khi user thay đổi số lượng hoặc mã phiếu
+                  numberPhieuHuyInput.addEventListener('input', resetSubmitButton);
+                  IDPhieuHuyInput.addEventListener('input', resetSubmitButton);
+                  
+                  numberPhieuHuyInput.addEventListener('blur', async () => {
+                    const soLuongHuy = parseFloat(numberPhieuHuyInput.value);
+                    const maPhieu = IDPhieuHuyInput.value.trim();
+                    
+                    if (soLuongHuy > 0 && maPhieu && parseInt(category) === 283640004) {
+                      await checkInventoryStock(maPhieu, soLuongHuy, 'huy_phieu_nhap');
+                    }
+                  });
+                }
+              }, 100);
             break;
 
           // ==== Điều chỉnh định lượng ====
@@ -4566,6 +4744,7 @@
             currentUser = null;
             localStorage.removeItem("currentUser"); // Xóa user khỏi localStorage
             tokenExpiry = null;
+            stopAutoRefresh(); // Dừng tự động làm mới dữ liệu
             clearUI(); // Reset giao diện về mặc định
             updateUI(); // Update menu về "Khách"
             loginModal.classList.remove("hidden"); // Hiện modal login lại
@@ -4895,7 +5074,7 @@
                     <li>Nhập số phiếu nhập kho cần hủy
                         <span class="text-red-600 font-semibold ml-1">(vd: "PNK_10037860")</span>
                     </li>
-                    <li>Nhập số lượng cần hủy theo kho
+                    <li>Nhập số lượng cần hủy theo kho : là số lượng đã nhập kho của phiếu cần hủy
                         <span class="text-red-600 font-semibold ml-1">(vd: "100")</span>
                     </li>
                     <li>Mô tả lý do hủy phiếu</li>
@@ -5129,6 +5308,221 @@
                 <p class="text-sm text-gray-500 mt-2">Vui lòng liên hệ quản trị viên để được hỗ trợ.</p>
               </div>
             </div>`;
+        }
+      }
+
+      // Function escape ký tự đặc biệt cho OData query
+      function escapeODataString(str) {
+        if (!str) return '';
+        return str.replace(/'/g, "''"); // Escape single quotes
+      }
+
+      // Function kiểm tra tồn kho
+      async function checkInventoryStock(maPhieu, soLuongHuy, loaiPhieu) {
+        try {
+          const token = await getToken();
+          const stockWarning = document.getElementById('stockWarning');
+          const stockWarningText = document.getElementById('stockWarningText');
+          
+          if (!stockWarning || !stockWarningText) return;
+          
+          // Ẩn warning trước khi kiểm tra
+          stockWarning.classList.add('hidden');
+          
+          // Lấy mã đơn hàng từ input
+          const maDonHangInput = document.getElementById('IDMaDonHang');
+          const maDonHang = maDonHangInput ? maDonHangInput.value.trim() : '';
+          
+          if (!maDonHang) {
+            stockWarningText.textContent = 'Vui lòng nhập mã đơn hàng trước khi kiểm tra tồn kho.';
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+            return;
+          }
+          
+          // Trim khoảng trống và escape ký tự đặc biệt
+          const escapedMaPhieu = escapeODataString(maPhieu.trim());
+          const escapedMaDonHang = escapeODataString(maDonHang.trim());
+          
+          // Bước 1: Query transaction buy để lấy thông tin và expand buyorder detail
+          const transactionQuery = `/crdfd_transactionbuies?$filter=crdfd_maphieunhap eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and crdfd_soluonganhantheokho eq ${soLuongHuy}&$select=crdfd_soluonganhantheokho,crdfd_transactionbuyid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_tensanpham_value)&$orderby=createdon desc&$top=1`;
+          
+          console.log('🔍 Query transaction buy:', transactionQuery);
+          
+          const transactionResponse = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'OData-MaxVersion': '4.0',
+              'OData-Version': '4.0'
+            }
+          });
+          
+          if (!transactionResponse.ok) {
+            const errorText = await transactionResponse.text();
+            console.error('❌ Lỗi khi gọi API transaction buy:', {
+              status: transactionResponse.status,
+              statusText: transactionResponse.statusText,
+              errorText: errorText,
+              query: transactionQuery
+            });
+            stockWarningText.textContent = `Lỗi API transaction (${transactionResponse.status}): ${transactionResponse.statusText}. Kiểm tra console để xem chi tiết.`;
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+            return;
+          }
+          
+          const transactionData = await transactionResponse.json();
+          console.log('🔍 API Response từ crdfd_transactionbuies:', transactionData);
+          
+          if (!transactionData.value || transactionData.value.length === 0) {
+            stockWarningText.textContent = `Không tìm thấy phiếu nhập kho tương ứng với mã đơn hàng: ${maDonHang}, mã phiếu: ${maPhieu} và số lượng: ${soLuongHuy}`;
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+            return;
+          }
+          
+          const transactionInfo = transactionData.value[0];
+          const chiTietDonHang = transactionInfo.crdfd_IDchitietonhang;
+          
+          if (!chiTietDonHang) {
+            stockWarningText.textContent = 'Không tìm thấy thông tin chi tiết đơn hàng.';
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+            return;
+          }
+          
+          // crdfd_IDchitietonhang là object, không phải array
+          const chiTiet = chiTietDonHang;
+          
+          console.log('📦 Thông tin chi tiết đơn hàng:', chiTiet);
+          
+          const viTriKho = chiTiet.crdfd_vitrikho ? chiTiet.crdfd_vitrikho.trim() : '';
+          const sanPham = chiTiet._crdfd_tensanpham_value ? chiTiet._crdfd_tensanpham_value.trim() : '';
+          
+          console.log('🏪 Vị trí kho:', viTriKho);
+          console.log('📦 Sản phẩm ID:', sanPham);
+          
+          if (!viTriKho || !sanPham) {
+            stockWarningText.textContent = 'Thiếu thông tin vị trí kho hoặc sản phẩm.';
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+            return;
+          }
+          
+          // Bước 2: Query bảng kho để lấy tồn kho hiện tại (đã trim ở trên)
+          const escapedViTriKho = escapeODataString(viTriKho);
+          const escapedSanPham = escapeODataString(sanPham);
+          
+          const stockQuery = `/crdfd_kho_binh_dinhs?$filter=crdfd_vitrikhofx eq '${escapedViTriKho}' and _crdfd_tensanphamlookup_value eq '${escapedSanPham}'&$select=crdfd_tonkhothucte,createdon&$orderby=createdon desc&$top=1`;
+          
+          console.log('🔍 Query tồn kho:', stockQuery);
+          
+          const stockResponse = await fetch(`${DATAVERSE_URL}${stockQuery}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'OData-MaxVersion': '4.0',
+              'OData-Version': '4.0'
+            }
+          });
+          
+          if (!stockResponse.ok) {
+            const errorText = await stockResponse.text();
+            console.error('❌ Lỗi khi gọi API tồn kho:', {
+              status: stockResponse.status,
+              statusText: stockResponse.statusText,
+              errorText: errorText,
+              query: stockQuery
+            });
+            stockWarningText.textContent = `Lỗi API tồn kho (${stockResponse.status}): ${stockResponse.statusText}. Kiểm tra console để xem chi tiết.`;
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+            return;
+          }
+          
+          const stockData = await stockResponse.json();
+          console.log('🔍 API Response từ crdfd_kho_binh_dinhs:', stockData);
+          
+          if (stockData.value && stockData.value.length > 0) {
+            console.log('✅ Thông tin tồn kho tìm thấy:', stockData.value[0]);
+            const stockInfo = stockData.value[0]; // Lấy record mới nhất
+            const tonKhoHienTai = parseFloat(stockInfo.crdfd_tonkhothucte) || 0;
+            const tenSanPham = 'Sản phẩm'; // Sẽ lấy từ lookup nếu cần
+            
+            // Kiểm tra số lượng hủy có hợp lệ không
+            if (soLuongHuy <= 0) {
+              stockWarningText.textContent = 'Số lượng hủy phải lớn hơn 0.';
+              stockWarning.classList.remove('hidden');
+              stockWarning.classList.remove('text-green-600');
+              stockWarning.classList.add('text-red-600');
+              return;
+            }
+            
+            // Tính toán tồn kho sau khi hủy
+            let tonKhoSauKhiXuLy = 0;
+            
+            if (loaiPhieu === 'huy_phieu_nhap') {
+              // Hủy phiếu nhập: tồn kho - số lượng hủy
+              tonKhoSauKhiXuLy = tonKhoHienTai - soLuongHuy;
+            }
+            
+            // Lấy nút tạo ticket để disable/enable
+            const submitTicketBtn = document.getElementById('submitTicket');
+            
+            // Kiểm tra nếu tồn kho bị âm
+            if (tonKhoSauKhiXuLy < 0) {
+              stockWarningText.textContent = `Cảnh báo: Tồn kho của ${tenSanPham} sẽ bị âm (${tonKhoSauKhiXuLy.toFixed(2)}) nếu hủy ${soLuongHuy} đơn vị. Tồn kho hiện tại: ${tonKhoHienTai.toFixed(2)}`;
+              stockWarning.classList.remove('hidden');
+              stockWarning.classList.remove('text-green-600');
+              stockWarning.classList.add('text-red-600');
+              
+              // Gọi function kiểm tra trạng thái nút submit
+              checkSubmitButtonState();
+            } else {
+              // Hiển thị thông tin tồn kho an toàn
+              stockWarningText.textContent = `Tồn kho hiện tại: ${tonKhoHienTai.toFixed(2)}. Tồn kho sau khi hủy: ${tonKhoSauKhiXuLy.toFixed(2)}`;
+              stockWarning.classList.remove('hidden');
+              stockWarning.classList.remove('text-red-600');
+              stockWarning.classList.add('text-green-600');
+              
+              // Gọi function kiểm tra trạng thái nút submit
+              checkSubmitButtonState();
+            }
+          } else {
+            stockWarningText.textContent = `Không tìm thấy thông tin tương thích cho mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}`;
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+          }
+          
+        } catch (error) {
+          console.error('❌ Lỗi khi kiểm tra tồn kho:', error);
+          console.error('📋 Chi tiết lỗi:', {
+            message: error.message,
+            stack: error.stack,
+            maPhieu: maPhieu,
+            maDonHang: document.getElementById('IDMaDonHang')?.value,
+            soLuongHuy: soLuongHuy
+          });
+          
+          const stockWarning = document.getElementById('stockWarning');
+          const stockWarningText = document.getElementById('stockWarningText');
+          
+          if (stockWarning && stockWarningText) {
+            stockWarningText.textContent = `Lỗi khi kiểm tra tồn kho: ${error.message}. Vui lòng kiểm tra console để xem chi tiết.`;
+            stockWarning.classList.remove('hidden');
+            stockWarning.classList.remove('text-green-600');
+            stockWarning.classList.add('text-red-600');
+          }
         }
       }
 
