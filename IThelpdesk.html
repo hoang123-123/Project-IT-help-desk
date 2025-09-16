@@ -3640,6 +3640,14 @@
             .value,
           cr1bb_phongban: document.getElementById("ticketDepartment").value,
         };
+        
+        // Convert numeric fields to strings to avoid OData type conversion errors
+        if (typeof newTicket.crdfd_trangthai === 'number') {
+          newTicket.crdfd_trangthai = newTicket.crdfd_trangthai.toString();
+        }
+        if (typeof newTicket.crdfd_loaiieuchinh === 'number') {
+          newTicket.crdfd_loaiieuchinh = newTicket.crdfd_loaiieuchinh.toString();
+        }
 
         // tuỳ loại case mà bổ sung thêm field
         switch (parseInt(document.getElementById("ticketCategory").value)) {
@@ -3678,7 +3686,7 @@
                 document.getElementById("IDPhieuHuy").value
               ),
               crdfd_nguoiduyet: "Hệ thống", //approversText,
-              cr1bb_giatriexuat: apiQuantity || document.getElementById("numberPhieuHuy").value,
+              cr1bb_giatriexuat: apiQuantity ? apiQuantity.toString() : document.getElementById("numberPhieuHuy").value,
             });
             break;
 
@@ -3726,7 +3734,43 @@
             break;
         }
 
+        // Convert all numeric values to strings to avoid OData conversion errors
+        Object.keys(newTicket).forEach(key => {
+          if (typeof newTicket[key] === 'number') {
+            newTicket[key] = newTicket[key].toString();
+          }
+        });
+        
         console.log("newTicket:", newTicket);
+
+        // Validation dữ liệu trước khi gửi
+        const validationErrors = [];
+        
+        if (!newTicket.crdfd_nguoiyeucau) {
+          validationErrors.push('Thiếu thông tin người yêu cầu');
+        }
+        
+        if (!newTicket.crdfd_lydoieuchinh || newTicket.crdfd_lydoieuchinh.trim() === '') {
+          validationErrors.push('Thiếu mô tả chi tiết');
+        }
+        
+        if (!newTicket.crdfd_loaiieuchinh) {
+          validationErrors.push('Thiếu loại yêu cầu');
+        }
+        
+        if (!newTicket.cr1bb_thongtinyeucau || newTicket.cr1bb_thongtinyeucau.trim() === '') {
+          validationErrors.push('Thiếu thông tin yêu cầu');
+        }
+        
+        if (!newTicket.cr1bb_phongban || newTicket.cr1bb_phongban.trim() === '') {
+          validationErrors.push('Thiếu thông tin phòng ban');
+        }
+        
+        if (validationErrors.length > 0) {
+          console.error('❌ Validation errors:', validationErrors);
+          showNotification(`Dữ liệu không hợp lệ: ${validationErrors.join(', ')}`, 'error');
+          return;
+        }
 
         try {
           const cachedToken = await getToken();
@@ -3744,8 +3788,41 @@
           );
 
           if (!response.ok) {
+            // Lấy chi tiết lỗi từ response
+            let errorDetails = '';
+            let rawErrorText = '';
+            
+            try {
+              rawErrorText = await response.text();
+              console.log('📋 Raw error response:', rawErrorText);
+              
+              if (rawErrorText) {
+                try {
+                  const errorData = JSON.parse(rawErrorText);
+                  errorDetails = errorData.error?.message || errorData.message || rawErrorText;
+                } catch (jsonError) {
+                  // Nếu không parse được JSON, sử dụng raw text
+                  errorDetails = rawErrorText;
+                }
+              }
+            } catch (textError) {
+              console.error('❌ Không thể đọc error response:', textError);
+              errorDetails = 'Không thể đọc chi tiết lỗi';
+            }
+            
+            // Log chi tiết để debug
+            console.error('❌ Lỗi tạo ticket:', {
+              status: response.status,
+              statusText: response.statusText,
+              url: response.url,
+              headers: Object.fromEntries(response.headers.entries()),
+              rawErrorText: rawErrorText,
+              errorDetails: errorDetails,
+              requestData: newTicket
+            });
+            
             throw new Error(
-              `Lỗi Dataverse: ${response.status} - ${response.statusText}`
+              `Lỗi ${response.status}: ${response.statusText || 'Bad Request'}${errorDetails ? ` - ${errorDetails}` : ''}`
             );
           }
 
