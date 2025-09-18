@@ -1484,6 +1484,9 @@
            hideAdjustImportOrderValidation();
            hideAdjustImportSlipValidation();
            hideAdjustImportQuantityValidation();
+           hideAdjustExportOrderValidation();
+           hideAdjustExportSlipValidation();
+           hideAdjustExportQuantityValidation();
           
           // Reset validation data
            window.lastOrderValidation = null;
@@ -1494,6 +1497,7 @@
            window.lastTransactionData = null;
            window.lastUnitConversionData = null;
            window.lastAdjustImportData = null;
+           window.lastAdjustExportData = null;
           
           // Reset warning messages
            const stockWarning = document.getElementById('stockWarning');
@@ -1515,11 +1519,15 @@
            if (adjustImportWarning) {
              adjustImportWarning.classList.add('hidden');
            }
+           
+           const adjustExportWarning = document.getElementById('adjustExportWarning');
+           if (adjustExportWarning) {
+             adjustExportWarning.classList.add('hidden');
+           }
           
           // Reset submit button state
           checkSubmitButtonState();
         }
-      });
 
       document
         .getElementById("ticketDepartment")
@@ -2447,6 +2455,159 @@
          }
        }
        
+       // Adjust Export Order Validation UI Functions
+       function showAdjustExportOrderValidationLoading() {
+         const status = document.getElementById('adjustExportOrderValidationStatus');
+         const loading = document.getElementById('adjustExportOrderLoadingIcon');
+         const valid = document.getElementById('adjustExportOrderValidIcon');
+         const invalid = document.getElementById('adjustExportOrderInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.remove('hidden');
+           valid.classList.add('hidden');
+           invalid.classList.add('hidden');
+         }
+       }
+       
+       function showAdjustExportOrderValidationSuccess() {
+         const status = document.getElementById('adjustExportOrderValidationStatus');
+         const loading = document.getElementById('adjustExportOrderLoadingIcon');
+         const valid = document.getElementById('adjustExportOrderValidIcon');
+         const invalid = document.getElementById('adjustExportOrderInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.add('hidden');
+           valid.classList.remove('hidden');
+           invalid.classList.add('hidden');
+         }
+       }
+       
+       function showAdjustExportOrderValidationError() {
+         const status = document.getElementById('adjustExportOrderValidationStatus');
+         const loading = document.getElementById('adjustExportOrderLoadingIcon');
+         const valid = document.getElementById('adjustExportOrderValidIcon');
+         const invalid = document.getElementById('adjustExportOrderInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.add('hidden');
+           valid.classList.add('hidden');
+           invalid.classList.remove('hidden');
+         }
+       }
+       
+       function hideAdjustExportOrderValidation() {
+         const status = document.getElementById('adjustExportOrderValidationStatus');
+         
+         if (status) {
+           status.classList.add('hidden');
+         }
+       }
+       
+       // Adjust Export Slip Validation UI Functions
+       function showAdjustExportSlipValidationLoading() {
+         const status = document.getElementById('adjustExportSlipValidationStatus');
+         const loading = document.getElementById('adjustExportSlipLoadingIcon');
+         const valid = document.getElementById('adjustExportSlipValidIcon');
+         const invalid = document.getElementById('adjustExportSlipInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.remove('hidden');
+           valid.classList.add('hidden');
+           invalid.classList.add('hidden');
+         }
+       }
+       
+       function showAdjustExportSlipValidationSuccess() {
+         const status = document.getElementById('adjustExportSlipValidationStatus');
+         const loading = document.getElementById('adjustExportSlipLoadingIcon');
+         const valid = document.getElementById('adjustExportSlipValidIcon');
+         const invalid = document.getElementById('adjustExportSlipInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.add('hidden');
+           valid.classList.remove('hidden');
+           invalid.classList.add('hidden');
+         }
+       }
+       
+       function showAdjustExportSlipValidationError() {
+         const status = document.getElementById('adjustExportSlipValidationStatus');
+         const loading = document.getElementById('adjustExportSlipLoadingIcon');
+         const valid = document.getElementById('adjustExportSlipValidIcon');
+         const invalid = document.getElementById('adjustExportSlipInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.add('hidden');
+           valid.classList.add('hidden');
+           invalid.classList.remove('hidden');
+         }
+       }
+       
+       function hideAdjustExportSlipValidation() {
+         const status = document.getElementById('adjustExportSlipValidationStatus');
+         
+         if (status) {
+           status.classList.add('hidden');
+         }
+       }
+       
+       // Adjust Export Quantity Validation UI Functions
+       function showAdjustExportQuantityValidationLoading() {
+         const status = document.getElementById('adjustExportQuantityValidationStatus');
+         const loading = document.getElementById('adjustExportQuantityLoadingIcon');
+         const valid = document.getElementById('adjustExportQuantityValidIcon');
+         const invalid = document.getElementById('adjustExportQuantityInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.remove('hidden');
+           valid.classList.add('hidden');
+           invalid.classList.add('hidden');
+         }
+       }
+       
+       function showAdjustExportQuantityValidationSuccess() {
+         const status = document.getElementById('adjustExportQuantityValidationStatus');
+         const loading = document.getElementById('adjustExportQuantityLoadingIcon');
+         const valid = document.getElementById('adjustExportQuantityValidIcon');
+         const invalid = document.getElementById('adjustExportQuantityInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.add('hidden');
+           valid.classList.remove('hidden');
+           invalid.classList.add('hidden');
+         }
+       }
+       
+       function showAdjustExportQuantityValidationError() {
+         const status = document.getElementById('adjustExportQuantityValidationStatus');
+         const loading = document.getElementById('adjustExportQuantityLoadingIcon');
+         const valid = document.getElementById('adjustExportQuantityValidIcon');
+         const invalid = document.getElementById('adjustExportQuantityInvalidIcon');
+         
+         if (status && loading && valid && invalid) {
+           status.classList.remove('hidden');
+           loading.classList.add('hidden');
+           valid.classList.add('hidden');
+           invalid.classList.remove('hidden');
+         }
+       }
+       
+       function hideAdjustExportQuantityValidation() {
+         const status = document.getElementById('adjustExportQuantityValidationStatus');
+         
+         if (status) {
+           status.classList.add('hidden');
+         }
+       }
+       
        // Function kiểm tra sale order từ API
        async function checkSaleOrder(orderCode) {
          try {
@@ -2813,6 +2974,239 @@
         } catch (error) {
           console.error('❌ Lỗi khi kiểm tra inventory:', error);
           showAdjustImportQuantityValidationError();
+        }
+      }
+      
+      // Function kiểm tra adjust export transaction từ API
+      async function checkAdjustExportTransaction(maDonHang, maPhieu) {
+        try {
+          const token = await getToken();
+          const warning = document.getElementById('adjustExportWarning');
+          const warningText = document.getElementById('adjustExportWarningText');
+          
+          if (!warning || !warningText) return;
+          
+          // Ẩn warning trước khi kiểm tra
+          warning.classList.add('hidden');
+          
+          // Hiển thị loading cho cả hai field
+          showAdjustExportOrderValidationLoading();
+          showAdjustExportSlipValidationLoading();
+          
+          if (!maDonHang || !maPhieu) {
+            // Hiển thị lỗi cho cả hai field
+            showAdjustExportOrderValidationError();
+            showAdjustExportSlipValidationError();
+            warningText.textContent = 'Vui lòng nhập đầy đủ thông tin mã đơn hàng và mã phiếu.';
+            warning.classList.remove('hidden');
+            return;
+          }
+          
+          // Escape ký tự đặc biệt
+          const escapedMaPhieu = escapeODataString(maPhieu.trim());
+          const escapedMaDonHang = escapeODataString(maDonHang.trim());
+          
+          // Query transaction sell để lấy thông tin xuất kho
+          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsellid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_tensanpham_value)&$orderby=createdon desc&$top=1`;
+          
+          console.log('🔍 Query adjust export transaction:', transactionQuery);
+          
+          const response = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error('❌ Lỗi API adjust export transaction:', response.status, response.statusText);
+            // Hiển thị lỗi cho cả hai field
+            showAdjustExportOrderValidationError();
+            showAdjustExportSlipValidationError();
+            warningText.textContent = `Lỗi API: ${response.statusText}`;
+            warning.classList.remove('hidden');
+            return;
+          }
+          
+          const data = await response.json();
+          console.log('📋 Adjust export transaction response:', data);
+          
+          if (!data.value || data.value.length === 0) {
+            // Hiển thị lỗi cho cả hai field
+            showAdjustExportOrderValidationError();
+            showAdjustExportSlipValidationError();
+            warningText.textContent = `Không tìm thấy phiếu xuất kho tương ứng với mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}`;
+            warning.classList.remove('hidden');
+            window.lastAdjustExportData = null;
+            return;
+          }
+          
+          const transactionInfo = data.value[0];
+          
+          // Hiển thị thành công cho cả hai field
+          showAdjustExportOrderValidationSuccess();
+          showAdjustExportSlipValidationSuccess();
+          
+          // Lưu thông tin transaction để sử dụng khi tạo ticket
+          window.lastAdjustExportData = transactionInfo;
+          
+        } catch (error) {
+          console.error('❌ Lỗi khi kiểm tra adjust export transaction:', error);
+          // Hiển thị lỗi cho cả hai field
+          showAdjustExportOrderValidationError();
+          showAdjustExportSlipValidationError();
+          
+          const warning = document.getElementById('adjustExportWarning');
+          const warningText = document.getElementById('adjustExportWarningText');
+          
+          if (warning && warningText) {
+            warningText.textContent = `Lỗi khi kiểm tra: ${error.message}`;
+            warning.classList.remove('hidden');
+          }
+        }
+      }
+      
+      // Function kiểm tra adjust export quantity từ API
+      async function checkAdjustExportQuantity(soLuongTheoKho) {
+        try {
+          if (!window.lastAdjustExportData) {
+            console.log('❌ Không có dữ liệu transaction để kiểm tra');
+            return;
+          }
+          
+          const transactionInfo = window.lastAdjustExportData;
+          const soLuongXuatHienTai = transactionInfo.crdfd_soluonggiaotheokho || 0;
+          const soLuongTheoKhoNumber = parseFloat(soLuongTheoKho);
+          
+          if (isNaN(soLuongTheoKhoNumber)) {
+            showAdjustExportQuantityValidationError();
+            return;
+          }
+          
+          // Tính chênh lệch: số xuất từ API - số user nhập
+          const chenhLech = soLuongXuatHienTai - soLuongTheoKhoNumber;
+          
+          console.log('📊 Tính toán chênh lệch xuất:', {
+            soLuongXuatHienTai,
+            soLuongTheoKhoNumber,
+            chenhLech
+          });
+          
+          // Nếu chênh lệch > 0: tích xanh
+          if (chenhLech > 0) {
+            showAdjustExportQuantityValidationSuccess();
+            const warning = document.getElementById('adjustExportWarning');
+            if (warning) {
+              warning.classList.add('hidden');
+            }
+            return;
+          }
+          
+          // Nếu chênh lệch = 0: thông báo không thay đổi
+          if (chenhLech === 0) {
+            showAdjustExportQuantityValidationError();
+            const warning = document.getElementById('adjustExportWarning');
+            const warningText = document.getElementById('adjustExportWarningText');
+            if (warning && warningText) {
+              warningText.textContent = 'Giá trị điều chỉnh không thay đổi so với dữ liệu đang có.';
+              warning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          // Nếu chênh lệch < 0: kiểm tra tồn kho
+          await checkInventoryForAdjustExport(Math.abs(chenhLech), transactionInfo);
+          
+        } catch (error) {
+          console.error('❌ Lỗi khi kiểm tra adjust export quantity:', error);
+          showAdjustExportQuantityValidationError();
+        }
+      }
+      
+      // Function kiểm tra tồn kho cho adjust export
+      async function checkInventoryForAdjustExport(chenhLech, transactionInfo) {
+        try {
+          const token = await getToken();
+          
+          if (!transactionInfo.crdfd_IDchitietonhang) {
+            console.log('❌ Không có thông tin chi tiết đơn hàng');
+            showAdjustExportQuantityValidationError();
+            return;
+          }
+          
+          const viTriKho = transactionInfo.crdfd_IDchitietonhang.crdfd_vitrikho;
+          const sanPhamId = transactionInfo.crdfd_IDchitietonhang._crdfd_tensanpham_value;
+          
+          if (!viTriKho || !sanPhamId) {
+            console.log('❌ Thiếu thông tin vị trí kho hoặc sản phẩm');
+            showAdjustExportQuantityValidationError();
+            return;
+          }
+          
+          // Query bảng kho để lấy tồn thực tế
+          const inventoryQuery = `/crdfd_kho_binh_dinhs?$filter=crdfd_vitrikhofx eq '${escapeODataString(viTriKho)}' and _crdfd_tensanphamlookup_value eq '${sanPhamId}' and statecode eq 0&$select=crdfd_tonkhothucte&$top=1`;
+          
+          console.log('🔍 Query inventory for export:', inventoryQuery);
+          
+          const response = await fetch(`${DATAVERSE_URL}${inventoryQuery}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error('❌ Lỗi API inventory:', response.status, response.statusText);
+            showAdjustExportQuantityValidationError();
+            return;
+          }
+          
+          const data = await response.json();
+          console.log('📋 Inventory response for export:', data);
+          
+          if (!data.value || data.value.length === 0) {
+            showAdjustExportQuantityValidationError();
+            const warning = document.getElementById('adjustExportWarning');
+            const warningText = document.getElementById('adjustExportWarningText');
+            if (warning && warningText) {
+              warningText.textContent = `Không tìm thấy thông tin tồn kho cho sản phẩm tại vị trí: ${viTriKho}`;
+              warning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          const tonThucTe = data.value[0].crdfd_tonkhothucte || 0;
+          const tonConLai = tonThucTe - chenhLech;
+          
+          console.log('📊 Kiểm tra tồn kho xuất:', {
+            tonThucTe,
+            chenhLech,
+            tonConLai
+          });
+          
+          if (tonConLai < 0) {
+            showAdjustExportQuantityValidationError();
+            const warning = document.getElementById('adjustExportWarning');
+            const warningText = document.getElementById('adjustExportWarningText');
+            if (warning && warningText) {
+              warningText.textContent = `Không thể điều chỉnh! Tồn kho hiện tại: ${tonThucTe}, sau khi điều chỉnh sẽ còn: ${tonConLai} (âm kho). Vui lòng nhập số lượng nhỏ hơn hoặc bằng ${tonThucTe + parseInt(transactionInfo.crdfd_soluonggiaotheokho)}.`;
+              warning.classList.remove('hidden');
+            }
+          } else {
+            showAdjustExportQuantityValidationSuccess();
+            const warning = document.getElementById('adjustExportWarning');
+            if (warning) {
+              warning.classList.add('hidden');
+            }
+          }
+          
+        } catch (error) {
+          console.error('❌ Lỗi khi kiểm tra inventory:', error);
+          showAdjustExportQuantityValidationError();
         }
       }
       
@@ -5147,15 +5541,18 @@
             break;
             
           case 283640009: // chỉnh phiếu xuất kho
+            // Kiểm tra validation data từ API
+            if (!window.lastAdjustExportData) {
+              showNotification('Vui lòng nhập mã đơn hàng và mã phiếu hợp lệ!', 'error');
+              return;
+            }
+            
             Object.assign(newTicket, {
-              crdfd_maonhangchitiet:
-                document.getElementById("maDonPhieuNhapXuat").value +
-                "|" +
-                document.getElementById("maPhieuNhapXuat").value, // mã đơn hàng|mã phiếu xuất
+              crdfd_maonhangchitiet: window.lastAdjustExportData.crdfd_transactionsellid,
               cr1bb_giatriexuat:
-                document.getElementById("numberNhapXuatDon").value +
+                document.getElementById("numberXuatDon").value +
                 "|" +
-                document.getElementById("numberNhapXuatKho").value, // đơn|kho
+                document.getElementById("numberXuatKho").value, // số lượng theo đơn|số lượng theo kho
               crdfd_nguoiduyet: "Hệ thống",
             });
             break;
@@ -6488,36 +6885,138 @@
     <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
       <div>
         <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã đơn hàng</label>
-        <input type="text" id="maDonPhieuNhapXuat" 
-          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
-          placeholder="Nhập mã đơn hàng chi tiết..." required>
+        <div class="relative">
+          <input type="text" id="maDonPhieuXuat" 
+            class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" 
+            placeholder="Nhập mã đơn hàng chi tiết..." required>
+          <div id="adjustExportOrderValidationStatus" class="absolute right-2 top-1/2 transform -translate-y-1/2 hidden">
+            <i class="fas fa-spinner fa-spin text-blue-500 hidden" id="adjustExportOrderLoadingIcon"></i>
+            <i class="fas fa-check-circle text-green-500 hidden" id="adjustExportOrderValidIcon"></i>
+            <i class="fas fa-times-circle text-red-500 hidden" id="adjustExportOrderInvalidIcon"></i>
+          </div>
+        </div>
       </div>
       <div>
         <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Mã phiếu</label>
-        <input type="text" id="maPhieuNhapXuat" 
-          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
-          placeholder="Nhập mã phiếu..." required>
+        <div class="relative">
+          <input type="text" id="maPhieuXuat" 
+            class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" 
+            placeholder="Nhập mã phiếu..." required>
+          <div id="adjustExportSlipValidationStatus" class="absolute right-2 top-1/2 transform -translate-y-1/2 hidden">
+            <i class="fas fa-spinner fa-spin text-blue-500 hidden" id="adjustExportSlipLoadingIcon"></i>
+            <i class="fas fa-check-circle text-green-500 hidden" id="adjustExportSlipValidIcon"></i>
+            <i class="fas fa-times-circle text-red-500 hidden" id="adjustExportSlipInvalidIcon"></i>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
       <div>
         <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo đơn</label>
-        <input type="number" id="numberNhapXuatDon" 
+        <input type="number" id="numberXuatDon" 
           class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
           placeholder="Nhập số lượng"
           min="1" step="any" required>
       </div>
       <div>
         <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo kho</label>
-        <input type="number" id="numberNhapXuatKho" 
-          class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
-          placeholder="Nhập số lượng"
-          min="1" step="any" required>
+        <div class="relative">
+          <input type="number" id="numberXuatKho" 
+            class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" 
+            placeholder="Nhập số lượng"
+            min="1" step="any" required>
+          <div id="adjustExportQuantityValidationStatus" class="absolute right-2 top-1/2 transform -translate-y-1/2 hidden">
+            <i class="fas fa-spinner fa-spin text-blue-500 hidden" id="adjustExportQuantityLoadingIcon"></i>
+            <i class="fas fa-check-circle text-green-500 hidden" id="adjustExportQuantityValidIcon"></i>
+            <i class="fas fa-times-circle text-red-500 hidden" id="adjustExportQuantityInvalidIcon"></i>
+          </div>
+        </div>
       </div>
     </div>
+    <div id="adjustExportWarning" class="mt-2 text-sm text-red-600 hidden">
+      <i class="fas fa-exclamation-triangle mr-1"></i>
+      <span id="adjustExportWarningText"></span>
+    </div>
     `;
-
+            
+            // Thêm event listeners cho validation
+            setTimeout(() => {
+              const maDonPhieuXuatInput = document.getElementById('maDonPhieuXuat');
+              const maPhieuXuatInput = document.getElementById('maPhieuXuat');
+              const numberXuatKhoInput = document.getElementById('numberXuatKho');
+              
+              if (maDonPhieuXuatInput && maPhieuXuatInput && numberXuatKhoInput) {
+                // Reset validation khi user thay đổi input
+                const resetAdjustExportValidation = () => {
+                  hideAdjustExportOrderValidation();
+                  hideAdjustExportSlipValidation();
+                  hideAdjustExportQuantityValidation();
+                  const warning = document.getElementById('adjustExportWarning');
+                  if (warning) {
+                    warning.classList.add('hidden');
+                  }
+                  window.lastAdjustExportData = null;
+                };
+                
+                maDonPhieuXuatInput.addEventListener('input', resetAdjustExportValidation);
+                maPhieuXuatInput.addEventListener('input', resetAdjustExportValidation);
+                numberXuatKhoInput.addEventListener('input', () => {
+                  hideAdjustExportQuantityValidation();
+                  const warning = document.getElementById('adjustExportWarning');
+                  if (warning) {
+                    warning.classList.add('hidden');
+                  }
+                });
+                
+                // Trigger validation khi user blur khỏi bất kỳ field nào
+                let lastValidationData = { maDonHang: '', maPhieu: '' };
+                let isValidating = false;
+                
+                const validateAdjustExport = async () => {
+                  const maDonHang = maDonPhieuXuatInput.value.trim();
+                  const maPhieu = maPhieuXuatInput.value.trim();
+                  
+                  // Chỉ call API khi cả hai field đều có dữ liệu
+                  if (!maDonHang || !maPhieu) {
+                    return;
+                  }
+                  
+                  // Tránh duplicate calls với cùng dữ liệu
+                  if (lastValidationData.maDonHang === maDonHang && 
+                      lastValidationData.maPhieu === maPhieu) {
+                    return;
+                  }
+                  
+                  // Tránh multiple calls đồng thời
+                  if (isValidating) {
+                    return;
+                  }
+                  
+                  isValidating = true;
+                  lastValidationData = { maDonHang, maPhieu };
+                  
+                  try {
+                    await checkAdjustExportTransaction(maDonHang, maPhieu);
+                  } finally {
+                    isValidating = false;
+                  }
+                };
+                
+                maDonPhieuXuatInput.addEventListener('blur', validateAdjustExport);
+                maPhieuXuatInput.addEventListener('blur', validateAdjustExport);
+                
+                // Trigger quantity validation khi user blur khỏi số lượng theo kho
+                numberXuatKhoInput.addEventListener('blur', async () => {
+                  const soLuongTheoKho = numberXuatKhoInput.value.trim();
+                  
+                  if (soLuongTheoKho && window.lastAdjustExportData) {
+                    showAdjustExportQuantityValidationLoading();
+                    await checkAdjustExportQuantity(soLuongTheoKho);
+                  }
+                });
+              }
+            }, 100);
             break;
 
           // ==== Điều chỉnh VAT ====
@@ -7822,7 +8321,7 @@
             stockWarning.classList.remove('text-green-600');
             stockWarning.classList.add('text-red-600');
           }
-          
+
         } catch (error) {
           console.error('❌ Lỗi khi kiểm tra tồn kho:', error);
           console.error('📋 Chi tiết lỗi:', {
