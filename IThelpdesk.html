@@ -1556,6 +1556,7 @@
             if (stockWarning) {
               stockWarning.classList.add("hidden");
             }
+            
             checkSubmitButtonState();
           });
         }
@@ -3000,7 +3001,7 @@
             showAdjustExportOrderValidationError();
             showAdjustExportSlipValidationError();
             warningText.textContent = 'Vui lòng nhập đầy đủ thông tin mã đơn hàng và mã phiếu.';
-            warning.classList.remove('hidden');
+            warning.classList.remove('hidden');0
             return;
           }
           
@@ -3009,9 +3010,9 @@
           const escapedMaDonHang = escapeODataString(maDonHang.trim());
           
           // Query transaction sell để lấy thông tin xuất kho
-          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsellid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_sanpham_value)&$orderby=createdon desc&$top=1`;
+          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsalesid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_sanpham_value)&$orderby=createdon desc&$top=1`;
           
-          console.log('🔍 Query adjust export transaction:', transactionQuery);
+         
           
           const response = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
             method: 'GET',
@@ -3021,6 +3022,7 @@
               'Accept': 'application/json'
             }
           });
+
           
           if (!response.ok) {
             console.error('❌ Lỗi API adjust export transaction:', response.status, response.statusText);
@@ -3139,7 +3141,7 @@
           }
           
           const viTriKho = transactionInfo.crdfd_IDchitietonhang.crdfd_vitrikho;
-          const sanPhamId = transactionInfo.crdfd_IDchitietonhang._crdfd_tensanpham_value;
+          const sanPhamId = transactionInfo.crdfd_IDchitietonhang._crdfd_sanpham_value;
           
           if (!viTriKho || !sanPhamId) {
             console.log('❌ Thiếu thông tin vị trí kho hoặc sản phẩm');
@@ -3333,11 +3335,11 @@
              disableSubmitButton("Vui lòng nhập mô tả và kiểm tra tồn kho");
            }
         } else if (needsExportStockCheck) {
-           // Case hủy phiếu xuất kho: chỉ enable khi có mô tả VÀ đã tìm thấy phiếu xuất
+           // Case hủy phiếu xuất kho: chỉ cho phép tạo ticket khi tìm thấy dữ liệu và nhập đầy đủ thông tin
            const exportStockWarning = document.getElementById("exportStockWarning");
-           const hasExportStockWarning = exportStockWarning && !exportStockWarning.classList.contains("hidden");
-           const hasPassedExportCheck = hasExportStockWarning && exportStockWarning.classList.contains("text-green-600");
-           const hasFailedExportCheck = hasExportStockWarning && exportStockWarning.classList.contains("text-red-600");
+           // Kiểm tra trạng thái success dựa trên class, không phụ thuộc vào hidden state
+           const hasPassedExportCheck = exportStockWarning && exportStockWarning.classList.contains("text-green-600");
+           const hasFailedExportCheck = exportStockWarning && exportStockWarning.classList.contains("text-red-600");
            
            if (hasDescription && hasPassedExportCheck) {
              enableSubmitButton();
@@ -5416,26 +5418,32 @@
           e.preventDefault(); // Ngăn form submit mặc định
 
           // Kiểm tra validation riêng cho trường người duyệt (Choices.js)
-          const selectedApprovers = approverChoices
-            ? approverChoices.getValue(true)
-            : [];
-          if (!selectedApprovers || selectedApprovers.length === 0) {
-            showNotification("Vui lòng chọn ít nhất một người duyệt!", "error");
-            // Focus vào trường người duyệt
-            const approverContainer = document.querySelector(
-              ".choices[data-type='select-multiple']"
-            );
-            if (approverContainer) {
-              approverContainer.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-              approverContainer.classList.add("border-red-500");
-              setTimeout(() => {
-                approverContainer.classList.remove("border-red-500");
-              }, 3000);
+          // Bỏ qua validation người duyệt cho case "Điều chỉnh định lượng" (283640007)
+          const ticketCategory = document.getElementById("ticketCategory");
+          const selectedCategory = ticketCategory ? ticketCategory.value : null;
+          
+          if (selectedCategory !== "283640007") { // Không phải "Điều chỉnh định lượng"
+            const selectedApprovers = approverChoices
+              ? approverChoices.getValue(true)
+              : [];
+            if (!selectedApprovers || selectedApprovers.length === 0) {
+              showNotification("Vui lòng chọn ít nhất một người duyệt!", "error");
+              // Focus vào trường người duyệt
+              const approverContainer = document.querySelector(
+                ".choices[data-type='select-multiple']"
+              );
+              if (approverContainer) {
+                approverContainer.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
+                approverContainer.classList.add("border-red-500");
+                setTimeout(() => {
+                  approverContainer.classList.remove("border-red-500");
+                }, 3000);
+              }
+              return;
             }
-            return;
           }
 
           // Kiểm tra validation HTML5 cho các trường khác
@@ -5511,7 +5519,7 @@
             
             Object.assign(newTicket, {
               crdfd_maonhangchitiet: window.lastExportTransactionData.crdfd_transactionsalesid,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
               cr1bb_giatriexuat: window.lastExportTransactionData.crdfd_soluonggiaotheokho,
               cr1bb_giatrihientai: window.lastExportTransactionData.crdfd_soluonggiaotheokho,
             });
@@ -5519,7 +5527,7 @@
           case 283640004: // hủy phiếu nhập kho 
             Object.assign(newTicket, {
               crdfd_maonhangchitiet: window.lastTransactionData.crdfd_transactionbuyid,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
               cr1bb_giatriexuat: window.lastTransactionData.crdfd_soluonganhantheokho,
               cr1bb_giatrihientai: window.lastTransactionData.crdfd_soluonganhantheokho,
             });
@@ -5538,7 +5546,7 @@
                 document.getElementById("numberNhapDon").value +
                 "|" +
                 document.getElementById("numberNhapKho").value, // số lượng theo đơn|số lượng theo kho
-              crdfd_nguoiduyet: "Hệ thống",
+              crdfd_nguoiduyet: approversText,
             });
             break;
             
@@ -5550,12 +5558,12 @@
             }
             
             Object.assign(newTicket, {
-              crdfd_maonhangchitiet: window.lastAdjustExportData.crdfd_transactionsellid,
+              crdfd_maonhangchitiet: window.lastAdjustExportData.crdfd_transactionsalesid,
               cr1bb_giatriexuat:
                 document.getElementById("numberXuatDon").value +
                 "|" +
                 document.getElementById("numberXuatKho").value, // số lượng theo đơn|số lượng theo kho
-              crdfd_nguoiduyet: "Hệ thống",
+              crdfd_nguoiduyet: approversText,
             });
             break;
             
@@ -5570,7 +5578,7 @@
               crdfd_maonhangchitiet: window.lastBuyOrderValidation.crdfd_buyorderdetailsid,
               cr1bb_giatriexuat: document.getElementById("priceSodBod").value,
               cr1bb_giatrihientai: window.lastBuyOrderValidation.crdfd_giagoc,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
             });
             break;
 
@@ -5585,7 +5593,7 @@
               crdfd_maonhangchitiet: window.lastOrderValidation.crdfd_saleorderdetailid,
               cr1bb_giatriexuat: document.getElementById("priceSodBod").value,
               cr1bb_giatrihientai: window.lastOrderValidation.crdfd_giagoc,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
             });
             break;
 
@@ -5599,7 +5607,7 @@
             Object.assign(newTicket, {
               crdfd_maonhangchitiet: window.lastOrderValidation.crdfd_saleorderdetailid,
               cr1bb_giatriexuat: document.getElementById("vatOption").value,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
             });
             break;
             
@@ -5613,7 +5621,7 @@
             Object.assign(newTicket, {
               crdfd_maonhangchitiet: window.lastBuyOrderValidation.crdfd_buyorderdetailsid,
               cr1bb_giatriexuat: document.getElementById("vatOption").value,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
             });
             break;
             
@@ -5627,7 +5635,7 @@
             Object.assign(newTicket, {
               crdfd_maonhangchitiet: window.lastSaleOrderValidation.crdfd_sale_orderid,
               cr1bb_giatriexuat: document.getElementById("vatOption").value,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
             });
             break;
             
@@ -5641,7 +5649,7 @@
             Object.assign(newTicket, {
               crdfd_maonhangchitiet: window.lastBuyOrderMainValidation.crdfd_buyordersid,
               cr1bb_giatriexuat: document.getElementById("vatOption").value,
-              crdfd_nguoiduyet: "Hệ thống", //approversText,
+              crdfd_nguoiduyet: approversText,
             });
             break;
 
@@ -6401,6 +6409,15 @@
                 });
               }
             }, 100);
+            
+            // Hiện lại trường người duyệt cho điều chỉnh giá SOD
+            setTimeout(() => {
+              const approverField = document.querySelector('#ticketApprover');
+              const approverContainer = approverField ? approverField.parentElement : null;
+              if (approverContainer) {
+                approverContainer.style.display = 'block';
+              }
+            }, 50);
             break;
             
           // ==== Điều chỉnh giá BOD ====
@@ -6613,8 +6630,15 @@
                 const resetExportSubmitButton = () => {
                   // Ẩn warning khi user thay đổi input
                   const exportStockWarning = document.getElementById('exportStockWarning');
+                  const exportStockWarningText = document.getElementById('exportStockWarningText');
                   if (exportStockWarning) {
                     exportStockWarning.classList.add('hidden');
+                    // Reset về trạng thái ban đầu - xóa tất cả class màu
+                    exportStockWarning.classList.remove('text-green-600', 'text-red-600');
+                  }
+                  if (exportStockWarningText) {
+                    // Clear nội dung text cũ
+                    exportStockWarningText.textContent = '';
                   }
                   // Ẩn tất cả validation icons
                   hideExportOrderValidation();
@@ -6707,6 +6731,24 @@
 </div>
   `;
             renderUnitsDropdown(units);
+            
+            // Set default system approver for quantity adjustment
+            setTimeout(() => {
+              const approverSelect = document.getElementById("ticketApprover");
+              if (approverSelect && approverChoices) {
+                // Clear existing choices
+                approverChoices.clearChoices();
+                
+                // Set system as default approver
+                const systemApprover = {
+                  value: "admin",
+                  label: "Admin WC (Hệ thống)"
+                };
+                
+                approverChoices.setChoices([systemApprover], "value", "label", false);
+                approverChoices.setChoiceByValue("admin");
+              }
+            }, 50);
             
             // Thêm event listeners cho validation
             setTimeout(() => {
@@ -7228,6 +7270,31 @@
           <input type="text" id="extraInfo" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" placeholder="Nhập thông tin..." required>
         </div>
        `;
+            // Hiện lại trường người duyệt cho các category khác
+            setTimeout(() => {
+              const approverField = document.querySelector('#ticketApprover');
+              const approverContainer = approverField ? approverField.parentElement : null;
+              if (approverContainer) {
+                approverContainer.style.display = 'block';
+              }
+            }, 50);
+        }
+        
+        // Reset approver field to API list for all cases except quantity adjustment
+        if (parseInt(category) !== 283640007) {
+          console.log('Resetting approver for category:', category);
+          setTimeout(() => {
+            const approverSelect = document.getElementById("ticketApprover");
+            if (approverSelect && approverChoices) {
+              console.log('Clearing approver choices and resetting to API list');
+              // Clear current selection and choices first
+              approverChoices.clearStore();
+              approverChoices.clearChoices();
+              
+              // Reset to full API list
+              initApproverChoices();
+            }
+          }, 100);
         }
       }
 
@@ -8011,7 +8078,9 @@
           .replace(/\[/g, '%5B') // Escape left bracket
           .replace(/\]/g, '%5D') // Escape right bracket
           .replace(/\(/g, '%28') // Escape left parenthesis
-          .replace(/\)/g, '%29'); // Escape right parenthesis
+          .replace(/\)/g, '%29') // Escape right parenthesis
+          .replace(/ /g, '%20')  // Escape spaces
+          .replace(/\//g, '%2F') // Escape forward slash
       }
 
       // Function kiểm tra tồn kho cho hủy phiếu xuất kho
@@ -8025,6 +8094,10 @@
           
           // Ẩn warning trước khi kiểm tra
           stockWarning.classList.add('hidden');
+          // Reset tất cả class màu trước khi bắt đầu validation mới
+          stockWarning.classList.remove('text-green-600', 'text-red-600');
+          // Clear nội dung text cũ
+          stockWarningText.textContent = '';
           
           // Hiển thị loading cho tất cả các field
           showExportOrderValidationLoading();
@@ -8050,7 +8123,7 @@
           const escapedMaDonHang = escapeODataString(maDonHang.trim());
           
           // Bước 1: Query transaction sell để lấy thông tin và expand saleorder detail
-          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and crdfd_soluonggiaotheokho eq ${soLuongHuy}&$select=crdfd_soluonggiaotheokho,crdfd_transactionsalesid,createdon&$orderby=createdon desc&$top=1`;
+          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and crdfd_soluonggiaotheokho eq ${soLuongHuy} and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsalesid,createdon&$orderby=createdon desc&$top=1`;
           console.log("transactionQuery: ", transactionQuery);
           const transactionResponse = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
             method: 'GET',
@@ -8081,7 +8154,17 @@
             showExportQuantityValidationError();
             stockWarningText.textContent = `Không tìm thấy phiếu xuất kho tương ứng với mã đơn hàng: ${maDonHang}, mã phiếu: ${maPhieu} và số lượng: ${soLuongHuy}`;
             stockWarning.classList.remove('hidden');
+            
+            // Đảm bảo exportStockWarning được set đúng trạng thái lỗi
+            const exportStockWarning = document.getElementById("exportStockWarning");
+            if (exportStockWarning) {
+              exportStockWarning.classList.remove('hidden');
+              exportStockWarning.classList.remove('text-green-600');
+              exportStockWarning.classList.add('text-red-600');
+            }
+            
             window.lastExportTransactionData = null;
+            checkSubmitButtonState();
             return;
           }
           
@@ -8095,6 +8178,18 @@
           // Lưu thông tin transaction để sử dụng khi tạo ticket
           window.lastExportTransactionData = transactionInfo;
           
+          // Ẩn exportStockWarning khi tìm thấy dữ liệu - chỉ hiển thị tích xanh cho input
+          const exportStockWarning = document.getElementById("exportStockWarning");
+          if (exportStockWarning) {
+            exportStockWarning.classList.add('hidden');
+            // Vẫn set class green để checkSubmitButtonState nhận diện được trạng thái success
+            exportStockWarning.classList.remove('text-red-600');
+            exportStockWarning.classList.add('text-green-600');
+          }
+          
+          // Gọi function kiểm tra trạng thái nút submit
+          checkSubmitButtonState();
+          
         } catch (error) {
           console.error('❌ Lỗi khi kiểm tra phiếu xuất kho:', error);
           // Hiển thị lỗi cho tất cả các field
@@ -8103,6 +8198,16 @@
           showExportQuantityValidationError();
           stockWarningText.textContent = `Lỗi khi kiểm tra: ${error.message}`;
           stockWarning.classList.remove('hidden');
+          
+          // Đảm bảo exportStockWarning được set đúng trạng thái lỗi
+          const exportStockWarning = document.getElementById("exportStockWarning");
+          if (exportStockWarning) {
+            exportStockWarning.classList.remove('hidden');
+            exportStockWarning.classList.remove('text-green-600');
+            exportStockWarning.classList.add('text-red-600');
+          }
+          
+          checkSubmitButtonState();
         }
       }
       
