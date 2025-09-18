@@ -1454,81 +1454,82 @@
           });
         }
         
-        // Function để reset modal khi đóng
-        function resetTicketModal() {
-          // Reset form
-          const form = document.getElementById('newTicketForm');
-          if (form) {
-            form.reset();
-          }
-          
-          // Reset dynamic fields
-          const dynamicFields = document.getElementById('dynamicFields');
-          if (dynamicFields) {
-            dynamicFields.innerHTML = '';
-          }
-          
-          // Reset validation icons cho tất cả cases
-           hideOrderValidation();
-           hideBuyOrderValidation();
-           hideSaleOrderValidation();
-           hideBuyOrderMainValidation();
-           hideExportOrderValidation();
-           hideExportSlipValidation();
-           hideExportQuantityValidation();
-           hideImportOrderValidation();
-           hideImportSlipValidation();
-           hideImportQuantityValidation();
-           hideProductValidation();
-           hideUnitValidation();
-           hideAdjustImportOrderValidation();
-           hideAdjustImportSlipValidation();
-           hideAdjustImportQuantityValidation();
-           hideAdjustExportOrderValidation();
-           hideAdjustExportSlipValidation();
-           hideAdjustExportQuantityValidation();
-          
-          // Reset validation data
-           window.lastOrderValidation = null;
-           window.lastBuyOrderValidation = null;
-           window.lastSaleOrderValidation = null;
-           window.lastBuyOrderMainValidation = null;
-           window.lastExportTransactionData = null;
-           window.lastTransactionData = null;
-           window.lastUnitConversionData = null;
-           window.lastAdjustImportData = null;
-           window.lastAdjustExportData = null;
-          
-          // Reset warning messages
-           const stockWarning = document.getElementById('stockWarning');
-           if (stockWarning) {
-             stockWarning.classList.add('hidden');
-           }
-           
-           const exportStockWarning = document.getElementById('exportStockWarning');
-           if (exportStockWarning) {
-             exportStockWarning.classList.add('hidden');
-           }
-           
-           const unitConversionWarning = document.getElementById('unitConversionWarning');
-           if (unitConversionWarning) {
-             unitConversionWarning.classList.add('hidden');
-           }
-           
-           const adjustImportWarning = document.getElementById('adjustImportWarning');
-           if (adjustImportWarning) {
-             adjustImportWarning.classList.add('hidden');
-           }
-           
-           const adjustExportWarning = document.getElementById('adjustExportWarning');
-           if (adjustExportWarning) {
-             adjustExportWarning.classList.add('hidden');
-           }
-          
-          // Reset submit button state
-          checkSubmitButtonState();
-        }
       });
+
+      // Function để reset modal khi đóng
+      function resetTicketModal() {
+        // Reset form
+        const form = document.getElementById('newTicketForm');
+        if (form) {
+          form.reset();
+        }
+        
+        // Reset dynamic fields
+        const dynamicFields = document.getElementById('dynamicFields');
+        if (dynamicFields) {
+          dynamicFields.innerHTML = '';
+        }
+        
+        // Reset validation icons cho tất cả cases
+         hideOrderValidation();
+         hideBuyOrderValidation();
+         hideSaleOrderValidation();
+         hideBuyOrderMainValidation();
+         hideExportOrderValidation();
+         hideExportSlipValidation();
+         hideExportQuantityValidation();
+         hideImportOrderValidation();
+         hideImportSlipValidation();
+         hideImportQuantityValidation();
+         hideProductValidation();
+         hideUnitValidation();
+         hideAdjustImportOrderValidation();
+         hideAdjustImportSlipValidation();
+         hideAdjustImportQuantityValidation();
+         hideAdjustExportOrderValidation();
+         hideAdjustExportSlipValidation();
+         hideAdjustExportQuantityValidation();
+        
+        // Reset validation data
+         window.lastOrderValidation = null;
+         window.lastBuyOrderValidation = null;
+         window.lastSaleOrderValidation = null;
+         window.lastBuyOrderMainValidation = null;
+         window.lastExportTransactionData = null;
+         window.lastTransactionData = null;
+         window.lastUnitConversionData = null;
+         window.lastAdjustImportData = null;
+         window.lastAdjustExportData = null;
+        
+        // Reset warning messages
+         const stockWarning = document.getElementById('stockWarning');
+         if (stockWarning) {
+           stockWarning.classList.add('hidden');
+         }
+         
+         const exportStockWarning = document.getElementById('exportStockWarning');
+         if (exportStockWarning) {
+           exportStockWarning.classList.add('hidden');
+         }
+         
+         const unitConversionWarning = document.getElementById('unitConversionWarning');
+         if (unitConversionWarning) {
+           unitConversionWarning.classList.add('hidden');
+         }
+         
+         const adjustImportWarning = document.getElementById('adjustImportWarning');
+         if (adjustImportWarning) {
+           adjustImportWarning.classList.add('hidden');
+         }
+         
+         const adjustExportWarning = document.getElementById('adjustExportWarning');
+         if (adjustExportWarning) {
+           adjustExportWarning.classList.add('hidden');
+         }
+        
+        // Reset submit button state
+        checkSubmitButtonState();
+      }
 
       document
         .getElementById("ticketDepartment")
@@ -3008,7 +3009,7 @@
           const escapedMaDonHang = escapeODataString(maDonHang.trim());
           
           // Query transaction sell để lấy thông tin xuất kho
-          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsellid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_tensanpham_value)&$orderby=createdon desc&$top=1`;
+          const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsellid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_sanpham_value)&$orderby=createdon desc&$top=1`;
           
           console.log('🔍 Query adjust export transaction:', transactionQuery);
           
