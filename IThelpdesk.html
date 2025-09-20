@@ -1347,7 +1347,7 @@
         "Kho vận": [
           { value: "283640008", text: "Hủy phiếu xuất kho" },
           { value: "283640004", text: "Hủy phiếu nhập kho" },
-          { value: "283640007", text: "Điều chỉnh định lượng" },
+          
           { value: "283640009", text: "Điều chỉnh phiếu xuất kho" },
           { value: "283640005", text: "Điều chỉnh phiếu nhập kho" },
         ],
@@ -1363,7 +1363,7 @@
         ],
         "Phòng Nhân sự": [],
         "Phòng Tài chính & Kế toán": [],
-        "Phòng R&D": [],
+        "Phòng R&D": [{ value: "283640007", text: "Điều chỉnh định lượng" }],
         "Phòng Công nghệ": [],
         // add các phòng ban khác nếu cần
       };
@@ -2855,6 +2855,12 @@
             return;
           }
           
+          // Đảm bảo lastAdjustImportData được cập nhật từ checkAdjustImportTransactionForUnit
+          if (window.lastAdjustImportData !== transactionInfo) {
+            console.log('⚠️ Dữ liệu transaction đã thay đổi, cập nhật lại');
+            window.lastAdjustImportData = transactionInfo;
+          }
+          
           // Tính chênh lệch: số user nhập - số từ API
           const chenhLech = soLuongTheoKhoNumber - soLuongNhanHienTai;
           
@@ -2980,39 +2986,391 @@
         }
       }
       
-      // Function kiểm tra adjust export transaction từ API
-      async function checkAdjustExportTransaction(maDonHang, maPhieu) {
+      // Function kiểm tra import transaction để lấy thông tin đơn vị
+      async function checkImportTransactionForUnit(maDonHang, maPhieu, quantityLabelId, orderValidationFunctions, slipValidationFunctions) {
         try {
           const token = await getToken();
-          const warning = document.getElementById('adjustExportWarning');
-          const warningText = document.getElementById('adjustExportWarningText');
-          
-          if (!warning || !warningText) return;
-          
-          // Ẩn warning trước khi kiểm tra
-          warning.classList.add('hidden');
           
           // Hiển thị loading cho cả hai field
-          showAdjustExportOrderValidationLoading();
-          showAdjustExportSlipValidationLoading();
+          orderValidationFunctions.showLoading();
+          slipValidationFunctions.showLoading();
           
           if (!maDonHang || !maPhieu) {
             // Hiển thị lỗi cho cả hai field
-            showAdjustExportOrderValidationError();
-            showAdjustExportSlipValidationError();
-            warningText.textContent = 'Vui lòng nhập đầy đủ thông tin mã đơn hàng và mã phiếu.';
-            warning.classList.remove('hidden');0
+            orderValidationFunctions.showError();
+            slipValidationFunctions.showError();
             return;
           }
           
-          // Escape ký tự đặc biệt
-          const escapedMaPhieu = escapeODataString(maPhieu.trim());
-          const escapedMaDonHang = escapeODataString(maDonHang.trim());
+          const escapedMaPhieu = escapeODataString(maPhieu);
+          const escapedMaDonHang = escapeODataString(maDonHang);
           
-          // Query transaction sell để lấy thông tin xuất kho
+          // Query để lấy thông tin đơn vị từ transaction buy (phiếu nhập)
+          const unitQuery = `/crdfd_transactionbuies?$filter=crdfd_maphieunhap eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_transactionbuyid,crdfd_onvitheokho,crdfd_onvionhang2&$top=1`;
+          
+          const response = await fetch(`${DATAVERSE_URL}${unitQuery}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error('❌ Lỗi API get import unit info:', response.status, response.statusText);
+            orderValidationFunctions.showError();
+            slipValidationFunctions.showError();
+            
+            // Hiển thị thông báo lỗi API cho import cases
+            const adjustImportWarning = document.getElementById('adjustImportWarning');
+            const adjustImportWarningText = document.getElementById('adjustImportWarningText');
+            const stockWarning = document.getElementById('stockWarning');
+            const stockWarningText = document.getElementById('stockWarningText');
+            
+            if (adjustImportWarning && adjustImportWarningText) {
+              adjustImportWarningText.textContent = `Lỗi kết nối API khi kiểm tra thông tin phiếu nhập. Vui lòng thử lại sau.`;
+              adjustImportWarning.classList.remove('hidden');
+            } else if (stockWarning && stockWarningText) {
+              stockWarningText.textContent = `Lỗi kết nối API khi kiểm tra thông tin phiếu nhập. Vui lòng thử lại sau.`;
+              stockWarning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          const data = await response.json();
+          console.log('📋 Import unit info response:', data);
+          
+          if (!data.value || data.value.length === 0) {
+            console.log('❌ Không tìm thấy import transaction');
+            orderValidationFunctions.showError();
+            slipValidationFunctions.showError();
+            
+            // Hiển thị thông báo lỗi chi tiết cho import cases
+            const adjustImportWarning = document.getElementById('adjustImportWarning');
+            const adjustImportWarningText = document.getElementById('adjustImportWarningText');
+            const stockWarning = document.getElementById('stockWarning');
+            const stockWarningText = document.getElementById('stockWarningText');
+            
+            if (adjustImportWarning && adjustImportWarningText) {
+              adjustImportWarningText.textContent = `Không tìm thấy phiếu nhập kho với mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}. Vui lòng kiểm tra lại thông tin.`;
+              adjustImportWarning.classList.remove('hidden');
+            } else if (stockWarning && stockWarningText) {
+              stockWarningText.textContent = `Không tìm thấy phiếu nhập kho với mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}. Vui lòng kiểm tra lại thông tin.`;
+              stockWarning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          const transactionInfo = data.value[0];
+          
+          // Lấy thông tin đơn vị từ API response
+          let warehouseUnit = '';
+          let orderUnit = '';
+          if (transactionInfo.crdfd_onvitheokho) {
+            warehouseUnit = transactionInfo.crdfd_onvitheokho;
+          }
+          if (transactionInfo.crdfd_onvionhang2) {
+            orderUnit = transactionInfo.crdfd_onvionhang2;
+          }
+          
+          // Cập nhật label của trường số lượng với đơn vị
+          const quantityLabel = document.getElementById(quantityLabelId);
+          if (quantityLabelId === 'cancelImportQuantityLabel') {
+            // Case hủy phiếu nhập - chỉ hiển thị đơn vị theo kho
+            if (quantityLabel && warehouseUnit) {
+              const currentText = quantityLabel.textContent;
+              if (!currentText.includes('(') && !currentText.includes(')')) {
+                quantityLabel.textContent = `Số lượng (${warehouseUnit}) *`;
+              }
+            }
+          } else if (quantityLabelId === 'adjustImportQuantityLabel') {
+            // Case điều chỉnh phiếu nhập - hiển thị cả hai đơn vị
+            if (quantityLabel && warehouseUnit) {
+              const currentText = quantityLabel.textContent;
+              if (!currentText.includes('(') && !currentText.includes(')')) {
+                quantityLabel.textContent = `Số lượng theo kho (${warehouseUnit}) *`;
+              }
+            }
+            
+            // Cập nhật label cho số lượng theo đơn
+            const orderQuantityLabel = document.getElementById('adjustImportOrderQuantityLabel');
+            if (orderQuantityLabel && orderUnit) {
+              const currentOrderText = orderQuantityLabel.textContent;
+              if (!currentOrderText.includes('(') && !currentOrderText.includes(')')) {
+                orderQuantityLabel.textContent = `Số lượng theo đơn (${orderUnit})`;
+              }
+            }
+            
+            // Lưu thông tin transaction để sử dụng khi kiểm tra số lượng
+            if (transactionInfo) {
+              console.log('✅ Cập nhật lastAdjustImportData từ checkImportTransactionForUnit');
+              window.lastAdjustImportData = transactionInfo;
+            }
+          }
+          
+          // Hiển thị thành công cho cả hai field
+          orderValidationFunctions.showSuccess();
+          slipValidationFunctions.showSuccess();
+          
+        } catch (error) {
+          console.error('❌ Lỗi khi kiểm tra import transaction:', error);
+          orderValidationFunctions.showError();
+          slipValidationFunctions.showError();
+          
+          // Hiển thị thông báo lỗi JavaScript cho import cases
+          const adjustImportWarning = document.getElementById('adjustImportWarning');
+          const adjustImportWarningText = document.getElementById('adjustImportWarningText');
+          const stockWarning = document.getElementById('stockWarning');
+          const stockWarningText = document.getElementById('stockWarningText');
+          
+          if (adjustImportWarning && adjustImportWarningText) {
+            adjustImportWarningText.textContent = `Có lỗi xảy ra khi kiểm tra thông tin phiếu nhập. Vui lòng thử lại.`;
+            adjustImportWarning.classList.remove('hidden');
+          } else if (stockWarning && stockWarningText) {
+            stockWarningText.textContent = `Có lỗi xảy ra khi kiểm tra thông tin phiếu nhập. Vui lòng thử lại.`;
+            stockWarning.classList.remove('hidden');
+          }
+        }
+      }
+
+      // Function wrapper cho cancel import
+      async function checkCancelImportTransaction(maDonHang, maPhieu) {
+        await checkImportTransactionForUnit(maDonHang, maPhieu, 'cancelImportQuantityLabel', {
+          showLoading: showImportOrderValidationLoading,
+          showError: showImportOrderValidationError,
+          showSuccess: showImportOrderValidationSuccess
+        }, {
+          showLoading: showImportSlipValidationLoading,
+          showError: showImportSlipValidationError,
+          showSuccess: showImportSlipValidationSuccess
+        });
+      }
+
+      // Function wrapper cho adjust import
+      async function checkAdjustImportTransactionForUnit(maDonHang, maPhieu) {
+        // Gọi hàm chung để hiển thị đơn vị
+        await checkImportTransactionForUnit(maDonHang, maPhieu, 'adjustImportQuantityLabel', {
+          showLoading: showAdjustImportOrderValidationLoading,
+          showError: showAdjustImportOrderValidationError,
+          showSuccess: showAdjustImportOrderValidationSuccess
+        }, {
+          showLoading: showAdjustImportSlipValidationLoading,
+          showError: showAdjustImportSlipValidationError,
+          showSuccess: showAdjustImportSlipValidationSuccess
+        });
+        
+        // Đảm bảo lastAdjustImportData được cập nhật đầy đủ thông tin
+        if (window.lastAdjustImportData) {
+          try {
+            const token = await getToken();
+            const escapedMaPhieu = escapeODataString(maPhieu.trim());
+            const escapedMaDonHang = escapeODataString(maDonHang.trim());
+            
+            // Query để lấy thêm thông tin cần thiết cho kiểm tra số lượng
+            const transactionQuery = `/crdfd_transactionbuies?$filter=crdfd_maphieunhap eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonganhantheokho,crdfd_transactionbuyid&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_tensanpham_value)&$top=1`;
+            
+            const response = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              if (data.value && data.value.length > 0) {
+                // Cập nhật thông tin bổ sung vào lastAdjustImportData
+                window.lastAdjustImportData = {
+                  ...window.lastAdjustImportData,
+                  ...data.value[0]
+                };
+                console.log('✅ Đã cập nhật đầy đủ thông tin cho lastAdjustImportData:', window.lastAdjustImportData);
+              }
+            }
+          } catch (error) {
+            console.error('❌ Lỗi khi cập nhật thông tin bổ sung cho lastAdjustImportData:', error);
+          }
+        }
+      }
+      
+      // Function kiểm tra export transaction từ API - chỉ lấy thông tin đơn vị (dùng chung cho cả adjust và cancel)
+      async function checkExportTransactionForUnit(maDonHang, maPhieu, quantityLabelId, orderValidationFunctions, slipValidationFunctions) {
+        try {
+          const token = await getToken();
+          
+          // Hiển thị loading cho cả hai field
+          orderValidationFunctions.showLoading();
+          slipValidationFunctions.showLoading();
+          
+          if (!maDonHang || !maPhieu) {
+            // Hiển thị lỗi cho cả hai field
+            orderValidationFunctions.showError();
+            slipValidationFunctions.showError();
+            return;
+          }
+          
+          const escapedMaPhieu = escapeODataString(maPhieu);
+          const escapedMaDonHang = escapeODataString(maDonHang);
+          
+          // Query chỉ để lấy thông tin đơn vị từ bất kỳ record nào của đơn hàng và phiếu xuất
+          const unitQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_transactionsalesid,crdfd_onvitheokho,crdfd_onvionhang&$top=1`;
+          
+          const response = await fetch(`${DATAVERSE_URL}${unitQuery}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error('❌ Lỗi API get unit info:', response.status, response.statusText);
+            orderValidationFunctions.showError();
+            slipValidationFunctions.showError();
+            
+            // Hiển thị thông báo lỗi API
+            const warning = document.getElementById('adjustExportWarning');
+            const warningText = document.getElementById('adjustExportWarningText');
+            if (warning && warningText) {
+              warningText.textContent = `Lỗi kết nối API khi kiểm tra thông tin phiếu xuất. Vui lòng thử lại sau.`;
+              warning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          const data = await response.json();
+          console.log('📋 Export unit info response:', data);
+          
+          if (!data.value || data.value.length === 0) {
+            console.log('❌ Không tìm thấy transaction');
+            orderValidationFunctions.showError();
+            slipValidationFunctions.showError();
+            
+            // Hiển thị thông báo lỗi chi tiết
+            const warning = document.getElementById('adjustExportWarning');
+            const warningText = document.getElementById('adjustExportWarningText');
+            if (warning && warningText) {
+              warningText.textContent = `Không tìm thấy phiếu xuất kho với mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}. Vui lòng kiểm tra lại thông tin.`;
+              warning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          const transactionInfo = data.value[0];
+          
+          // Lấy thông tin đơn vị từ API response
+          let warehouseUnit = '';
+          let orderUnit = '';
+          if (transactionInfo.crdfd_onvitheokho) {
+            warehouseUnit = transactionInfo.crdfd_onvitheokho;
+          }
+          if (transactionInfo.crdfd_onvionhang) {
+            orderUnit = transactionInfo.crdfd_onvionhang;
+          }
+          
+          // Cập nhật label của trường số lượng với đơn vị
+          const quantityLabel = document.getElementById(quantityLabelId);
+          if (quantityLabelId === 'cancelExportQuantityLabel') {
+            // Case hủy phiếu xuất - chỉ hiển thị đơn vị theo kho
+            if (quantityLabel && warehouseUnit) {
+              const currentText = quantityLabel.textContent;
+              if (!currentText.includes('(') && !currentText.includes(')')) {
+                quantityLabel.textContent = `Số lượng (${warehouseUnit}) *`;
+              }
+            }
+          } else {
+            // Case điều chỉnh phiếu xuất - hiển thị cả hai đơn vị
+            if (quantityLabel && warehouseUnit) {
+              const currentText = quantityLabel.textContent;
+              if (!currentText.includes('(') && !currentText.includes(')')) {
+                quantityLabel.textContent = `Số lượng theo kho (${warehouseUnit})`;
+              }
+            }
+            
+            // Tìm và cập nhật label số lượng theo đơn (sẽ tạo sau)
+            const orderQuantityLabel = document.getElementById('adjustExportOrderQuantityLabel');
+            if (orderQuantityLabel && orderUnit) {
+              const currentOrderText = orderQuantityLabel.textContent;
+              if (!currentOrderText.includes('(') && !currentOrderText.includes(')')) {
+                orderQuantityLabel.textContent = `Số lượng theo đơn (${orderUnit})`;
+              }
+            }
+          }
+          
+          // Hiển thị thành công cho cả hai field
+          orderValidationFunctions.showSuccess();
+          slipValidationFunctions.showSuccess();
+          
+        } catch (error) {
+          console.error('❌ Lỗi khi kiểm tra export transaction:', error);
+          orderValidationFunctions.showError();
+          slipValidationFunctions.showError();
+          
+          // Hiển thị thông báo lỗi JavaScript
+          const warning = document.getElementById('adjustExportWarning');
+          const warningText = document.getElementById('adjustExportWarningText');
+          if (warning && warningText) {
+            warningText.textContent = `Có lỗi xảy ra khi kiểm tra thông tin phiếu xuất. Vui lòng thử lại.`;
+            warning.classList.remove('hidden');
+          }
+        }
+      }
+
+      // Function wrapper cho cancel export
+      async function checkCancelExportTransaction(maDonHang, maPhieu) {
+        await checkExportTransactionForUnit(maDonHang, maPhieu, 'cancelExportQuantityLabel', {
+          showLoading: showExportOrderValidationLoading,
+          showError: showExportOrderValidationError,
+          showSuccess: showExportOrderValidationSuccess
+        }, {
+          showLoading: showExportSlipValidationLoading,
+          showError: showExportSlipValidationError,
+          showSuccess: showExportSlipValidationSuccess
+        });
+      }
+
+      // Function wrapper cho adjust export
+      async function checkAdjustExportTransaction(maDonHang, maPhieu) {
+        await checkExportTransactionForUnit(maDonHang, maPhieu, 'adjustExportQuantityLabel', {
+          showLoading: showAdjustExportOrderValidationLoading,
+          showError: showAdjustExportOrderValidationError,
+          showSuccess: showAdjustExportOrderValidationSuccess
+        }, {
+          showLoading: showAdjustExportSlipValidationLoading,
+          showError: showAdjustExportSlipValidationError,
+          showSuccess: showAdjustExportSlipValidationSuccess
+        });
+      }
+      
+      // Function kiểm tra adjust export quantity từ API với đầy đủ 3 thông tin
+      async function checkAdjustExportQuantity(soLuongTheoKho) {
+        try {
+          // Lấy thông tin từ các input fields
+          const maDonHang = document.getElementById('maDonPhieuXuat')?.value?.trim();
+          const maPhieu = document.getElementById('maPhieuXuat')?.value?.trim();
+          
+          if (!maDonHang || !maPhieu || !soLuongTheoKho) {
+            console.log('❌ Thiếu thông tin để kiểm tra');
+            showAdjustExportQuantityValidationError();
+            return;
+          }
+          
+          const soLuongTheoKhoNumber = parseFloat(soLuongTheoKho);
+          if (isNaN(soLuongTheoKhoNumber)) {
+            showAdjustExportQuantityValidationError();
+            return;
+          }
+          
+          // Call API với chỉ 2 thông tin (mã đơn hàng + mã phiếu) để tìm record
+          const token = await getToken();
+          const escapedMaPhieu = escapeODataString(maPhieu);
+          const escapedMaDonHang = escapeODataString(maDonHang);
+          
           const transactionQuery = `/crdfd_transactionsaleses?$filter=crdfd_maphieuxuat eq '${escapedMaPhieu}' and crdfd_maonhangchitiettext eq '${escapedMaDonHang}' and statecode eq 0&$select=crdfd_soluonggiaotheokho,crdfd_transactionsalesid,createdon&$expand=crdfd_IDchitietonhang($select=crdfd_vitrikho,_crdfd_sanpham_value)&$orderby=createdon desc&$top=1`;
-          
-         
           
           const response = await fetch(`${DATAVERSE_URL}${transactionQuery}`, {
             method: 'GET',
@@ -3022,89 +3380,50 @@
               'Accept': 'application/json'
             }
           });
-
           
           if (!response.ok) {
-            console.error('❌ Lỗi API adjust export transaction:', response.status, response.statusText);
-            // Hiển thị lỗi cho cả hai field
-            showAdjustExportOrderValidationError();
-            showAdjustExportSlipValidationError();
-            warningText.textContent = `Lỗi API: ${response.statusText}`;
-            warning.classList.remove('hidden');
-            return;
-          }
-          
-          const data = await response.json();
-          console.log('📋 Adjust export transaction response:', data);
-          
-          if (!data.value || data.value.length === 0) {
-            // Hiển thị lỗi cho cả hai field
-            showAdjustExportOrderValidationError();
-            showAdjustExportSlipValidationError();
-            warningText.textContent = `Không tìm thấy phiếu xuất kho tương ứng với mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}`;
-            warning.classList.remove('hidden');
-            window.lastAdjustExportData = null;
-            return;
-          }
-          
-          const transactionInfo = data.value[0];
-          
-          // Hiển thị thành công cho cả hai field
-          showAdjustExportOrderValidationSuccess();
-          showAdjustExportSlipValidationSuccess();
-          
-          // Lưu thông tin transaction để sử dụng khi tạo ticket
-          window.lastAdjustExportData = transactionInfo;
-          
-        } catch (error) {
-          console.error('❌ Lỗi khi kiểm tra adjust export transaction:', error);
-          // Hiển thị lỗi cho cả hai field
-          showAdjustExportOrderValidationError();
-          showAdjustExportSlipValidationError();
-          
-          const warning = document.getElementById('adjustExportWarning');
-          const warningText = document.getElementById('adjustExportWarningText');
-          
-          if (warning && warningText) {
-            warningText.textContent = `Lỗi khi kiểm tra: ${error.message}`;
-            warning.classList.remove('hidden');
-          }
-        }
-      }
-      
-      // Function kiểm tra adjust export quantity từ API
-      async function checkAdjustExportQuantity(soLuongTheoKho) {
-        try {
-          if (!window.lastAdjustExportData) {
-            console.log('❌ Không có dữ liệu transaction để kiểm tra');
-            return;
-          }
-          
-          const transactionInfo = window.lastAdjustExportData;
-          const soLuongXuatHienTai = transactionInfo.crdfd_soluonggiaotheokho || 0;
-          const soLuongTheoKhoNumber = parseFloat(soLuongTheoKho);
-          
-          if (isNaN(soLuongTheoKhoNumber)) {
+            console.error('❌ Lỗi API validate quantity:', response.status, response.statusText);
             showAdjustExportQuantityValidationError();
             return;
           }
           
-          // Tính chênh lệch: số xuất từ API - số user nhập
-          const chenhLech = soLuongXuatHienTai - soLuongTheoKhoNumber;
+          const data = await response.json();
+          console.log('📋 Quantity validation response:', data);
+          
+          if (!data.value || data.value.length === 0) {
+            // Không tìm thấy record với mã đơn hàng và mã phiếu
+            showAdjustExportQuantityValidationError();
+            const warning = document.getElementById('adjustExportWarning');
+            const warningText = document.getElementById('adjustExportWarningText');
+            if (warning && warningText) {
+              warningText.textContent = `Không tìm thấy phiếu xuất kho với mã đơn hàng: ${maDonHang} và mã phiếu: ${maPhieu}`;
+              warning.classList.remove('hidden');
+            }
+            return;
+          }
+          
+          // Tìm thấy record - tính toán chênh lệch và kiểm tra tồn kho
+          const transactionInfo = data.value[0];
+          const soLuongGiaoHienTai = transactionInfo.crdfd_soluonggiaotheokho || 0;
+          
+          // Tính chênh lệch: số user nhập - số từ API
+          const chenhLech = soLuongTheoKhoNumber - soLuongGiaoHienTai;
           
           console.log('📊 Tính toán chênh lệch xuất:', {
-            soLuongXuatHienTai,
+            soLuongGiaoHienTai,
             soLuongTheoKhoNumber,
             chenhLech
           });
           
-          // Nếu chênh lệch > 0: tích xanh
-          if (chenhLech > 0) {
+          // Nếu chênh lệch < 0: tích xanh (giảm xuất)
+          if (chenhLech < 0) {
             showAdjustExportQuantityValidationSuccess();
             const warning = document.getElementById('adjustExportWarning');
             if (warning) {
               warning.classList.add('hidden');
             }
+            // Lưu thông tin transaction để sử dụng khi tạo ticket
+            window.lastAdjustExportData = transactionInfo;
             return;
           }
           
@@ -3120,8 +3439,11 @@
             return;
           }
           
-          // Nếu chênh lệch < 0: kiểm tra tồn kho
-          await checkInventoryForAdjustExport(Math.abs(chenhLech), transactionInfo);
+          // Nếu chênh lệch > 0: kiểm tra tồn kho (tăng xuất)
+          await checkInventoryForAdjustExport(chenhLech, transactionInfo);
+          
+          // Lưu thông tin transaction để sử dụng khi tạo ticket
+          window.lastAdjustExportData = transactionInfo;
           
         } catch (error) {
           console.error('❌ Lỗi khi kiểm tra adjust export quantity:', error);
@@ -5844,7 +6166,7 @@
     <div>
       <span class="font-medium text-gray-800">Giá trị đề xuất:</span>
       <span class="ml-1 text-green-600 font-semibold">
-        ${ticket.giaTriDeXuat}
+        ${formatGiaTriDeXuat(ticket.giaTriDeXuat, ticket.category)}
       </span>
     </div>
     
@@ -5986,7 +6308,7 @@
                            <div class="bg-gray-50 p-4 rounded-lg">
                             <h5 class="font-medium text-gray-800 mb-2">Giá trị đề xuất</h5>
                            <span class="text-sm text-gray-600">
-                              ${ticket.giaTriDeXuat}
+                              ${formatGiaTriDeXuat(ticket.giaTriDeXuat, ticket.category)}
                            </span>
                         </div>
                     </div>
@@ -6140,6 +6462,22 @@
           default:
             return "Không xác định";
         }
+      }
+
+      function formatGiaTriDeXuat(giaTriDeXuat, category) {
+        if (!giaTriDeXuat || giaTriDeXuat === "Chưa xác định") {
+          return giaTriDeXuat;
+        }
+        
+        // For cases that use quantity format (order|warehouse)
+        const quantityCases = [283640005, 283640009];
+        
+        if (quantityCases.includes(parseInt(category)) && giaTriDeXuat.includes('|')) {
+          const [orderQty, warehouseQty] = giaTriDeXuat.split('|');
+          return `Số lượng theo đơn: ${orderQty} - Số lượng theo kho: ${warehouseQty}`;
+        }
+        
+        return giaTriDeXuat;
       }
 
       function formatDate(dateString) {
@@ -6492,7 +6830,7 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng *</label>
+          <label id="cancelImportQuantityLabel" class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng *</label>
           <div class="relative">
             <input type="number" step="any" id="numberPhieuHuy" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" placeholder="Nhập số lượng cần hủy theo kho..." required>
             <div id="importQuantityValidationStatus" class="absolute right-2 top-1/2 transform -translate-y-1/2 hidden">
@@ -6549,27 +6887,42 @@
                     }
                   });
                   
-                  // Trigger validation khi user blur khỏi mã phiếu nhập
-                  IDPhieuHuyInput.addEventListener('blur', async () => {
+                  // Hàm chung để kiểm tra khi có đủ thông tin
+                  const validateCancelImport = async () => {
                     const soLuongHuy = parseFloat(numberPhieuHuyInput.value);
                     const maPhieu = IDPhieuHuyInput.value.trim();
                     const maDonHang = IDMaDonHangInput.value.trim();
                     
+                    // Kiểm tra unit info khi có đủ thông tin mã đơn hàng và mã phiếu
+                    if (maPhieu && maDonHang) {
+                      await checkCancelImportTransaction(maDonHang, maPhieu);
+                    }
+                    
                     if (soLuongHuy > 0 && maPhieu && maDonHang && parseInt(category) === 283640004) {
                       await checkInventoryStock(maPhieu, soLuongHuy, 'huy_phieu_nhap');
+                    }
+                  };
+                  
+                  // Thêm event listener cho input để tự động gọi API khi nhập đủ thông tin
+                  IDPhieuHuyInput.addEventListener('input', () => {
+                    const maPhieu = IDPhieuHuyInput.value.trim();
+                    const maDonHang = IDMaDonHangInput.value.trim();
+                    if (maPhieu && maDonHang) {
+                      validateCancelImport();
                     }
                   });
                   
-                  // Trigger validation khi user blur khỏi mã đơn hàng
-                  IDMaDonHangInput.addEventListener('blur', async () => {
-                    const soLuongHuy = parseFloat(numberPhieuHuyInput.value);
+                  IDMaDonHangInput.addEventListener('input', () => {
                     const maPhieu = IDPhieuHuyInput.value.trim();
                     const maDonHang = IDMaDonHangInput.value.trim();
-                    
-                    if (soLuongHuy > 0 && maPhieu && maDonHang && parseInt(category) === 283640004) {
-                      await checkInventoryStock(maPhieu, soLuongHuy, 'huy_phieu_nhap');
+                    if (maPhieu && maDonHang) {
+                      validateCancelImport();
                     }
                   });
+                  
+                  // Giữ lại event blur để đảm bảo hoạt động như cũ
+                  IDPhieuHuyInput.addEventListener('blur', validateCancelImport);
+                  IDMaDonHangInput.addEventListener('blur', validateCancelImport);
                 }
               }, 100);
             break;
@@ -6602,7 +6955,7 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng *</label>
+          <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2" id="cancelExportQuantityLabel">Số lượng *</label>
           <div class="relative">
             <input type="number" step="any" id="numberPhieuXuat" class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" placeholder="Nhập số lượng cần hủy theo kho..." required>
             <div id="exportQuantityValidationStatus" class="absolute right-2 top-1/2 transform -translate-y-1/2 hidden">
@@ -6644,16 +6997,44 @@
                   hideExportOrderValidation();
                   hideExportSlipValidation();
                   hideExportQuantityValidation();
+                  
+                  // Reset unit label về giá trị mặc định
+                  const cancelExportQuantityLabel = document.getElementById('cancelExportQuantityLabel');
+                  if (cancelExportQuantityLabel) {
+                    cancelExportQuantityLabel.textContent = 'Số lượng *';
+                  }
+                  
                   // Clear transaction data khi user thay đổi input
                   window.lastExportTransactionData = null;
                   // Gọi function kiểm tra trạng thái nút submit
                   checkSubmitButtonState();
                 };
+
+                // Debounce function để tránh call API quá nhiều cho cancel export
+                let cancelExportValidationTimeout;
+                const debouncedValidateCancelExport = () => {
+                  clearTimeout(cancelExportValidationTimeout);
+                  cancelExportValidationTimeout = setTimeout(async () => {
+                    const maDonHang = IDMaDonHangXuatInput.value.trim();
+                    const maPhieu = IDPhieuXuatInput.value.trim();
+                    
+                    // Chỉ call API khi cả hai field đều có dữ liệu
+                    if (maDonHang && maPhieu) {
+                      await checkCancelExportTransaction(maDonHang, maPhieu);
+                    }
+                  }, 500); // Đợi 500ms sau khi user ngừng nhập
+                };
                 
                 // Reset khi user thay đổi bất kỳ field nào
                 numberPhieuXuatInput.addEventListener('input', resetExportSubmitButton);
-                IDPhieuXuatInput.addEventListener('input', resetExportSubmitButton);
-                IDMaDonHangXuatInput.addEventListener('input', resetExportSubmitButton);
+                IDPhieuXuatInput.addEventListener('input', () => {
+                  resetExportSubmitButton();
+                  debouncedValidateCancelExport();
+                });
+                IDMaDonHangXuatInput.addEventListener('input', () => {
+                  resetExportSubmitButton();
+                  debouncedValidateCancelExport();
+                });
                 
                 // Trigger validation khi user blur khỏi số lượng (field cuối cùng)
                 numberPhieuXuatInput.addEventListener('blur', async () => {
@@ -6818,14 +7199,14 @@
 
     <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
       <div>
-        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo đơn</label>
+        <label id="adjustImportOrderQuantityLabel" class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo đơn</label>
         <input type="number" id="numberNhapDon" 
           class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
           placeholder="Nhập số lượng"
           min="1" step="any" required>
       </div>
       <div>
-        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo kho</label>
+        <label id="adjustImportQuantityLabel" class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo kho *</label>
         <div class="relative">
           <input type="number" id="numberNhapKho" 
             class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" 
@@ -6874,7 +7255,7 @@
                   }
                 });
                 
-                // Trigger validation khi user blur khỏi bất kỳ field nào
+                // Trigger validation khi user blur khỏi bất kỳ field nào hoặc khi nhập đủ thông tin
                 let lastValidationData = { maDonHang: '', maPhieu: '' };
                 let isValidating = false;
                 
@@ -6902,12 +7283,30 @@
                   lastValidationData = { maDonHang, maPhieu };
                   
                   try {
-                    await checkAdjustImportTransaction(maDonHang, maPhieu);
+                    await checkAdjustImportTransactionForUnit(maDonHang, maPhieu);
                   } finally {
                     isValidating = false;
                   }
                 };
                 
+                // Thêm event listener cho input để tự động gọi API khi nhập đủ thông tin
+                maDonPhieuNhapInput.addEventListener('input', () => {
+                  const maDonHang = maDonPhieuNhapInput.value.trim();
+                  const maPhieu = maPhieuNhapInput.value.trim();
+                  if (maDonHang && maPhieu) {
+                    validateAdjustImport();
+                  }
+                });
+                
+                maPhieuNhapInput.addEventListener('input', () => {
+                  const maDonHang = maDonPhieuNhapInput.value.trim();
+                  const maPhieu = maPhieuNhapInput.value.trim();
+                  if (maDonHang && maPhieu) {
+                    validateAdjustImport();
+                  }
+                });
+                
+                // Giữ lại event blur để đảm bảo hoạt động như cũ
                 maDonPhieuNhapInput.addEventListener('blur', validateAdjustImport);
                 maPhieuNhapInput.addEventListener('blur', validateAdjustImport);
                 
@@ -6957,14 +7356,14 @@
 
     <div class="responsive-grid responsive-grid-sm-2 gap-3 lg:gap-6 mt-3 lg:mt-4">
       <div>
-        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo đơn</label>
+        <label id="adjustExportOrderQuantityLabel" class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo đơn</label>
         <input type="number" id="numberXuatDon" 
           class="w-full px-2 lg:px-4 py-1.5 lg:py-2 text-xs lg:text-base border rounded-lg" 
           placeholder="Nhập số lượng"
           min="1" step="any" required>
       </div>
       <div>
-        <label class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo kho</label>
+        <label id="adjustExportQuantityLabel" class="block text-xs lg:text-sm font-medium text-gray-700 mb-1 lg:mb-2">Số lượng theo kho</label>
         <div class="relative">
           <input type="number" id="numberXuatKho" 
             class="w-full px-2 lg:px-4 py-1.5 lg:py-2 pr-8 text-xs lg:text-base border rounded-lg" 
@@ -7000,11 +7399,44 @@
                   if (warning) {
                     warning.classList.add('hidden');
                   }
+                  
+                  // Reset unit labels về giá trị mặc định
+                  const adjustExportQuantityLabel = document.getElementById('adjustExportQuantityLabel');
+                  const adjustExportOrderQuantityLabel = document.getElementById('adjustExportOrderQuantityLabel');
+                  
+                  if (adjustExportQuantityLabel) {
+                    adjustExportQuantityLabel.textContent = 'Số lượng theo kho';
+                  }
+                  if (adjustExportOrderQuantityLabel) {
+                    adjustExportOrderQuantityLabel.textContent = 'Số lượng theo đơn';
+                  }
+                  
                   window.lastAdjustExportData = null;
                 };
+
+                // Debounce function để tránh call API quá nhiều
+                let validationTimeout;
+                const debouncedValidateAdjustExport = () => {
+                  clearTimeout(validationTimeout);
+                  validationTimeout = setTimeout(async () => {
+                    const maDonHang = maDonPhieuXuatInput.value.trim();
+                    const maPhieu = maPhieuXuatInput.value.trim();
+                    
+                    // Chỉ call API khi cả hai field đều có dữ liệu
+                    if (maDonHang && maPhieu) {
+                      await validateAdjustExport();
+                    }
+                  }, 500); // Đợi 500ms sau khi user ngừng nhập
+                };
                 
-                maDonPhieuXuatInput.addEventListener('input', resetAdjustExportValidation);
-                maPhieuXuatInput.addEventListener('input', resetAdjustExportValidation);
+                maDonPhieuXuatInput.addEventListener('input', () => {
+                  resetAdjustExportValidation();
+                  debouncedValidateAdjustExport();
+                });
+                maPhieuXuatInput.addEventListener('input', () => {
+                  resetAdjustExportValidation();
+                  debouncedValidateAdjustExport();
+                });
                 numberXuatKhoInput.addEventListener('input', () => {
                   hideAdjustExportQuantityValidation();
                   const warning = document.getElementById('adjustExportWarning');
@@ -7054,7 +7486,7 @@
                 numberXuatKhoInput.addEventListener('blur', async () => {
                   const soLuongTheoKho = numberXuatKhoInput.value.trim();
                   
-                  if (soLuongTheoKho && window.lastAdjustExportData) {
+                  if (soLuongTheoKho) {
                     showAdjustExportQuantityValidationLoading();
                     await checkAdjustExportQuantity(soLuongTheoKho);
                   }
